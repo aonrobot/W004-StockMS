@@ -1,0 +1,219 @@
+html,
+body {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Kanit', sans-serif !important;
+}
+
+body {
+    color: #444;
+}
+
+.main {
+    position: relative;
+    min-height: 100%;
+    padding-bottom: 50px;
+}
+img {
+    max-width: 100%;
+}
+textarea { resize: none }
+
+.cm-footer {
+    color: #777777;
+    line-height: 50px;
+    padding: 0 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.nav-style {
+    background: #fff;
+    color: #444;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+    border-color: transparent;
+}
+
+.btn-default>i {
+    color: #99abb4;
+    font-size: 15px;
+}
+
+.btn-default>i,
+.btn-primary>i,
+.btn-warning>i,
+.btn-danger>i {
+    font-size: 15px;
+}
+
+#cm-menu-content {
+    border: none;
+    -webkit-box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+header .dropdown-menu {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    border-color: rgba(120, 130, 140, 0.13);
+}
+
+.cm-menu-items li a {
+    white-space: normal;
+    font-weight: 500;
+    padding: 0px 115px 0px 16px;
+    
+}
+
+.cm-menu-items li a i { font-size: 15px }
+.cm-menu-items li a span:first-of-type{ padding-left: 20px };
+.fa-fw { text-align: left };
+
+.title0 {
+    color: #888 !important;
+    margin-top: 1em;
+}
+
+.sub-title {
+    color: #99abb4; 
+}
+
+.m-t-0 { margin-top: 0 !important }    
+.m-t-5 { margin-top: 5px !important }
+.m-t-20 { margin-top: 20px !important }
+.m-t-30 { margin-top: 30px !important }
+.m-t-50 { margin-top: 50px !important }
+.m-b-20 { margin-bottom: 20px }
+.no-padding { padding: 0 !important }
+.p-10 { padding: 10px !important}
+
+.card {
+    background: #ffffff none repeat scroll 0 0; 
+    padding: 20px;
+    border: 0 solid #e7e7e7;
+    border-radius: 5px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+textarea {
+    resize: none;
+}
+
+.badge-publish {
+    background: #34CCD6;
+}
+.badge-unpublish {
+    background:  #ffb22b;
+    color: #444;
+}
+
+
+.flex { display: flex }
+.flex-v-center {
+    display: flex;
+    align-items: center;
+}
+.flex-h-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.panel-body {
+    padding: 0;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #e6e6e6;
+    border-top: 1px solid #e6e6e6;
+    padding: 12px 10px;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.modal-header {
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+    border-bottom: transparent;
+}
+.modal-footer {
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+    border-top: transparent;
+}
+
+/* Table Style */
+th {
+    font-size: 14px;
+    color: #4a4a4a;
+    text-transform: uppercase;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+    background: #f7f7f7;
+}
+
+table.dataTable thead th,
+table.dataTable thead td,
+table.dataTable tbody th,
+table.dataTable tbody td {
+    padding: 15px;
+    border-bottom: 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+table.dataTable tbody tr:hover {
+    background: #f5f8fc;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    border: 1px solid #cacaca;
+    background:#fff;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    border: 1px solid #444;
+    background: #fff;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    border-bottom: none;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+}
+/* this is dropdown show number row */
+.dataTables_length select{
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+}
+.table-btn > div > a {
+    padding: 8px;
+    font-size: 14px;
+}
+.table-btn > div {
+    visibility: hidden;
+}
+table.dataTable tbody tr:hover .table-btn > div {
+    visibility: visible;
+}
+.table-img > img {
+    max-width: 60px;
+}
+.table-img-star > img {
+    max-width: 100px;
+}
