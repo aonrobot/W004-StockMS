@@ -17,10 +17,10 @@
     </div>
 </div> -->
 @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+    <div class="alert alert-success" role="alert">
+        {{ session('status') }}
+    </div>
+@endif
 <div class="container main">
         <!-- This is for Sub Menu -->
         <div class="row">

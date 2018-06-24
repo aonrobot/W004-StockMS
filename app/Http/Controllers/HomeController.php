@@ -16,6 +16,11 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function getJSON(Request $request){
+        $data = $request->input('data');
+        print_r($data);
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -23,6 +28,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = \App\User::find(1);
+
+        // Creating a token without scopes...
+        $token = $user->createToken('TokenAccessAPI')->accessToken;
+
+        return view('home', ['token' => $token]);
     }
 }
