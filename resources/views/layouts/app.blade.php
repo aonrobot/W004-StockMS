@@ -82,10 +82,6 @@
             @yield('content')
         </main>
     </div>
-
-    <div class="container">
-    API Token : <input value="{{$token}}"></input>
-    </div>
 </body>
 
 

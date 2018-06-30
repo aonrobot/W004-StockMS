@@ -21,7 +21,8 @@
         {{ session('status') }}
     </div>
 @endif
-<div class="container main">
+
+<div class="container fixed-bottom main">
         <!-- This is for Sub Menu -->
         <div class="row">
             <div class="col-md-6 m-t-50">
@@ -172,4 +173,8 @@
             </div>
         </div>
     </div>
+
+<div class=" container alert alert-info" role="alert">
+    API Token : <input value="{{$token}}"></input>
+</div>
 @endsection
