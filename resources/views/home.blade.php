@@ -41,10 +41,9 @@
                             <thead>
                                 <tr>
                                     <th>ลำดับ</th>
-                                    <th>รูป</th>
                                     <th>ชื่อ</th>
                                     <th>จำนวน</th>
-                                    <th>หน่วย</th>
+                                    <th>ราคาต่อหน่วย</th>
                                     <th>คำอธิบายเพิ่มเติม</th>
                                     <th></th>
                                 </tr>
@@ -52,10 +51,7 @@
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td class="table-img">
-                                        <img src="https://www.boonthavorn.com/media/catalog/product/cache/2/thumbnail/9df78eab33525d08d6e5fb8d27136e95/1/0/1080714_1.jpg"
-                                        />
-                                    </td>
+                                    
                                     <td>กระเบื้องดำ</td>
                                     <td>
                                         1
@@ -88,6 +84,7 @@
             <span class="pull-left">This is Footer</span>
         </footer>
     </div>
+
     <!-- Modal -->
     <div id="addProd" class="modal fade in" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
@@ -144,25 +141,21 @@
                         </div>
 
                         <hr />
-                        <div class="row m-t-20">
-                            <div class="col-md-4 m-t-20">
-                                <h4>รายละเอียดเพิ่มเติม</h4>
-                            </div>
+
+                        <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group p-10" style="margin-bottom: 0;">
-                                    <label>ล๊อต</label>
-                                    <input type="text" class="form-control" id="">
+                                <div id='name' style="display: none;">
+                                    <h4 style="margin-bottom: 0;">รายละเอียดเพิ่มเติม</h4>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group p-10" style="margin-bottom: 0;">
-                                    <label>คุณภาพ</label>
-                                    <input class="form-control" />  
-                                </div>
+                            <div class="col-md-8" id="optional">
+                                
                             </div>
                         </div>
-                       
-                        <button class="btn btn-link pull-right" onclick="addMoreDetail()"> เพิ่มเติม <i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+
+                        <button class="btn btn-link pull-right" onclick="addMoreDetail()" type="button"> 
+                            เพิ่มรายละเอียด <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        </button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -172,4 +165,7 @@
             </div>
         </div>
     </div>
+  
+</div>
+
 @endsection

@@ -1,3 +1,4 @@
+
 var table = $('#prod_table').DataTable({
     "columnDefs": [{
         "orderable": false,
@@ -46,7 +47,6 @@ var table = $('#prod_table').DataTable({
         },
     ]
 });
-
 
 function getListSeries() {
 
@@ -102,7 +102,7 @@ function submit() {
     }).done(function (response) {
 
         // createListSerie(response);
-        console.log(response);
+        console.log(response);  
     });
     // var selected = $("#serie_lists").val();
     // var selectedImage = $('#serie_lists option:selected').attr('image');
@@ -153,9 +153,50 @@ function deleteRow(idx) {
     table.row(idx).remove().draw( false );
 }
 
-getListSeries();
+// getListSeries();
 
-function addMoreDetail  () {
+// function addMoreDetail  () {
+//     // // TODO Change It to Table
+ 
+//     // console.log('bite');
+//     alert('bite');
 
+       
+// }
 
+function addMoreDetail () {
+
+    var html = `<table class="table form-group">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                        <td>
+                            <input type="text"  class="form-control"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>`;
+    
+    $('#optional').append(html);
+           
 }
