@@ -41,7 +41,7 @@
                         <table id="prod_table" class="table-style">
                             <thead>
                                 <tr>
-                                    <th>ลำดับ</th>
+                                    <th>รหัสสินค้า</th>
                                     <th>ชื่อ</th>
                                     <th>จำนวน</th>
                                     <th>ราคาต่อหน่วย</th>
@@ -54,6 +54,30 @@
                                     <td>1</td>
                                     
                                     <td>กระเบื้องดำ</td>
+                                    <td>
+                                        1
+                                    </td>
+                                    <td>
+                                        23
+                                    </td>
+                                    <td>
+                                        N/A
+                                    </td>
+                                    <td class="table-btn">
+                                        <div>
+                                            <a href="#">
+                                                แก้ไข
+                                            </a> |
+                                            <a href="#">
+                                                ลบ
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    
+                                    <td>ผ้าปู</td>
                                     <td>
                                         1
                                     </td>
@@ -149,8 +173,12 @@
                                     <h4 style="margin-bottom: 0;">รายละเอียดเพิ่มเติม</h4>
                                 </div>
                             </div>
-                            <div class="col-md-8" id="optional">
-                                
+                            <div class="col-md-8" >
+                                <table class="table form-group">
+                                    <tbody id="optional">
+                                            
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
@@ -173,3 +201,4 @@
     API Token : <input value="{{$token}}"></input>
 </div>
 @endsection
+
