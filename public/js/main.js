@@ -1,159 +1,84 @@
-$(document).ready(function () {
-    $('#prod_table').DataTable({
+var table = $('#prod_table').DataTable({
+    "columnDefs": [{
+        "orderable": false,
+        "targets": 6
+    }],
+    columns: [{
+            "data": "prodID",
+            "width": "10%"
+        },
+        {
+            "data": "prodName"
+        },
+        {
+            "data": "prodBuyPrice", 
+            "className": "text-right",
+            "width": "12%"
+        },
+        {
+            "data": "prodSalePrice", 
+            "className": "text-right",
+            "width": "12%"
+        },
+        {
+            "data": "prodAmount", 
+            "className": "text-right",
+            "width": "12%"
+        },
+        {   
+            "data": "prodUnit",
+            "className": "text-right",
+            "width": "12%"
+        },
+        {
+            render: function (data, type, full, meta) {
+                return `<div>   
+                            <a href="#">
+                                Edit
+                            </a> |
+                            <a href="#" onclick="deleteRow(${ meta.row });" >
+                                Delete
+                            </a>
+                        </div>`;
+            },
+            className: "table-btn",
+            width: "20%"
+        }
+    ],
+    "scrollX": true
+});
 
-    });
+$("#form_prod").submit(function (e) {
+
+    event.preventDefault();
+    var data = $('#form_prod').serializeArray();
+
+    data = {
+        prodID: data[0].value,
+        prodName: data[1].value,
+        prodCat: data[2].value,
+        prodBuyPrice: data[3].value,
+        prodSalePrice: data[4].value,
+        prodUnit: data[5].value,
+        prodAmount: data[6].value,
+        branch: data[7].value,
+        prodDetail: data[8].value
+    }
+
+    table.row.add({
+        "prodID": data.prodID,
+        "prodName": data.prodName,
+        "prodBuyPrice": data.prodBuyPrice,
+        "prodSalePrice": data.prodSalePrice,
+        "prodAmount": data.prodAmount,
+        "prodUnit": data.prodUnit,
+        "btn": ""
+    }).draw();
+
+    $('#addProd').modal('hide');
 
 });
 
-// var table = $('#prod_table').DataTable({
-//     "columnDefs": [{
-//         "orderable": false,
-//         "targets": 4
-//     }],
-//     "scrollX": true,
-//     columns: [{
-//             data: 'order',
-//             width: '10%'
-//         },
-//         {
-//             data: 'image' 
-//         },
-//         {
-//             data: 'name'
-//         },
-//         {
-//             data: 'status',
-//             width: '15%'
-//         },
-//         {
-//             data: 'btn',
-//             render: function (data, type, full, meta) {
-//                 var rowIndex = data - 1;
-//                 return `<div>   
-//                             <a href="#">
-//                                 Edit
-//                             </a> |
-//                             <a href="#" onclick="deleteRow(${ rowIndex });" >
-//                                 Delete
-//                             </a>
-//                         </div>`;
-//             },
-//             className: "table-btn",
-//         },
-//     ]
-// });
-
-// function getListSeries() {
-
-//     $.ajax({
-//         type: 'GET',
-//         url: "https://uinames.com/api/?ext&amount=25"
-
-//     }).done(function (response) {
-
-//         createListSerie(response);
-//     });
-// }
-
-// function createListSerie(lists) {
-//     var dom = $('#serie_lists');
-//     for (var i = 0; i < lists.length; i++) {
-
-//         dom.append($('<option>', {
-//             value: lists[i].name,
-//             text: lists[i].name,
-//             image: lists[i].photo,
-//         }));
-//     }
-//     $('#serie_lists').select2({
-//         templateResult: formatState,
-//         // templateSelection: formatState
-//     });
-// }
-
-// function submit() {
-
-//     $.ajax({
-//         type: 'POST',
-//         contentType: "application/json",
-//         url: "api/product/detail/add",
-//         data: [{'label' : 'ทดสอบ', 'key' : 'ทดสอบคีย์', 'value' : 'ทดสอบค่า'}]
-
-//     }).done(function (response) {
-
-//         // createListSerie(response);
-//         console.log(response);  
-//     });
-// var selected = $("#serie_lists").val();
-// var selectedImage = $('#serie_lists option:selected').attr('image');
-// var dateShow = $("#datetimepicker12").data("DateTimePicker").date().format("YYYY-MM-DD HH:mm:ss");
-// var datePublic = $("#datetimepicker13").data("DateTimePicker").date().format("YYYY-MM-DD HH:mm:ss"
-// var data = `{ "title": ${ selected }, "dateShow": ${ dateShow }, "datePublic": ${ datePublic }, "image": ${ selectedImage }}`;
-
-// localStorage.setItem('data', JSON.stringify(data));
-// add row
-// var rowIndex = table.row().data();
-
-// if (rowIndex) {
-
-//     table.row.add({
-//         "order": rowIndex.order += 1,
-//         "image": selectedImage,
-//         "name": selected,
-//         "status": Math.round(Math.random()),
-//         "btn": rowIndex.order
-//     }).draw();
-// } else {
-//     table.row.add({
-//         "order": 1,
-//         "image": selectedImage,
-//         "name": selected,
-//         "status": Math.round(Math.random()),
-//         "btn": 1
-//     }).draw();
-// }
-
-// $('#addSeries').modal('toggle');
-// }
-
 function deleteRow(idx) {
-
-    // re-order row number
-    table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
-
-        if (rowIdx > idx) {
-            var data = this.data();
-                data.order -= 1;
-                data.btn -= 1; 
-            // re-render row
-            table.row(rowIdx).data(data).invalidate();
-        }
-    });
-
-    table.row(idx).remove().draw( false );
-}
-
-// getListSeries();
-
-// function addMoreDetail  () {
-//     // // TODO Change It to Table
-
-//     // console.log('bite');
-//     alert('bite');
-
-
-// }
-
-function addMoreDetail() {
-
-    var html = `<tr>
-                    <td>
-                        <input type="text"  class="form-control"/>
-                    </td>
-                    <td>
-                        <input type="text"  class="form-control"/>
-                    </td>                        
-                </tr>`;
-
-    $('#optional').append(html);
+    table.row(idx).remove().draw(false);
 }
