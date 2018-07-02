@@ -17,17 +17,18 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             
             $table->string('name', 144)->nullable(false);
-            $table->longText('description');
+            $table->longText('description')->nullable(true);
             $table->timestamps();
         });
 
         Schema::create('products', function (Blueprint $table) {
             $table->increments('product_id');
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->unsigned()->default(1);
 
             $table->string('code', 64)->unique();
             $table->string('name', 144)->nullable(false);
-            $table->longText('description');
+            $table->string('unitName', 144)->default(NULL);
+            $table->longText('description')->nullable(true);
             $table->string('status', 24)->default('active');
             $table->timestamps();
 
@@ -42,7 +43,7 @@ class CreateProductsTable extends Migration
 
             $table->string('label', 144);
             $table->string('key', 144);
-            $table->text('value');
+            $table->text('value')->nullable(true);
             $table->string('type', 32)->default('textbox');
             $table->timestamps();
 

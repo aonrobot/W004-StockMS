@@ -17,6 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('product', 'ProductController');
+});
+
 Route::middleware('auth:api')->get('/product/detail/default', function (Request $request) {
     echo 'ok';
 });
