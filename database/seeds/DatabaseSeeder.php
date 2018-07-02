@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(ProductCategoryTableSeeder::class);
         $this->call(WarehouseTableSeeder::class);
+        exec('php artisan passport:install');
     }
 }
