@@ -13,6 +13,7 @@ class Warehouse extends Model
      */
     protected $table = 'warehouse';
     protected $primaryKey = 'warehouse_id';
+    protected $fillable = ['name', 'address'];
 
     /**
      * The product that belong to the warehouse.

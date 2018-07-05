@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\ProductCategory;
+use App\Warehouse;
 
-class CategoryController extends Controller
+class WarehouseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $cats = ProductCategory::all();
-        return response()->json($cats);
+        $WH = Warehouse::all();
+        return response()->json($WH);
     }
 
     /**
@@ -28,15 +28,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = $request->input('category');
+        $wh = $request->input('warehouse');
 
-        $categoryId = ProductCategory::create([
-            'name' => $category['name'],
-            'description' => $category['description']
-        ])->id;
+        $whId = Warehouse::create([
+            'name' => $wh['name'],
+            'address' => $wh['address']
+        ])->warehouse_id;
 
         return response()->json([
-            'id' => $categoryId
+            'id' => $whId
         ]);
     }
 

@@ -59,7 +59,7 @@ class ProductController extends Controller
                     'salePrice' => $productDetail['salePrice']
                 ]);
                 return response()->json([
-                    'product_id' => $productId
+                    'id' => $productId
                 ]);
             }
         } else {

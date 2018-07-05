@@ -32,6 +32,11 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::apiResource('category', 'CategoryController');
 });
 
+//API: Warehouse
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('warehouse', 'WarehouseController');
+});
+
 //Check API
 Route::middleware('auth:api')->get('/product/detail/default', function (Request $request) {
     echo 'ok';
