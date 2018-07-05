@@ -27,6 +27,11 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     });
 });
 
+//API: Product Category
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('category', 'CategoryController');
+});
+
 //Check API
 Route::middleware('auth:api')->get('/product/detail/default', function (Request $request) {
     echo 'ok';

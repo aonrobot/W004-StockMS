@@ -14,26 +14,6 @@ use App\Inventory;
 class ProductController extends Controller
 {
     /**
-     * Generate Product Code
-     *
-     * @return String
-     */
-    public function getProductCode(){
-        //System code is a string like -> P0001, P0010
-        $codes = Product::where('code', 'like', 'P%')->get(['code']);
-
-        $codeList = [];
-        foreach($codes as $code){
-            $number = intval(substr($code->code, 1));
-            array_push($codeList, $number);
-        }
-
-        return response()->json([
-            "code" => 'P' . str_pad((max($codeList) + 1), 4, '0', STR_PAD_LEFT)
-        ]);
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -119,5 +99,25 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Generate Product Code
+     *
+     * @return String
+     */
+    public function getProductCode(){
+        //System code is a string like -> P0001, P0010
+        $codes = Product::where('code', 'like', 'P%')->get(['code']);
+
+        $codeList = [];
+        foreach($codes as $code){
+            $number = intval(substr($code->code, 1));
+            array_push($codeList, $number);
+        }
+
+        return response()->json([
+            "code" => 'P' . str_pad((max($codeList) + 1), 4, '0', STR_PAD_LEFT)
+        ]);
     }
 }

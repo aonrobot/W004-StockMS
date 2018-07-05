@@ -12,6 +12,7 @@ class ProductCategory extends Model
      * @var string
      */
     protected $table = 'product_category';
+    protected $fillable = ['name', 'description'];
 
     /**
      * Get the products for the blog Category.
