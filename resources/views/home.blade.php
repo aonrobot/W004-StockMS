@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-link" type="button"> 
+                                <button class="btn btn-link" id="add_cat" type="button" data-toggle="modal" data-target="#prod_cat_modal"> 
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     เพิ่มหมวดหมู่
                                 </button>
@@ -231,6 +231,35 @@
             </div>
         </div>
     </div>
+
+    <!-- Sub Modal -->
+    <div id="prod_cat_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" style="">
+        <form class="modal-dialog modal-lg">
+        <form class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title ">เพิ่มหมวดหมู่</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="form_cat">
+                    <div class="modal-body">
+                    <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4>หวมดหมู่</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="cat_code" name="product_code" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="submitBtn" type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
+        </form>
+    </div>
 </div>
 
 
@@ -279,25 +308,12 @@
         });
 
         $('#submitBtn').click(function(){
-            // plan1
-            // $.post("http://localhost/api/product",{
-            //     "product_id": 1,
-            //     "category_id": 1,
-            //     "code": "P0001",
-            //     "name": "Product ที่ฉันรักที่สุด",
-            //     "unitName": "ชิ้น",
-            //     "description": "รายละเอียด Product",
-            //     "status": "active",
-            //     "created_at": null,
-            //     "updated_at": null
-            // });
-
             var test = $("#product_code").val()
             console.log(test)
 
             $.ajax({
                 type: 'POST',
-                url: "http://localhost/api/category",
+                url: "http://localhost/api/product",
                 headers: {
                     "Accept":"application/json",
                     "Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUwZDYwYzRkNzU1YTMxNzIyN2FjYzM4NTEwMWNhN2U5NmM3NzQ4M2E5NzE0NDhkM2ZmOTFkZGVmMzAwZTc1YTIzOGYxZGQxNjg4ZWYwODQzIn0.eyJhdWQiOiIxIiwianRpIjoiNTBkNjBjNGQ3NTVhMzE3MjI3YWNjMzg1MTAxY2E3ZTk2Yzc3NDgzYTk3MTQ0OGQzZmY5MWRkZWYzMDBlNzVhMjM4ZjFkZDE2ODhlZjA4NDMiLCJpYXQiOjE1MzA4MTAzMTcsIm5iZiI6MTUzMDgxMDMxNywiZXhwIjoxNTYyMzQ2MzE3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.pOFmjIzsbTumMP8X1aBIFQACsEJBh5AcepEdyQgmUWrqn4-bVcbzKuXMtToQbHsDz6WRHRTTGJbTWSmwoh0ND8bHZAahy8Qn-O5FytcyVCvad0kzSxl_aBdwp6Mcr1P-rUU1Su_paR9Lf_0kFvTmw6V0AR4O6ZYnfEHW-Kr34rO555raZjp4DakhSuF7pmLsYb-fe8eXykzpvR7-liTdZvzLcwRbv8EkeoUXgyk6Bn6kcy-Tl00CHs2JRnwHUwFB_ogpz65QrRlwdKoP9HNVWmU7I7KCMm3dresBpOtkWeig-MNRDfsltkr_eTHm06mn0JID2zlnNFcSTh_MEQtC34v4iels2w3yjMYR3HaCk52xrq4Vwr-IOCPAk3Byb2xXIfyKTEtMbtAy6_jXNBRlmdXEjmFHRFdyOFooNZ4-rNPO3EP9OOLszaI_iEV0GkoOZ3YFmUi0lDERIH73Wz6YivZ1hAGpQor-Ul5RnRlvad6h78ms6WSkYLrUAkmwfmbeayoeRDTGyrzVRG7-QXMEVTe_VANPgRMpczfEdsh1aPl7fQch9PRn-QutZz6fXRhnUDFuEeKFIkZR28H5ZiYa9ONqo8csclIa6Dnk853zw0ylShaPQro0JJAn1-76PZqeoMFwHRDv9uzxBom06ex80AhYSyHuL972Yz4m9Gw8Q00"
@@ -305,7 +321,7 @@
                 data: {
                     "product_id": 2,
                     "category_id": 1,
-                    "code": "P0002",
+                    "code": "P00022",
                     "name": "Product ที่ฉันรักที่สุด",
                     "unitName": "ชิ้น",
                     "description": "รายละเอียด Product",
