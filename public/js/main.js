@@ -36,7 +36,7 @@ var table = $('#prod_table').DataTable({
                             <a href="#">
                                 Edit
                             </a> |
-                            <a href="#" onclick="deleteRow(${ meta.row });" >
+                            <a href="#" class="delete-btn">
                                 Delete
                             </a>
                         </div>`;
@@ -47,7 +47,7 @@ var table = $('#prod_table').DataTable({
     ],
     "scrollX": true
 });
-
+{/* <a href="#" onclick="deleteRow(${ meta.row });"   class="delete-btn">    */}
 $("#form_prod").submit(function (e) {
 
     event.preventDefault();
@@ -79,9 +79,14 @@ $("#form_prod").submit(function (e) {
 
 });
 
-function deleteRow(idx) {
-    table.row(idx).remove().draw(false);
-}
+$('#prod_table tbody').on( 'click', '.delete-btn', function () {
+
+    table
+        .row( $(this).parents('tr') )
+        .remove()
+        .draw();
+} );
+
 
 $('#prod_cat_modal').on('show.bs.modal', function (event) {
         
