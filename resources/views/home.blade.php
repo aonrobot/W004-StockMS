@@ -268,11 +268,207 @@
         </div>
     </div>
 
-</div>
+
+    <!-- Edit Modal -->
+    <div id="edit_modal" class="modal fade in" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title ">แก้ไขสินค้า</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                
+                <form id="form_prod">
+                    <div class="modal-body">
+                        <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4>รหัสสินค้า</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="edit_prod_code" name="edit_product_code" value=""  disabled />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4>ชื่อสินค้า <sup class="text-danger">*</sup></h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="edit_prod_name" name="edit_product_name" 
+                                    value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4>หมวดหมู่</h4>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group ">
+
+                                    <select class="form-control" 
+                                            id="edit_prod_cat" 
+                                            name="edit_product_catagories" 
+                                            value="">
+                                        <option selected="true" value="">ไม่มีหมวดหมู่</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-link" id="edit_add_cat" type="button" data-toggle="modal" data-target="#edit_prod_cat_modal"> 
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    เพิ่มหมวดหมู่
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4>ราคาซื้อ / ราคาขาย</h4>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <input type="number" min="0" name="edit_product_price_buy" class="form-control" id="edit_prod_price_buy" placeholder="ราคาซื้อ" value=""/>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <input type="number"  min="0" name="edit_product_price_sale" class="form-control" id="edit_prod_price_sale" placeholder="ราคาขาย" value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4>หน่วย</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="edit_prod_unit" placeholder="เช่น : ชิ้น, กล่อง, ชุด" value="" name="edit_product_unit"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr />
 
 
-<div class=" container alert alert-info" role="alert">
-    API Token : <input value="{{$token}}"></input>
+                        <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4 style="margin-bottom: 0;">จำนวน</h4>
+                                <span style="color: #ccc; font-size: 16px;">(จำนวนสต๊อกปัจจุบัน)</span>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="number" class="form-control" id="edit_prod_amount"  min="0" name="edit_product_amount" value="" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 style="margin-bottom: 0;">สินค้าเข้าที่  </h4>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group ">
+                                    <select class="form-control" id="edit_prod_branch" name="branch" value="main_branch">
+                                        <option>คลังสินค้าหลัก</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-link" type="button" data-toggle="modal" data-target="#edit_prod_branch_modal"> 
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    เพิ่มคลังสินค้า
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 style="margin-bottom: 0;">คำอธิบายเพิ่มเติม</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <textarea type="text" class="form-control" name="product_detail" id="edit_prod_detail" value="" placeholder="กรอกคำอธิบาย"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="editBtn" type="submit" class="btn btn-primary" >Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- EDIT CATAGORY MODAL -->
+    <div id="edit_prod_cat_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content" style="-webkit-box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);
+            box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);">
+                <div class="modal-header">
+                    <h3 class="modal-title ">เพิ่มหมวดหมู่</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="form_cat">
+                    <div class="modal-body">
+                    <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4>หมวดหมู่</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="edit_cat_code"name="product_code" value="" required />
+
+                                    <span id="edit_text_warning" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="edit_addProdCat" type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- EDIT BRANCH Modal -->
+    <div id="edit_prod_branch_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content" style="-webkit-box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);
+            box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);">
+                <div class="modal-header">
+                    <h3 class="modal-title ">เพิ่มคลังสินค้า</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="form_cat">
+                    <div class="modal-body">
+                    <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4>คลังสินค้า</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="edit_branch_code" name="branch_name" value="" required />
+
+                                    <span id="edit_text_warning_branch" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="edit_addBranch" type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

@@ -30,14 +30,21 @@ class WarehouseController extends Controller
     {
         $wh = $request->input('warehouse');
 
-        $whId = Warehouse::create([
-            'name' => $wh['name'],
-            'address' => $wh['address']
-        ])->warehouse_id;
+        if(!empty($wh['name'])) {
+            $whId = Warehouse::create([
+                'name' => $wh['name'],
+                'address' => $wh['address']
+            ])->warehouse_id;
+    
+            return response()->json([
+                'id' => $whId,
+                'name' => $wh['name'],
+                'address' => $wh['address']
+            ]);
 
-        return response()->json([
-            'id' => $whId
-        ]);
+        } else {
+            return response()->json(['message' => 'Warehouse name should have some value']);
+        }
     }
 
     /**

@@ -33,7 +33,7 @@ var table = $('#prod_table').DataTable({
         {
             render: function (data, type, full, meta) {
                 return `<div>   
-                            <a href="#">
+                            <a href="#" data-toggle="modal" data-target="#edit_modal">
                                 Edit
                             </a> |
                             <a href="#" class="delete-btn">
@@ -47,12 +47,12 @@ var table = $('#prod_table').DataTable({
     ],
     "scrollX": true
 });
-{/* <a href="#" onclick="deleteRow(${ meta.row });"   class="delete-btn">    */}
+
 $("#form_prod").submit(function (e) {
 
     event.preventDefault();
     var data = $('#form_prod').serializeArray();
-    console.log(data);
+
     data = {
         prodID: data[0].value,
         prodName: data[1].value,
@@ -80,11 +80,19 @@ $("#form_prod").submit(function (e) {
 });
 
 $('#prod_table tbody').on( 'click', '.delete-btn', function () {
+    var txt;
+    if (confirm("คุณยืนยันที่จะลบข้อมูล?")) {
 
-    table
-        .row( $(this).parents('tr') )
-        .remove()
-        .draw();
+        table
+            .row( $(this).parents('tr') )
+            .remove()
+            .draw();
+    } else {
+
+        return; 
+    }
+
+    
 } );
 
 
@@ -177,3 +185,91 @@ $('#addProd').on('show.bs.modal', function (event) {
     
     $('#addProd').find('form')[0].reset();
 })
+
+
+// EDIT  Catagory
+$('#edit_prod_cat_modal').on('show.bs.modal', function (event) {
+        
+    var text_warning = $('#edit_text_warning');
+    var catagory_name = $('#edit_cat_code');
+    var catagory_list = $('#edit_prod_cat');
+    
+    text_warning.empty();
+    catagory_name.val('');
+    if (catagory_name.hasClass('is-invalid')) {
+
+        catagory_name.removeClass('is-invalid');
+    }
+})
+
+$('#edit_addProdCat').click(function(e){ 
+    e.preventDefault();
+
+
+    var text_warning = $('#edit_text_warning');
+    var catagory_name = $('#edit_cat_code');
+    var catagory_list = $('#edit_prod_cat');
+    
+    var catagory_name_value = catagory_name.val();
+    // clear
+    text_warning.empty();
+
+    // if user not type any data
+    if ( catagory_name.val().length === 0 ){
+
+        catagory_name.addClass('is-invalid');
+        text_warning.append('กรุณาใส่หมวดหมู่');
+
+    } else {
+        
+        catagory_list.append(`<option value="${ catagory_name_value }" selected="true"> ${ catagory_name_value } </option>`);
+
+        // Close Modal
+        $('#edit_prod_cat_modal').modal('hide')
+
+    }       
+});
+
+// EDIT BRANCH
+
+$('#edit_prod_branch_modal').on('show.bs.modal', function (event) {
+    
+    var warning = $('#edit_text_warning_branch');
+    var branch_name = $('#edit_branch_code');
+    var branch_list = $('#edit_prod_branch');
+    
+    warning.empty();
+    branch_name.val('');
+
+    if (branch_name.hasClass('is-invalid')) {
+
+        branch_name.removeClass('is-invalid');
+    }
+})
+
+$('#edit_addBranch').click(function(e){ 
+    e.preventDefault();
+
+    var warning = $('#edit_text_warning_branch');
+    var branch_name = $('#edit_branch_code');
+    var branch_list = $('#edit_prod_branch');
+    
+    var branch_name_value = branch_name.val();
+    // clear
+    warning.empty();
+
+    // if user not type any data
+    if ( branch_name.val().length === 0 ){
+
+        branch_name.addClass('is-invalid');
+        warning.append('กรุณาใส่คลังสินค้า');
+
+    } else {
+        
+        branch_list.append(`<option value="${ branch_name_value }" selected="true"> ${ branch_name_value } </option>`);
+
+        // Close Modal
+        $('#edit_prod_branch_modal').modal('hide')
+
+    }       
+});

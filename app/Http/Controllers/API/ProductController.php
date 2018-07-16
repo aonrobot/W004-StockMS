@@ -13,6 +13,7 @@ use App\Inventory;
 
 class ProductController extends Controller
 {
+    //TODO: max, min Level it will create in next sprent
     /**
      * Display a listing of the resource.
      *
@@ -36,31 +37,34 @@ class ProductController extends Controller
         $productDetail = $request->input('product.detail');
 
         //Check product code
-        if(!Product::where('code', $product['code'])->count()) {
+        if (!Product::where('code', $product['code'])->count()){
             //Check category is exist
-            if(!ProductCategory::find($product['category_id'])) {
-                return response()->json(['message' => 'Category isn\'t exist']);
+            if (!ProductCategory::find($product['category_id'])){
+                return response()->json(['message' => 'This category isn\'t exist']);
             }
-            else if(!Warehouse::where('warehouse_id', $productDetail['warehouse_id'])->count()){
-                return response()->json(['message' => 'Warehouse isn\'t exist']);
+            else if (!Warehouse::where('warehouse_id', $productDetail['warehouse_id'])->count()){
+                return response()->json(['message' => 'This warehouse isn\'t exist']);
             } else {
-                $productId = Product::create($product)->product_id;
-                ProductHasWH::create([
-                    'product_id' => $productId,
-                    'warehouse_id' => $productDetail['warehouse_id']
-                ]);
-                Inventory::create([
-                    'product_id' => $productId,
-                    'warehouse_id' => $productDetail['warehouse_id'],
-                    'quantity' => $productDetail['quantity'],
-                    'minLevel' => 0,
-                    'maxLevel' => 0,
-                    'costPrice' => $productDetail['costPrice'],
-                    'salePrice' => $productDetail['salePrice']
-                ]);
-                return response()->json([
-                    'id' => $productId
-                ]);
+                try{
+                    $productId = Product::create($product)->product_id;
+                    ProductHasWH::create([
+                        'product_id' => $productId,
+                        'warehouse_id' => $productDetail['warehouse_id']
+                    ]);
+                    Inventory::create([
+                        'product_id' => $productId,
+                        'warehouse_id' => $productDetail['warehouse_id'],
+                        'quantity' => $productDetail['quantity'],
+                        'minLevel' => 0,
+                        'maxLevel' => 0,
+                        'costPrice' => $productDetail['costPrice'],
+                        'salePrice' => $productDetail['salePrice']
+                    ]);
+                    return response()->json(['created' => true]);
+
+                } catch(\Exception $e) {
+                    return response()->json(['created' => false]);
+                }
             }
         } else {
             return response()->json(['message' => 'This product code is exist. please use anathor one']);
@@ -75,7 +79,12 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::where('product_id', $id)->get();
+        if($product->count()){
+            return response()->json($product);
+        } else {
+            return response()->json(['message' => 'can\'t found this product']);
+        }
     }
 
     /**
@@ -87,7 +96,35 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product = $request->input('product');
+        $productDetail = $request->input('product.detail');
+
+        try{
+            //Update Product
+            Product::where('product_id', $id)->update([
+                'category_id' => $product['category_id'],
+                'name' => $product['name'],
+                'unitName' => $product['unitName'],
+                'description' => $product['description']
+            ]);
+            //Update Inventory
+            Inventory::where('product_id', $id)->update([
+                'warehouse_id' => $productDetail['warehouse_id'],
+                'quantity' => $productDetail['quantity'],
+                'minLevel' => 0,
+                'maxLevel' => 0,
+                'costPrice' => $productDetail['costPrice'],
+                'salePrice' => $productDetail['salePrice']
+            ]);
+            //Update WH Relation
+            ProductHasWH::where('product_id', $id)->update([
+                'warehouse_id' => $productDetail['warehouse_id']
+            ]);
+            return response()->json(['updated' => true]);
+
+        } catch(\Exception $e) {
+            return response()->json(['updated' => false]);
+        }
     }
 
     /**
@@ -98,7 +135,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+        if($product->count()){
+            try{
+                Inventory::where('product_id', $id)->delete();
+                ProductHasWH::where('product_id', $id)->delete();
+                $product->delete();
+                return response()->json(['destroyed' => true]);
+            } catch(\Exception $e) {
+                return response()->json(['destroyed' => false]);
+            }
+        } else {
+            return response()->json(['message' => 'can\'t found this product']);
+        }
     }
 
     /**
