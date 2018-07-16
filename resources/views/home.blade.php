@@ -471,11 +471,6 @@
     </div>
 </div>
 
-
-<div class=" container alert alert-info" role="alert">
-    API Token : <input value="{{$token}}"></input>
-</div>
-
 <script>
 
     //Event

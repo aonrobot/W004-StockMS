@@ -30,14 +30,21 @@ class CategoryController extends Controller
     {
         $category = $request->input('category');
 
-        $categoryId = ProductCategory::create([
-            'name' => $category['name'],
-            'description' => $category['description']
-        ])->id;
+        if(!empty($category['name'])) {
+            $categoryId = ProductCategory::create([
+                'name' => $category['name'],
+                'description' => $category['description']
+            ])->id;
 
-        return response()->json([
-            'id' => $categoryId
-        ]);
+            return response()->json([
+                'id' => $categoryId,
+                'name' => $category['name'],
+                'description' => $category['description']
+            ]);
+
+        } else {
+            return response()->json(['message' => 'Category name should have some value']);
+        }
     }
 
     /**
