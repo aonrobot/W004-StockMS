@@ -51,42 +51,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>กระเบื้องดำ</td>
-                                    <td>23</td>
-                                    <td>2</td>
-                                    <td>N/A</td>
-                                    <td>กล่อง</td>
-                                    <td class="table-btn">
-                                        <div>
-                                            <a href="#">
-                                                แก้ไข
-                                            </a> |
-                                            <a href="#">
-                                                ลบ
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>ผ้าปู</td>
-                                    <td>23</td>
-                                    <td>1</td>
-                                    <td>N/A</td>
-                                    <td>ชิ้น</td>
-                                    <td class="table-btn">
-                                        <div>
-                                            <a href="#">
-                                                แก้ไข
-                                            </a> |
-                                            <a href="#">
-                                                ลบ
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -140,8 +104,12 @@
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group ">
-                                    <select class="form-control" id="prod_cat" name="product_catagories" value="null">
-                                        <option>ไม่มีหมวดหมู่</option>
+
+                                    <select class="form-control" 
+                                            id="prod_cat" 
+                                            name="product_catagories" 
+                                            value="">
+                                        <option selected="true" value="">ไม่มีหมวดหมู่</option>
                                     </select>
                                 </div>
                             </div>
@@ -205,7 +173,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-link" type="button"> 
+                                <button class="btn btn-link" type="button" data-toggle="modal" data-target="#prod_branch_modal"> 
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     เพิ่มคลังสินค้า
                                 </button>
@@ -232,10 +200,11 @@
         </div>
     </div>
 
-    <!-- Sub Modal -->
-    <div id="prod_cat_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" style="">
-        <form class="modal-dialog modal-lg">
-        <form class="modal-content">
+    <!-- Sub Modal Add Catagory -->
+    <div id="prod_cat_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content" style="-webkit-box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);
+            box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);">
                 <div class="modal-header">
                     <h3 class="modal-title ">เพิ่มหมวดหมู่</h3>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -244,22 +213,61 @@
                     <div class="modal-body">
                     <div class="row m-t-20">
                             <div class="col-md-4">
-                                <h4>หวมดหมู่</h4>
+                                <h4>หมวดหมู่</h4>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group ">
-                                    <input type="text" class="form-control" id="cat_code" name="product_code" value="" />
+                                    <input type="text" class="form-control" id="cat_code"name="product_code" value="" required />
+
+                                    <span id="text_warning" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="submitBtn" type="submit" class="btn btn-primary" >Submit</button>
+                        <button id="addProdCat" type="submit" class="btn btn-primary" >Submit</button>
                     </div>
                 </form>
-        </form>
+            </div>
+        </div>
     </div>
+
+
+    
+    <!-- Sub Modal Add branch -->
+    <div id="prod_branch_modal" class="modal fade in" data-keyboard="false" data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content" style="-webkit-box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);
+            box-shadow : -1px 7px 55px -9px rgba(0,0,0,0.75);">
+                <div class="modal-header">
+                    <h3 class="modal-title ">เพิ่มคลังสินค้า</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="form_cat">
+                    <div class="modal-body">
+                    <div class="row m-t-20">
+                            <div class="col-md-4">
+                                <h4>คลังสินค้า</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group ">
+                                    <input type="text" class="form-control" id="branch_code" name="branch_name" value="" required />
+
+                                    <span id="text_warning_branch" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="addBranch" type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -286,7 +294,7 @@
                 }
             });
 
-            $('#prod_cat').empty();
+            // $('#prod_cat').empty();
 
             $.ajax({
                 method: 'GET',
@@ -332,6 +340,8 @@
             }); 
         });
     });
+
+    
 
 </script>
 
