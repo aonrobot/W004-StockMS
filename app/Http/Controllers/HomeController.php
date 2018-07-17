@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -28,11 +29,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = \App\User::find(1);
-
-        // Creating a token without scopes...
-        $token = $user->createToken('TokenAccessAPI')->accessToken;
-
-        return view('home', ['token' => $token]);
+        return view('home');
     }
 }

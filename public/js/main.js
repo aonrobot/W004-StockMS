@@ -33,10 +33,10 @@ var table = $('#prod_table').DataTable({
         {
             render: function (data, type, full, meta) {
                 return `<div>   
-                            <a href="#" data-toggle="modal" data-target="#edit_modal">
+                            <a href="#" id="tbEditBtn" data-toggle="modal" data-target="#edit_modal">
                                 Edit
                             </a> |
-                            <a href="#" class="delete-btn">
+                            <a href="#" id="tbDeleteBtn" class="delete-btn">
                                 Delete
                             </a>
                         </div>`;
