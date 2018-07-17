@@ -477,8 +477,8 @@
     $(document).ready(function(){
         console.log("Loading");
 
-        let proID = ''
-        let Authorization = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUwZDYwYzRkNzU1YTMxNzIyN2FjYzM4NTEwMWNhN2U5NmM3NzQ4M2E5NzE0NDhkM2ZmOTFkZGVmMzAwZTc1YTIzOGYxZGQxNjg4ZWYwODQzIn0.eyJhdWQiOiIxIiwianRpIjoiNTBkNjBjNGQ3NTVhMzE3MjI3YWNjMzg1MTAxY2E3ZTk2Yzc3NDgzYTk3MTQ0OGQzZmY5MWRkZWYzMDBlNzVhMjM4ZjFkZDE2ODhlZjA4NDMiLCJpYXQiOjE1MzA4MTAzMTcsIm5iZiI6MTUzMDgxMDMxNywiZXhwIjoxNTYyMzQ2MzE3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.pOFmjIzsbTumMP8X1aBIFQACsEJBh5AcepEdyQgmUWrqn4-bVcbzKuXMtToQbHsDz6WRHRTTGJbTWSmwoh0ND8bHZAahy8Qn-O5FytcyVCvad0kzSxl_aBdwp6Mcr1P-rUU1Su_paR9Lf_0kFvTmw6V0AR4O6ZYnfEHW-Kr34rO555raZjp4DakhSuF7pmLsYb-fe8eXykzpvR7-liTdZvzLcwRbv8EkeoUXgyk6Bn6kcy-Tl00CHs2JRnwHUwFB_ogpz65QrRlwdKoP9HNVWmU7I7KCMm3dresBpOtkWeig-MNRDfsltkr_eTHm06mn0JID2zlnNFcSTh_MEQtC34v4iels2w3yjMYR3HaCk52xrq4Vwr-IOCPAk3Byb2xXIfyKTEtMbtAy6_jXNBRlmdXEjmFHRFdyOFooNZ4-rNPO3EP9OOLszaI_iEV0GkoOZ3YFmUi0lDERIH73Wz6YivZ1hAGpQor-Ul5RnRlvad6h78ms6WSkYLrUAkmwfmbeayoeRDTGyrzVRG7-QXMEVTe_VANPgRMpczfEdsh1aPl7fQch9PRn-QutZz6fXRhnUDFuEeKFIkZR28H5ZiYa9ONqo8csclIa6Dnk853zw0ylShaPQro0JJAn1-76PZqeoMFwHRDv9uzxBom06ex80AhYSyHuL972Yz4m9Gw8Q00'
+        // let proID = ''
+        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
         $('#addProduct').click(function(){
             $.ajax({
@@ -489,8 +489,8 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
-                    // $('#prod_code').val(data.code);
-                    proID = data.code;
+                    $('#prod_code').val(data.code);
+                    // proID = data.code;
                 }
             });
 
@@ -526,7 +526,7 @@
                     var select = $("<select>");
                     $.each(data, function(key,value) {
                         select.append(
-                            $('<option></option>').val(value.id).html(value.name)
+                            $('<option></option>').val(value.warehouse_id).html(value.name)
                         );
                     });
                     $("#prod_branch").append(select.html());
@@ -570,6 +570,9 @@
         }); 
 
         $('#submitBtn').click(function(){
+            console.log("test : ",$("#prod_branch").val())
+
+
             $.ajax({
                 type: 'POST',
                 url: "http://localhost/api/product",
@@ -578,23 +581,24 @@
                     "Authorization":Authorization
                 },
                 data: {
-                    // "product_id": proID,
-                    "category_id": $("#prod_cat").val(),
-                    "code": $("#prod_code").val(),
-                    "name": $("#prod_name").val(),
-                    "unitName": $("#prod_unit").val(),
-                    "description": $("#prod_detail").val(),
-                    "detail": {  
-                        "warehouse_id": $("#prod_branch").val(),
-                        "quantity": $("#prod_amount").val(),
-                        "costPrice": $("#prod_price_buy").val(),
-                        "salePrice": $("#prod_price_sale").val()
+                    "product": { 
+                        "category_id": $("#prod_cat").val(),
+                        "code": $("#prod_code").val(),
+                        "name": $("#prod_name").val(),
+                        "unitName": $("#prod_unit").val(),
+                        "description": $("#prod_detail").val(),
+                        "detail": {  
+                            "warehouse_id": $("#prod_branch").val(),
+                            "quantity": $("#prod_amount").val(),
+                            "costPrice": $("#prod_price_buy").val(),
+                            "salePrice": $("#prod_price_sale").val()
+                        }
                     }
                 },
                 success: function(data) {
                     console.log(data)
                 }
-            }); 
+            });
         });
     });
 
