@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Inventory;
 
 class InventoryController extends Controller
 {
@@ -60,6 +61,35 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function addQuantity(Request $request){
+        $product_id = $request->input('product_id');
+        $amount = $request->input('amount');
+        $inventory = Inventory::where('product_id', $product_id);
+        $quantity = $inventory->get(['quantity'])[0]->quantity;
+
+        $inventory->update([
+            'quantity' => $quantity + $amount
+        ]);
+        return response()->json(['updated' => true]);
+
+    }
+
+    public function removeQuantity(Request $request){
+        $product_id = $request->input('product_id');
+        $amount = $request->input('amount');
+        $inventory = Inventory::where('product_id', $product_id);
+        $quantity = $inventory->get(['quantity'])[0]->quantity;
+
+        if($quantity - $amount < 0){
+            return response()->json(['updated' => false, 'message' => 'Not enought item']);
+        } else {
+            $inventory->update([
+                'quantity' => $quantity - $amount
+            ]);
+            return response()->json(['updated' => true]);
+        }
     }
 
     public function getSumQuantity(){

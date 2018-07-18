@@ -69,7 +69,7 @@ class ProductController extends Controller
                         'costPrice' => empty($cPrice) ? 0.0 : floatval($cPrice),
                         'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
                     ]);
-                    return response()->json(['created' => true]);
+                    return response()->json(['created' => true, 'product_id' => $productId]);
 
                 } catch(\Exception $e) {
                     return response()->json(['created' => false]);
