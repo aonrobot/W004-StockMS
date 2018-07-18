@@ -477,12 +477,17 @@
     $(document).ready(function(){
         console.log("Loading");
 
+<<<<<<< HEAD
         let proID = ''
         let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
         
         $.ajax(settings).done(function (response) {
             console.log(response);
         });
+=======
+        // let proID = ''
+        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+>>>>>>> 16dd2fbb9d48f5169ec4c30cd61b69e12debd3fd
 
         $('#addProduct').click(function(){
             $.ajax({
@@ -493,8 +498,8 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
-                    // $('#prod_code').val(data.code);
-                    proID = data.code;
+                    $('#prod_code').val(data.code);
+                    // proID = data.code;
                 }
             });
 
@@ -530,7 +535,7 @@
                     var select = $("<select>");
                     $.each(data, function(key,value) {
                         select.append(
-                            $('<option></option>').val(value.id).html(value.name)
+                            $('<option></option>').val(value.warehouse_id).html(value.name)
                         );
                     });
                     $("#prod_branch").append(select.html());
@@ -582,24 +587,39 @@
                     "Authorization":Authorization
                 },
                 data: {
-                    // "product_id": proID,
-                    "category_id": $("#prod_cat").val(),
-                    "code": $("#prod_code").val(),
-                    "name": $("#prod_name").val(),
-                    "unitName": $("#prod_unit").val(),
-                    "description": $("#prod_detail").val(),
-                    "detail": {  
-                        "warehouse_id": $("#prod_branch").val(),
-                        "quantity": $("#prod_amount").val(),
-                        "costPrice": $("#prod_price_buy").val(),
-                        "salePrice": $("#prod_price_sale").val()
+                    "product": { 
+                        "category_id": $("#prod_cat").val(),
+                        "code": $("#prod_code").val(),
+                        "name": $("#prod_name").val(),
+                        "unitName": $("#prod_unit").val(),
+                        "description": $("#prod_detail").val(),
+                        "detail": {  
+                            "warehouse_id": $("#prod_branch").val(),
+                            "quantity": $("#prod_amount").val(),
+                            "costPrice": $("#prod_price_buy").val(),
+                            "salePrice": $("#prod_price_sale").val()
+                        }
                     }
                 },
                 success: function(data) {
                     console.log(data)
                 }
-            }); 
+            });
         });
+
+        // ---------------------------------------------------------
+        $('#prod_table>a').click(function(){
+            console.log("test");
+        });
+
+        $('#tbEditBtn').click(function(){
+            console.log("test1");
+        });
+
+        // $('#tbDeleteBtn').click(function(){
+        //     console.log("test2");
+        // });
+        
     });
 
 </script>
