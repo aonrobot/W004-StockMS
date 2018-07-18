@@ -31,6 +31,16 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
             "width": "12%"
         },
         {
+            "ordering": false,
+            render: function (data, type, full, meta) {
+                return `
+                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="1"/>
+                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+                `;
+            },
+        },
+        {
             "data": "prodUnit",
             "className": "text-right",
             "width": "12%"

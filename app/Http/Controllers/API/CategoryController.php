@@ -37,13 +37,12 @@ class CategoryController extends Controller
             ])->id;
 
             return response()->json([
+                'created' => true,
                 'id' => $categoryId,
-                'name' => $category['name'],
-                'description' => $category['description']
             ]);
 
         } else {
-            return response()->json(['message' => 'Category name should have some value']);
+            return response()->json(['created' => false, 'message' => 'Category name should have some value']);
         }
     }
 

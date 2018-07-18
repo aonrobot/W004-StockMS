@@ -46,6 +46,7 @@
                                     <th>ราคาซื้อ</th>
                                     <th>ราคาขาย</th>
                                     <th>จำนวนคงเหลือ</th>
+                                    <th></th>
                                     <th>หน่วย</th>
                                     <th></th>
                                 </tr>
@@ -700,6 +701,8 @@
     })
     
 </script>
+
+<script src="{{asset('js/changeQty.js')}}"></script>
 
 @endsection
 

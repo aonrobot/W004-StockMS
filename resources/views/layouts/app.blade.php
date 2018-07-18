@@ -29,6 +29,8 @@
     <!-- Custom style -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }} "/>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('vendor/odometer/css/odometer-theme-default.css') }}">
 </head>
 <body>
     <div id="app">
@@ -102,7 +104,8 @@
 
 
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js  "></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+<script src="{{ asset('vendor/odometer/js/odometer.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 
 </html>

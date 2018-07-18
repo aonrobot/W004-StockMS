@@ -217,3 +217,10 @@ table.dataTable tbody tr:hover .table-btn > div {
 .table-img-star > img {
     max-width: 100px;
 }
+
+.btn-xs{
+    padding: .20rem .3rem;
+    font-size: .3875rem;
+    line-height: 1;
+    border-radius: .2rem;
+}
