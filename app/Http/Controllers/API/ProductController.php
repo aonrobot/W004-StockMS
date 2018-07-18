@@ -165,6 +165,8 @@ class ProductController extends Controller
             array_push($codeList, $number);
         }
 
+        if(count($codeList) <= 0) $codeList = [0];
+
         return response()->json([
             "code" => 'P' . str_pad((max($codeList) + 1), 4, '0', STR_PAD_LEFT)
         ]);
