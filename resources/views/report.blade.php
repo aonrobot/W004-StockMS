@@ -79,7 +79,8 @@
                 }
             });
         }
-
+        
+        setSingleValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
         setSingleValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
         
     })

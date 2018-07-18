@@ -149,7 +149,7 @@ $('#addProdCat').click(function(e){
 
     } else {
         
-        catagory_list.append(`<option value="${ catagory_name_value }" selected="true"> ${ catagory_name_value } </option>`);
+        catagory_list.append(`<option selected="true"> ${ catagory_name_value } </option>`);
 
         // Close Modal
         $('#prod_cat_modal').modal('hide')
