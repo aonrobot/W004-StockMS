@@ -13,10 +13,10 @@
     <div class="col-md-12" style="margin-bottom: 30px;">
         <div class="card">
             <div class="col-md-6">
-                <h3>ร้านคงเหลือสินค้าทั้งหมด</h3>
+                <h3>ร้านคงเหลือสินค้าทั้งหมด <span class="badge badge-primary" id="totalQuantity">0</span></h3>
             </div>
             <div class="col-md-6">
-                <h3>สินค้าทั้งหมดคิดเป็นราคา</h3>
+                <h3>สินค้าทั้งหมดคิดเป็นราคา <span class="badge badge-primary" id="totalPrice">0</span></h3>
             </div>
         </div>
     </div>
@@ -61,7 +61,30 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function(){
+        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
+        function setSingleValue(url, setTo, callback){
+            $.ajax({
+                method: 'GET',
+                url: "http://" + url,
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                success: function(data){    
+                    setTo.html(data)
+                    if(callback != undefined) callback(data)
+                }
+            });
+        }
+
+        setSingleValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
+        
+    })
+    
+</script>
 
 @endsection
 
