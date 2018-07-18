@@ -5,7 +5,10 @@ var table = $('#prod_table').DataTable({
     }],
     columns: [{
             "data": "prodID",
-            "width": "10%"
+            "width": "10%",
+            "render": function(data) {
+                return `<span id ="${data}">${data}</span>`;
+            }
         },
         {
             "data": "prodName"

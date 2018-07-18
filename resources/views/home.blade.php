@@ -570,9 +570,6 @@
         }); 
 
         $('#submitBtn').click(function(){
-            console.log("test : ",$("#prod_branch").val())
-
-
             $.ajax({
                 type: 'POST',
                 url: "http://localhost/api/product",
@@ -600,6 +597,20 @@
                 }
             });
         });
+
+        // ---------------------------------------------------------
+        $('#prod_table>a').click(function(){
+            console.log("test");
+        });
+
+        $('#tbEditBtn').click(function(){
+            console.log("test1");
+        });
+
+        // $('#tbDeleteBtn').click(function(){
+        //     console.log("test2");
+        // });
+        
     });
 
 </script>
