@@ -46,6 +46,7 @@
                                     <th>ราคาซื้อ</th>
                                     <th>ราคาขาย</th>
                                     <th>จำนวนคงเหลือ</th>
+                                    <th></th>
                                     <th>หน่วย</th>
                                     <th></th>
                                 </tr>
@@ -596,9 +597,6 @@
         $('#tbEditBtn').click(function(){
             console.log("test1");
         });
-
-
-        
     });
     
     function displayCat(state = 'rerender') {
@@ -710,6 +708,8 @@
     })
     
 </script>
+
+<script src="{{asset('js/changeQty.js')}}"></script>
 
 @endsection
 
