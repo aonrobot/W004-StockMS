@@ -12,12 +12,8 @@
 
     <div class="col-md-12" style="margin-bottom: 30px;">
         <div class="card">
-            <div class="col-md-6">
-                <h3>ร้านคงเหลือสินค้าทั้งหมด</h3>
-            </div>
-            <div class="col-md-6">
-                <h3>สินค้าทั้งหมดคิดเป็นราคา</h3>
-            </div>
+                <h3>ร้านคงเหลือสินค้าทั้งหมด : <span id="quantity_sum"><span></h3>
+                <h3>สินค้าทั้งหมดคิดเป็นราคา : <span id="total"><span></h3>
         </div>
     </div>
     
@@ -61,7 +57,7 @@
     </div>
 </div>
 
-
+<script src="./js/report.js"></script>
 
 @endsection
 

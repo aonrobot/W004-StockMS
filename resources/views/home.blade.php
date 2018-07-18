@@ -477,17 +477,8 @@
     $(document).ready(function(){
         console.log("Loading");
 
-<<<<<<< HEAD
-        let proID = ''
-        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
-        
-        $.ajax(settings).done(function (response) {
-            console.log(response);
-        });
-=======
         // let proID = ''
         let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
->>>>>>> 16dd2fbb9d48f5169ec4c30cd61b69e12debd3fd
 
         $('#addProduct').click(function(){
             $.ajax({
@@ -503,8 +494,8 @@
                 }
             });
 
-            $('#prod_cat').empty();
-            $('#prod_branch').empty();
+            // $('#prod_cat').empty();
+            // $('#prod_branch').empty();
 
             $.ajax({
                 method: 'GET',
