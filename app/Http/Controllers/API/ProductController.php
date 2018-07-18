@@ -23,7 +23,8 @@ class ProductController extends Controller
     {
         $products = Product::all();
         foreach($products as $index => $value){
-            $products[$index]->inventory = Product::find($value->product_id)->inventory;
+            $inv = Product::find($value->product_id)->inventory;
+            if(count($inv) > 0) $products[$index]->inventory = Product::find($value->product_id)->inventory[0];
         }
         return response()->json($products);
     }
