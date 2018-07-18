@@ -283,7 +283,6 @@
                 <form id="edit_form_prod">
                     <div class="modal-body">
                     <input type="text" id="edit_id"  value="" style="display:none; visibility: hidden;" />
-                    <input type="text" id="edit_row_id"  value="" style="display:none; visibility: hidden;" />
                         <div class="row m-t-20">
                             <div class="col-md-4">
                                 <h4>รหัสสินค้า</h4>
@@ -516,22 +515,25 @@
             });
         });
         // Add Branch
-        $('#addBranch').click(function(){
-            $.ajax({
-                type: 'POST',
-                url: "http://localhost/api/warehouse",
-                headers: {
-                    "Accept":"application/json",
-                    "Authorization":Authorization
-                },
-                data: {
-                    "warehouse": {  
-                        "name": $("#branch_code").val(),
-                        "address":""
-                    }
-                }
-            });
-        }); 
+        // $('#addBranch').click(function(){
+            
+            // $.ajax({
+            //     type: 'POST',
+            //     url: "http://localhost/api/warehouse",
+            //     headers: {
+            //         "Accept":"application/json",
+            //         "Authorization":Authorization
+            //     },
+            //     data: {
+            //         "warehouse": {  
+            //             "name": $("#branch_code").val(),
+            //             "address":""
+            //         }
+            //     }
+            // });
+        // }); 
+
+
         // SUBMIT
         // $('#submitBtn').on("click", function(e) {
         //     e.preventDefault();
@@ -669,11 +671,11 @@
                             
                             if ( lastIdx === key) {
                                 select.append(
-                                    `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                                    `<option value="${value.warehouse_id}" selected="true"> ${value.name} </option>`
                                 );
                             }else{
                                 select.append(
-                                    `<option value="${value.id}"> ${value.name} </option>`
+                                    `<option value="${value.warehouse_id}"> ${value.name} </option>`
                                 );
                             }       
                         });

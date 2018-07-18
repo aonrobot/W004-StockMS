@@ -41,7 +41,7 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
                             <a href="#" onclick="editProd(${full.btn})" class="edit-btn">
                                 Edit
                             </a> |
-                            <a href="#" class="delete-btn">
+                            <a href="#" class="delete-btn" onclick="deleteProd(${full.btn})" >
                                 Delete
                             </a>
                         </div>`;
@@ -55,6 +55,9 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
     initialDataTable();
 
 function initialDataTable () {
+    table
+    .clear()
+    
 
     $.ajax({
         type: 'GET',
@@ -64,7 +67,7 @@ function initialDataTable () {
             "Authorization": Authorization
         }
     }).done(function (response) {
-
+        console.log(response);
         var data = response ; 
 
         for (var i = 0 ; i < data.length ; i++ ) {
@@ -131,7 +134,7 @@ $("#form_prod").submit(function (e) {
             }
         }
     }).done(function (response) {
-
+        console.log(response);
         if (response.created) {
 
             table.row.add({
@@ -248,10 +251,24 @@ $('#addBranch').click(function (e) {
     } else {
 
         branch_list.append(`<option selected="true"> ${branch_name_value} </option>`);
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost/api/warehouse",
+            headers: {
+                "Accept":"application/json",
+                "Authorization":Authorization
+            },
+            data: {
+                "warehouse": {  
+                    "name": $("#branch_code").val(),
+                    "address":""
+                }
+            }
+        }).done( function () {
+            displayBranch();
+        });
 
-        // Close Modal
         $('#prod_branch_modal').modal('hide')
-
     }
 });
 
@@ -350,6 +367,9 @@ $('#edit_addBranch').click(function (e) {
 
 // EDIT
 function editProd (data) {
+    
+    getBranch();
+    getCat();
 
     $('#edit_id').val(data);
     $.ajax({
@@ -361,7 +381,7 @@ function editProd (data) {
         }
     }).done(function (response) {
         var data = response;
-
+        console.log(response);
         $('#edit_prod_code').val(data.code);
         $('#edit_prod_name').val(data.name);
         $('#edit_prod_cat').val(data.category_id);
@@ -422,30 +442,12 @@ $("#edit_form_prod").submit(function (e) {
         }
     }).done(function (response) {
 
-        var row_index = $('#edit_row_id').val();
-        console.log(row_index);
         if (response.updated) {
 
-            table.row(row_index).data({
-                "prodID": param.prodCode,
-                "prodName": param.prodName,
-                "prodBuyPrice": param.costPrice,
-                "prodSalePrice":  param.salePrice,
-                "prodAmount": param.quantity,
-                "prodUnit":  param.unit,
-                "btn": edit_id
-            }).draw();
-
+            initialDataTable();
             $('#edit_modal').modal('hide');
         }
     });
-});
-
-$('#prod_table tbody').on('click', '.edit-btn', function () {
-
-    var row_index = $(this).closest('tr').index();
-    console.log(row_index);
-    $('#edit_row_id').val(row_index);
 });
 
 function getCat() {
@@ -500,5 +502,18 @@ function addSelectBranch(data) {
     }
 }
 
-getBranch();
-getCat();
+function deleteProd (id) {
+    console.log(id);
+    $.ajax({
+        method: 'DELETE',
+        url: "http://localhost/api/product/" + id,
+        headers: {
+            "Accept":"application/json",
+            "Authorization":Authorization
+        }
+    }).done(function (response) {
+
+        console.log(response);
+
+    });
+}   
