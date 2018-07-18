@@ -22,6 +22,9 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
+        foreach($products as $index => $value){
+            $products[$index]->inventory = Product::find($value->product_id)->inventory;
+        }
         return response()->json($products);
     }
 
