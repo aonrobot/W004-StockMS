@@ -29,7 +29,7 @@ class ReportController extends Controller
                 'saleTotal' => $inv[0]->quantity * $inv[0]->salePrice
             ]);
         }
-        print_r($result);
+        return response()->json($result);
     }
 
     /**
