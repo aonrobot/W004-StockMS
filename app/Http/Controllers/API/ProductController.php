@@ -90,7 +90,8 @@ class ProductController extends Controller
     {
         $product = Product::where('product_id', $id)->get();
         if($product->count()){
-            return response()->json($product);
+            $product[0]->inventory = Product::find($product[0]->product_id)->inventory;
+            return response()->json($product[0]);
         } else {
             return response()->json(['message' => 'can\'t found this product']);
         }
