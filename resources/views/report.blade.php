@@ -8,7 +8,7 @@
     </div>
 @endif
 
-<div class="container fixed-bottom main" >
+<div class="container main" >
 
     <div class="col-md-12" style="margin-bottom: 30px;">
         <div class="card">
