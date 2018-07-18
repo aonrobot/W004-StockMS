@@ -89,6 +89,7 @@
 
 
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 
 </html>

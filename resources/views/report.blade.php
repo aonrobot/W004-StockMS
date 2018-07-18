@@ -13,10 +13,10 @@
     <div class="col-md-12" style="margin-bottom: 30px;">
         <div class="card">
             <div class="col-md-6">
-                <h3>ร้านคงเหลือสินค้าทั้งหมด <span class="badge badge-primary" id="totalQuantity">0</span></h3>
+                <h2>สินค้าคงเหลือทั้งหมด <span class="badge badge-primary" id="totalQuantity">0</span> ชิ้น</h2>
             </div>
             <div class="col-md-6">
-                <h3>สินค้าทั้งหมดคิดเป็นราคา <span class="badge badge-primary" id="totalPrice">0</span></h3>
+                <h2>คิดเป็นราคารวมทั้งหมด <span class="badge badge-primary" id="totalPrice">0</span> บาท</h2>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <div class="card"> 
             <div class="card-body">
             <h3> Report </h3>
-            <table class="table table-striped">
+            <table class="table table-striped" id="reportTable">
                 <thead>
                     <tr>
                         <th scope="col">รหัสสินค้า</th>
@@ -35,26 +35,6 @@
                         <th scope="col">ราคารวม</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                </tbody>
                 </table>      
             </div>
         </div>
@@ -65,7 +45,7 @@
     $(document).ready(function(){
         let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
-        function setSingleValue(url, setTo, callback){
+        function ajaxSetValue(url, setTo, callback){
             $.ajax({
                 method: 'GET',
                 url: "http://" + url,
@@ -73,15 +53,32 @@
                     "Accept":"application/json",
                     "Authorization":Authorization
                 },
-                success: function(data){    
-                    setTo.html(data)
+                success: function(data){
+                    if(setTo !== '') setTo.html(data)
                     if(callback != undefined) callback(data)
                 }
             });
         }
         
-        setSingleValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
-        setSingleValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
+        ajaxSetValue('localhost/api/inventory/quantity/sum', $('#totalQuantity'))
+        ajaxSetValue('localhost/api/inventory/totalprice', '', function(data){
+            $('#totalPrice').html(data.total.cost)
+        })
+
+        ajaxSetValue('localhost/api/report/all', '', function(data){
+            var c = $('<tbody />');
+            _.forEach(data, function(ele){
+                c.append(`
+                    <tr>
+                        <th scope="row">${ele.product_code}</th>
+                        <td>${ele.name}</td>
+                        <td>${ele.quantity}</td>
+                        <td>${ele.costTotal}</td>
+                    </tr>
+                `)
+            });
+            $('#reportTable').append(c)
+        })
         
     })
     
