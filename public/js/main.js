@@ -38,13 +38,13 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
         {
             render: function (data, type, full, meta) {
                 return `<div>   
-                                <a href="#" id="tbEditBtn" data-toggle="modal" data-target="#edit_modal">
-                                    Edit
-                                </a> |
-                                <a href="#" id="tbDeleteBtn" class="delete-btn">
-                                    Delete
-                                </a>
-                            </div>`;
+                            <a href="#" id="tbEditBtn" onclick="editProd()" >
+                                Edit
+                            </a> |
+                            <a href="#" id="tbDeleteBtn" class="delete-btn">
+                                Delete
+                            </a>
+                        </div>`;
             },
             className: "table-btn",
             width: "20%"
@@ -66,6 +66,7 @@ function initialDataTable () {
     }).done(function (response) {
 
         var data = response ; 
+        console.log(data);
         for (var i = 0 ; i < data.length ; i++ ) {
             $('#prod_table').DataTable().row.add({
                 "prodID": data[i].code,
@@ -74,7 +75,7 @@ function initialDataTable () {
                 "prodSalePrice": data[i].inventory.salePrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
-                "btn": ""
+                "btn": data[i].product_id
             }).draw();
         }
         
@@ -94,13 +95,18 @@ $("#form_prod").submit(function (e) {
     if ($("#prod_code").val().length === 0) { prod_code = prodID }
     else { prod_code = $("#prod_code").val() }
 
-    var prodCat = $("#prod_cat").val();
-    var prodName = $("#prod_name").val();
-    var prodDetail = $("#prod_detail").val() ;
-    var prodBranch = $("#prod_branch").val();
-    var quantity = $("#prod_amount").val();
-    var costPrice = $("#prod_price_buy").val();
-    var salePrice = $("#prod_price_sale").val();
+    var param = {
+        prodCat: $("#prod_cat").val(),
+        prodCode: prod_code,
+        prodName : $("#prod_name").val(),
+        prodDetail : $("#prod_detail").val() ,
+        prodBranch : $("#prod_branch").val(),
+        quantity : $("#prod_amount").val(),
+        costPrice : $("#prod_price_buy").val(),
+        salePrice : $("#prod_price_sale").val(),
+        unit: unit
+    }
+   
 
     $.ajax({
         type: 'POST',
@@ -111,30 +117,31 @@ $("#form_prod").submit(function (e) {
         },
         data: {
             "product": {
-                "category_id": prodCat,
-                "code": prod_code,
-                "name": prodName,
-                "unitName": unit,
-                "description": prodDetail,
+                "category_id": param.prodCat,
+                "code": param.prodCode,
+                "name": param.prodName,
+                "unitName": param.unit,
+                "description": param.prodDetail,
                 "detail": {
-                    "warehouse_id": prodBranch,
-                    "quantity": quantity,
-                    "costPrice": costPrice,
-                    "salePrice": salePrice
+                    "warehouse_id": param.prodBranch,
+                    "quantity": param.quantity,
+                    "costPrice": param.costPrice,
+                    "salePrice": param.salePrice
                 }
             }
         }
     }).done(function (response) {
+        
         if (response.created) {
 
             table.row.add({
-                "prodID": prod_code,
-                "prodName": prodName,
-                "prodBuyPrice": costPrice,
-                "prodSalePrice": salePrice,
-                "prodAmount": quantity,
-                "prodUnit": unit,
-                "btn": ""
+                "prodID": param.prodCode,
+                "prodName": param.prodName,
+                "prodBuyPrice": param.costPrice,
+                "prodSalePrice": param.salePrice,
+                "prodAmount": param.quantity,
+                "prodUnit": param.unit,
+                "btn": JSON.stringify(param)
             }).draw();
         
             $('#addProd').modal('hide');
@@ -340,3 +347,10 @@ $('#edit_addBranch').click(function (e) {
 
     }
 });
+
+// EDIT
+function editProd () {
+    // console.log(data);
+    $("#edit_modal").modal()
+    // data-toggle="modal" data-target="#edit_modal"
+}
