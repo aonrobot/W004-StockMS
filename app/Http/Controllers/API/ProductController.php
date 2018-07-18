@@ -38,6 +38,11 @@ class ProductController extends Controller
 
         //Check product code
         if (!Product::where('code', $product['code'])->count()){
+
+            $quantity = $productDetail['quantity'];
+            $cPrice = $productDetail['costPrice'];
+            $sPrice = $productDetail['salePrice'];
+            
             //Check category is exist
             if (!ProductCategory::find($product['category_id'])){
                 return response()->json(['message' => 'This category isn\'t exist']);
@@ -54,11 +59,11 @@ class ProductController extends Controller
                     Inventory::create([
                         'product_id' => $productId,
                         'warehouse_id' => $productDetail['warehouse_id'],
-                        'quantity' => $productDetail['quantity'],
+                        'quantity' => empty($quantity) ? 0 : intval($quantity),
                         'minLevel' => 0,
                         'maxLevel' => 0,
-                        'costPrice' => $productDetail['costPrice'],
-                        'salePrice' => $productDetail['salePrice']
+                        'costPrice' => empty($cPrice) ? 0.0 : floatval($cPrice),
+                        'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
                     ]);
                     return response()->json(['created' => true]);
 
@@ -100,6 +105,10 @@ class ProductController extends Controller
         $productDetail = $request->input('product.detail');
 
         try{
+            $quantity = $productDetail['quantity'];
+            $cPrice = $productDetail['costPrice'];
+            $sPrice = $productDetail['salePrice'];
+
             //Update Product
             Product::where('product_id', $id)->update([
                 'category_id' => $product['category_id'],
@@ -110,11 +119,11 @@ class ProductController extends Controller
             //Update Inventory
             Inventory::where('product_id', $id)->update([
                 'warehouse_id' => $productDetail['warehouse_id'],
-                'quantity' => $productDetail['quantity'],
+                'quantity' => empty($quantity) ? 0 : intval($quantity),
                 'minLevel' => 0,
                 'maxLevel' => 0,
-                'costPrice' => $productDetail['costPrice'],
-                'salePrice' => $productDetail['salePrice']
+                'costPrice' => empty($cPrice) ? 0.0 : floatval($cPrice),
+                'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
             ]);
             //Update WH Relation
             ProductHasWH::where('product_id', $id)->update([
