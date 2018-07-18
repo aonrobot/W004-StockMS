@@ -83,6 +83,7 @@
                             <div class="col-md-8">
                                 <div class="form-group ">
                                     <input type="text" class="form-control" id="prod_code" name="product_code" value="" />
+                                    <span class="text-danger" id="prod_code_warning"></span>
                                 </div>
                             </div>
                         </div>
@@ -533,56 +534,59 @@
             });
         }); 
         // SUBMIT
-        $('#submitBtn').on("click", function(e) {
-            e.preventDefault();
+        // $('#submitBtn').on("click", function(e) {
+        //     e.preventDefault();
 
-            var product_name = $("#prod_name");
+        //     var product_name = $("#prod_name");
             
-            if (product_name.val().length === 0 ){
+        //     if (product_name.val().length === 0 ){
 
-                $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
-                $(product_name).addClass('is-invalid');
+        //         $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
+        //         $(product_name).addClass('is-invalid');
                 
-            }else {
+        //     }else {
 
-                var unit = '';
-                var prod_code;
+        //         var unit = '';
+        //         var prod_code;
 
-                if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
-                else { unit = $("#prod_unit").val() }
+        //         if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
+        //         else { unit = $("#prod_unit").val() }
 
-                if ($("#prod_code").val().length === 0) { prod_code = prodID }
-                else {  prod_code = $("#prod_code").val() }
+        //         if ($("#prod_code").val().length === 0) { prod_code = prodID }
+        //         else {  prod_code = $("#prod_code").val() }
 
-                $.ajax({
-                    type: 'POST',
-                    url: "http://localhost/api/product",
-                    headers: {
-                        "Accept":"application/json",
-                        "Authorization":Authorization
-                    },
-                    data: {
-                        "product": { 
-                            "category_id": $("#prod_cat").val(),
-                            "code": prod_code ,
-                            "name": $("#prod_name").val(),
-                            "unitName": unit,
-                            "description": $("#prod_detail").val(),
-                            "detail": {  
-                                "warehouse_id": $("#prod_branch").val(),
-                                "quantity": $("#prod_amount").val(),
-                                "costPrice": $("#prod_price_buy").val(),
-                                "salePrice": $("#prod_price_sale").val()
-                            }
-                        }
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        
-                    },
-                });
-            }
-        });
+        //         $.ajax({
+        //             type: 'POST',
+        //             url: "http://localhost/api/product",
+        //             headers: {
+        //                 "Accept":"application/json",
+        //                 "Authorization":Authorization
+        //             },
+        //             data: {
+        //                 "product": { 
+        //                     "category_id": $("#prod_cat").val(),
+        //                     "code": prod_code ,
+        //                     "name": $("#prod_name").val(),
+        //                     "unitName": unit,
+        //                     "description": $("#prod_detail").val(),
+        //                     "detail": {  
+        //                         "warehouse_id": $("#prod_branch").val(),
+        //                         "quantity": $("#prod_amount").val(),
+        //                         "costPrice": $("#prod_price_buy").val(),
+        //                         "salePrice": $("#prod_price_sale").val()
+        //                     }
+        //                 }
+        //             }
+        //         }).done(function (response) {
+        //             if (response.created){
+        //                 $('#addProd').modal('hide')
+        //             }else {
+        //                 $('#prod_code').addClass('is-invalid');
+        //                 $('#prod_code_warning').html(response.message);
+        //             }
+        //         });
+        //     }
+        // });
 
         // ---------------------------------------------------------
         $('#prod_table>a').click(function(){
@@ -614,7 +618,6 @@
                     if (state === 'open') {
                         var firtsIdx = 0; 
                         $.each(data, function(key,value) {
-                            
                             if ( firtsIdx === key) {
                                 select.append(
                                     `<option value="${value.id}" selected="true"> ${value.name} </option>`
@@ -658,19 +661,17 @@
                 "Authorization":Authorization
             },
             success: function(data) {
-
                 var select = $("<select>");
                     if (state === 'open') {
                         var firtsIdx = 0; 
                         $.each(data, function(key,value) {
-                            
                             if ( firtsIdx === key) {
                                 select.append(
-                                    `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                                    `<option value="${value.warehouse_id}" selected="true"> ${value.name} </option>`
                                 );
                             }else{
                                 select.append(
-                                    `<option value="${value.id}"> ${value.name} </option>`
+                                    `<option value="${value.warehouse_id}"> ${value.name} </option>`
                                 );
                             }       
                         });
@@ -701,15 +702,11 @@
         displayCat('open');
         displayBranch('open');
 
-        
-        var text_warning = $('#require_text');
-        var product_name = $('#prod_name');
-        
-            text_warning.empty();
-        if (product_name.hasClass('is-invalid')) {
-    
-            product_name.removeClass('is-invalid');
-        }
+        var prod_code_warning = $('#prod_code_warning');
+        var product_code = $('#prod_code');
+
+            prod_code_warning.empty();
+            product_code.removeClass('is-invalid');
     })
     
 </script>
