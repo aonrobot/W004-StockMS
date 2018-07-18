@@ -20,9 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //API: Product
 Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::apiResource('product', 'ProductController');
-    Route::prefix('service')->group(function () {
-        Route::prefix('product')->group(function () {
-            Route::get('getcode', 'ProductController@getProductCode');
+    Route::prefix('product')->group(function () {
+        Route::prefix('service')->group(function () {
+            Route::get('gencode', 'ProductController@genProductCode');
         });
     });
 });

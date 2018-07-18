@@ -155,7 +155,7 @@ class ProductController extends Controller
      *
      * @return String
      */
-    public function getProductCode(){
+    public function genProductCode(){
         //System code is a string like -> P0001, P0010
         $codes = Product::where('code', 'like', 'P%')->get(['code']);
 
@@ -164,6 +164,8 @@ class ProductController extends Controller
             $number = intval(substr($code->code, 1));
             array_push($codeList, $number);
         }
+
+        if(count($codeList) <= 0) $codeList = [0];
 
         return response()->json([
             "code" => 'P' . str_pad((max($codeList) + 1), 4, '0', STR_PAD_LEFT)
