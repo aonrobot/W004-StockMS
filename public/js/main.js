@@ -1,5 +1,3 @@
-$(document).ready(function() {
-
     var table = $('#prod_table').DataTable({
         "columnDefs": [{
             "orderable": false,
@@ -53,7 +51,6 @@ $(document).ready(function() {
         "scrollX": true
     });
     initialDataTable();
-});
 
 function initialDataTable () {
 
@@ -65,14 +62,15 @@ function initialDataTable () {
             "Authorization": Authorization
         }
     }).done(function (response) {
+
         var data = response ; 
         for (var i = 0 ; i < data.length ; i++ ) {
             $('#prod_table').DataTable().row.add({
                 "prodID": data[i].code,
                 "prodName": data[i].name,
-                "prodBuyPrice": '',
-                "prodSalePrice": '',
-                "prodAmount": '',
+                "prodBuyPrice": data[i].inventory.costPrice ,
+                "prodSalePrice": data[i].inventory.salePrice,
+                "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
                 "btn": ""
             }).draw();
