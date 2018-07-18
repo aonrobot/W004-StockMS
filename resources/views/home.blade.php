@@ -316,7 +316,6 @@
                                             id="edit_prod_cat" 
                                             name="edit_product_catagories" 
                                             value="">
-                                        <option selected="true" value="">ไม่มีหมวดหมู่</option>
                                     </select>
                                 </div>
                             </div>
@@ -375,7 +374,6 @@
                             <div class="col-md-5">
                                 <div class="form-group ">
                                     <select class="form-control" id="edit_prod_branch" name="branch" value="main_branch">
-                                        <option>คลังสินค้าหลัก</option>
                                     </select>
                                 </div>
                             </div>

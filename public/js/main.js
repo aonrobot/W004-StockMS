@@ -38,7 +38,7 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
         {
             render: function (data, type, full, meta) {
                 return `<div>   
-                            <a href="#" id="tbEditBtn" onclick="editProd()" >
+                            <a href="#" id="tbEditBtn" onclick="editProd(${full.btn})" >
                                 Edit
                             </a> |
                             <a href="#" id="tbDeleteBtn" class="delete-btn">
@@ -66,7 +66,7 @@ function initialDataTable () {
     }).done(function (response) {
 
         var data = response ; 
-        console.log(data);
+
         for (var i = 0 ; i < data.length ; i++ ) {
             $('#prod_table').DataTable().row.add({
                 "prodID": data[i].code,
@@ -131,7 +131,7 @@ $("#form_prod").submit(function (e) {
             }
         }
     }).done(function (response) {
-        
+
         if (response.created) {
 
             table.row.add({
@@ -141,7 +141,7 @@ $("#form_prod").submit(function (e) {
                 "prodSalePrice": param.salePrice,
                 "prodAmount": param.quantity,
                 "prodUnit": param.unit,
-                "btn": JSON.stringify(param)
+                "btn": response.product_id
             }).draw();
         
             $('#addProd').modal('hide');
@@ -349,8 +349,78 @@ $('#edit_addBranch').click(function (e) {
 });
 
 // EDIT
-function editProd () {
-    // console.log(data);
+function editProd (data) {
+
     $("#edit_modal").modal()
+    $.ajax({
+        method: 'GET',
+        url: "http://localhost/api/product/" + data,
+        headers: {
+            "Accept":"application/json",
+            "Authorization":Authorization
+        }
+    }).done(function (response) {
+        console.log(response);
+        var data = response;
+        $('#edit_prod_code').val(data[0].code);
+        $('#edit_prod_name').val(data[0].name);
+        $('#edit_prod_cat').val(data[0].category_id);
+        // $('#edit_prod_price_buy').val(data[0].category_id);
+    });
     // data-toggle="modal" data-target="#edit_modal"
 }
+
+function getCat() {
+
+    $.ajax({
+        method: 'GET',
+        url: "http://localhost/api/category",
+        headers: {
+            "Accept":"application/json",
+            "Authorization":Authorization
+        }
+    }).done(function (response) {
+
+        addSelectCat(response);
+
+    });
+
+}
+function getBranch() {
+    $.ajax({
+        method: 'GET',
+        url: "http://localhost/api/warehouse",
+        headers: {
+            "Accept":"application/json",
+            "Authorization":Authorization
+        }
+    }).done(function (response) {
+
+        addSelectBranch(response);
+
+    });
+}
+function addSelectCat(data) {
+    
+    var select = $('#edit_prod_cat');
+
+    for(var i = 0 ; i < data.length ; i++) {
+        select.append(
+            `<option value="${data[i].id}">${ data[i].name }</option> `
+        ); 
+    }
+}
+
+function addSelectBranch(data) {
+    
+    var select = $('#edit_prod_branch');
+
+    for(var i = 0 ; i < data.length ; i++) {
+        select.append(
+            `<option value="${data[i].warehouse_id}">${ data[i].name }</option> `
+        ); 
+    }
+}
+
+getBranch();
+getCat();
