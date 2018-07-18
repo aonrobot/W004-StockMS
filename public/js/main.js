@@ -176,7 +176,7 @@ $('#addBranch').click(function(e){
 
     } else {
         
-        branch_list.append(`<option value="${ branch_name_value }" selected="true"> ${ branch_name_value } </option>`);
+        branch_list.append(`<option selected="true"> ${ branch_name_value } </option>`);
 
         // Close Modal
         $('#prod_branch_modal').modal('hide')
