@@ -83,6 +83,7 @@
                             <div class="col-md-8">
                                 <div class="form-group ">
                                     <input type="text" class="form-control" id="prod_code" name="product_code" value="" />
+                                    <span class="text-danger" id="prod_code_warning"></span>
                                 </div>
                             </div>
                         </div>
@@ -475,6 +476,8 @@
     
     var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
+
+    var prodID ;
     //Event
     $(document).ready(function(){
 
@@ -487,37 +490,13 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
-                    console.log(data)
                     $('#prod_code').val(data.code);
-                    // proID = data.code;
+                    prodID = data.code;
                 }
             });
-
-
-            $('#prod_branch').empty();
-
-            
-
-            $.ajax({
-                method: 'GET',
-                url: "http://localhost/api/warehouse",
-                headers: {
-                    "Accept":"application/json",
-                    "Authorization":Authorization
-                },
-                success: function(data) {
-                    var select = $("<select>");
-                    $.each(data, function(key,value) {
-                        select.append(
-                            $('<option></option>').val(value.warehouse_id).html(value.name)
-                        );
-                    });
-                    $("#prod_branch").append(select.html());
-                }
-            });
-
         });
 
+        // Add Catagories
         $('#addProdCat').click(function(){
             $.ajax({
                 type: 'POST',
@@ -537,7 +516,7 @@
                 displayCat();
             });
         });
-
+        // Add Branch
         $('#addBranch').click(function(){
             $.ajax({
                 type: 'POST',
@@ -555,49 +534,59 @@
             });
         }); 
         // SUBMIT
-        $('#submitBtn').on("click", function(e) {
-            e.preventDefault();
+        // $('#submitBtn').on("click", function(e) {
+        //     e.preventDefault();
 
-            var product_name = $("#prod_name");
+        //     var product_name = $("#prod_name");
             
-            if (product_name.val().length === 0 ){
+        //     if (product_name.val().length === 0 ){
 
-                $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
-                $(product_name).addClass('is-invalid');
+        //         $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
+        //         $(product_name).addClass('is-invalid');
                 
-            }else {
-                $.ajax({
-                type: 'POST',
-                url: "http://localhost/api/product",
-                headers: {
-                    "Accept":"application/json",
-                    "Authorization":Authorization
-                },
-                data: {
-                    "product": { 
-                        "category_id": $("#prod_cat").val(),
-                        "code": $("#prod_code").val(),
-                        "name": $("#prod_name").val(),
-                        "unitName": $("#prod_unit").val(),
-                        "description": $("#prod_detail").val(),
-                        "detail": {  
-                            "warehouse_id": $("#prod_branch").val(),
-                            "quantity": $("#prod_amount").val(),
-                            "costPrice": $("#prod_price_buy").val(),
-                            "salePrice": $("#prod_price_sale").val()
-                        }
-                    }
-                },
-                success: function(data) {
-                    console.log(data);
-                    
-                },
-            });
-            }
-            
-            
-            console.log('error');
-        });
+        //     }else {
+
+        //         var unit = '';
+        //         var prod_code;
+
+        //         if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
+        //         else { unit = $("#prod_unit").val() }
+
+        //         if ($("#prod_code").val().length === 0) { prod_code = prodID }
+        //         else {  prod_code = $("#prod_code").val() }
+
+        //         $.ajax({
+        //             type: 'POST',
+        //             url: "http://localhost/api/product",
+        //             headers: {
+        //                 "Accept":"application/json",
+        //                 "Authorization":Authorization
+        //             },
+        //             data: {
+        //                 "product": { 
+        //                     "category_id": $("#prod_cat").val(),
+        //                     "code": prod_code ,
+        //                     "name": $("#prod_name").val(),
+        //                     "unitName": unit,
+        //                     "description": $("#prod_detail").val(),
+        //                     "detail": {  
+        //                         "warehouse_id": $("#prod_branch").val(),
+        //                         "quantity": $("#prod_amount").val(),
+        //                         "costPrice": $("#prod_price_buy").val(),
+        //                         "salePrice": $("#prod_price_sale").val()
+        //                     }
+        //                 }
+        //             }
+        //         }).done(function (response) {
+        //             if (response.created){
+        //                 $('#addProd').modal('hide')
+        //             }else {
+        //                 $('#prod_code').addClass('is-invalid');
+        //                 $('#prod_code_warning').html(response.message);
+        //             }
+        //         });
+        //     }
+        // });
 
         // ---------------------------------------------------------
         $('#prod_table>a').click(function(){
@@ -609,13 +598,11 @@
         });
 
 
-        // Call API
-        displayCat();
         
     });
     
-    function displayCat() {
-
+    function displayCat(state = 'rerender') {
+        
         $('#prod_cat').empty();
 
         $.ajax({
@@ -628,35 +615,98 @@
                 success: function(data) {
                   
                     var select = $("<select>");
-                    var lastIdx = data.length - 1; 
-                    $.each(data, function(key,value) {
-
-                        if ( lastIdx === key) {
-                            select.append(
-                                `<option value="${value.id}" selected="true"> ${value.name} </option>`
-                            );
-                        }else{
-                            select.append(
-                                `<option value="${value.id}"> ${value.name} </option>`
-                            );
-                        }       
-                    });
+                    if (state === 'open') {
+                        var firtsIdx = 0; 
+                        $.each(data, function(key,value) {
+                            if ( firtsIdx === key) {
+                                select.append(
+                                    `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                                );
+                            }else{
+                                select.append(
+                                    `<option value="${value.id}"> ${value.name} </option>`
+                                );
+                            }       
+                        });
+                    }else {
+                        var lastIdx = data.length - 1; 
+                        $.each(data, function(key,value) {
+                            
+                            if ( lastIdx === key) {
+                                select.append(
+                                    `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                                );
+                            }else{
+                                select.append(
+                                    `<option value="${value.id}"> ${value.name} </option>`
+                                );
+                            }       
+                        });
+                    }
+                    
                     $("#prod_cat").append(select.html());
                 }
             });
     }
 
+    function displayBranch (state = 'rerender') {
+
+        $('#prod_branch').empty();
+        
+        $.ajax({
+            method: 'GET',
+            url: "http://localhost/api/warehouse",
+            headers: {
+                "Accept":"application/json",
+                "Authorization":Authorization
+            },
+            success: function(data) {
+                var select = $("<select>");
+                    if (state === 'open') {
+                        var firtsIdx = 0; 
+                        $.each(data, function(key,value) {
+                            if ( firtsIdx === key) {
+                                select.append(
+                                    `<option value="${value.warehouse_id}" selected="true"> ${value.name} </option>`
+                                );
+                            }else{
+                                select.append(
+                                    `<option value="${value.warehouse_id}"> ${value.name} </option>`
+                                );
+                            }       
+                        });
+                    }else {
+                        var lastIdx = data.length - 1; 
+                        $.each(data, function(key,value) {
+                            
+                            if ( lastIdx === key) {
+                                select.append(
+                                    `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                                );
+                            }else{
+                                select.append(
+                                    `<option value="${value.id}"> ${value.name} </option>`
+                                );
+                            }       
+                        });
+                    }
+                $("#prod_branch").append(select.html());
+            }
+        });
+    }
+
+
     // clear class
     $('#addProd').on('show.bs.modal', function (event) {
-        
-        var text_warning = $('#require_text');
-        var product_name = $('#prod_name');
-        
-            text_warning.empty();
-        if (product_name.hasClass('is-invalid')) {
-    
-            product_name.removeClass('is-invalid');
-        }
+        // Call API
+        displayCat('open');
+        displayBranch('open');
+
+        var prod_code_warning = $('#prod_code_warning');
+        var product_code = $('#prod_code');
+
+            prod_code_warning.empty();
+            product_code.removeClass('is-invalid');
     })
     
 </script>
