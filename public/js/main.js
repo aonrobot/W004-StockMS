@@ -38,10 +38,10 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
         {
             render: function (data, type, full, meta) {
                 return `<div>   
-                            <a href="#" id="tbEditBtn" onclick="editProd(${full.btn})" >
+                            <a href="#" onclick="editProd(${full.btn})" class="edit-btn">
                                 Edit
                             </a> |
-                            <a href="#" id="tbDeleteBtn" class="delete-btn">
+                            <a href="#" class="delete-btn">
                                 Delete
                             </a>
                         </div>`;
@@ -351,7 +351,7 @@ $('#edit_addBranch').click(function (e) {
 // EDIT
 function editProd (data) {
 
-    $("#edit_modal").modal()
+    $('#edit_id').val(data);
     $.ajax({
         method: 'GET',
         url: "http://localhost/api/product/" + data,
@@ -360,15 +360,93 @@ function editProd (data) {
             "Authorization":Authorization
         }
     }).done(function (response) {
-        console.log(response);
         var data = response;
-        $('#edit_prod_code').val(data[0].code);
-        $('#edit_prod_name').val(data[0].name);
-        $('#edit_prod_cat').val(data[0].category_id);
-        // $('#edit_prod_price_buy').val(data[0].category_id);
+
+        $('#edit_prod_code').val(data.code);
+        $('#edit_prod_name').val(data.name);
+        $('#edit_prod_cat').val(data.category_id);
+        $('#edit_prod_price_buy').val(Number(data.inventory[0].costPrice));
+        $('#edit_prod_price_sale').val(Number(data.inventory[0].salePrice));
+        $('#edit_prod_unit').val(data.unitName);
+        $('#edit_prod_amount').val(Number(data.inventory[0].quantity));
+        $('#edit_prod_branch').val(data.inventory[0].warehouse_id);
+        $('#edit_prod_detail').val(data.description);
+
+        $("#edit_modal").modal()
     });
-    // data-toggle="modal" data-target="#edit_modal"
 }
+
+// SUBMIT EDIT
+$("#edit_form_prod").submit(function (e) {
+
+    event.preventDefault();
+    // 
+    var unit = '';
+
+    if ($("#edit_prod_unit").val().length === 0) { unit = 'N/A' }
+    else { unit = $("#edit_prod_unit").val() }
+
+    var param = {
+        prodCat: $("#edit_prod_cat").val(),
+        prodCode: $("#edit_prod_code").val(),
+        prodName : $("#edit_prod_name").val(),
+        prodDetail : $("#edit_prod_detail").val() ,
+        prodBranch : $("#edit_prod_branch").val(),
+        quantity : $("#edit_prod_amount").val(),
+        costPrice : $("#edit_prod_price_buy").val(),
+        salePrice : $("#edit_prod_price_sale").val(),
+        unit: unit
+    }
+    var edit_id = $('#edit_id').val();
+
+    $.ajax({
+        type: 'PUT',
+        url: "http://localhost/api/product" + "/" + edit_id,
+        headers: {
+            "Accept": "application/json",
+            "Authorization": Authorization
+        },
+        data: {
+            "product": {
+                "category_id": param.prodCat,
+                "name": param.prodName,
+                "unitName": param.unit,
+                "description": param.prodDetail,
+                "detail": {
+                    "warehouse_id": param.prodBranch,
+                    "quantity": param.quantity,
+                    "costPrice": param.costPrice,
+                    "salePrice": param.salePrice
+                }
+            }
+        }
+    }).done(function (response) {
+
+        var row_index = $('#edit_row_id').val();
+        console.log(row_index);
+        if (response.updated) {
+
+            table.row(row_index).data({
+                "prodID": param.prodCode,
+                "prodName": param.prodName,
+                "prodBuyPrice": param.costPrice,
+                "prodSalePrice":  param.salePrice,
+                "prodAmount": param.quantity,
+                "prodUnit":  param.unit,
+                "btn": edit_id
+            }).draw();
+
+            $('#edit_modal').modal('hide');
+        }
+    });
+});
+
+$('#prod_table tbody').on('click', '.edit-btn', function () {
+
+    var row_index = $(this).closest('tr').index();
+    console.log(row_index);
+    $('#edit_row_id').val(row_index);
+});
 
 function getCat() {
 

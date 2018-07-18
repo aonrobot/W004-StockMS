@@ -127,12 +127,12 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
-                                    <input type="number" min="0" name="product_price_buy" class="form-control" id="prod_price_buy" placeholder="ราคาซื้อ" value=""/>
+                                    <input type="number" min="0" name="product_price_buy" class="form-control" step="0.01" id="prod_price_buy" placeholder="ราคาซื้อ" value=""/>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
-                                    <input type="number"  min="0" name="product_price_sale" class="form-control" id="prod_price_sale" placeholder="ราคาขาย" value="" />
+                                    <input type="number"  min="0" name="product_price_sale" class="form-control" step="0.01" id="prod_price_sale" placeholder="ราคาขาย" value="" />
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group ">
-                                    <input type="number" class="form-control" id="prod_amount"  min="0" name="product_amount" value="" />
+                                    <input type="number" step="0.01" class="form-control" id="prod_amount"  min="0" name="product_amount" value="" />
                                 </div>
                             </div>
                         </div>
@@ -278,11 +278,12 @@
                 <div class="modal-header">
                     <h3 class="modal-title ">แก้ไขสินค้า</h3>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-
                 </div>
                 
-                <form id="form_prod">
+                <form id="edit_form_prod">
                     <div class="modal-body">
+                    <input type="text" id="edit_id"  value="" style="display:none; visibility: hidden;" />
+                    <input type="text" id="edit_row_id"  value="" style="display:none; visibility: hidden;" />
                         <div class="row m-t-20">
                             <div class="col-md-4">
                                 <h4>รหัสสินค้า</h4>
@@ -332,12 +333,12 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
-                                    <input type="number" min="0" name="edit_product_price_buy" class="form-control" id="edit_prod_price_buy" placeholder="ราคาซื้อ" value=""/>
+                                    <input type="number" min="0" name="edit_product_price_buy" class="form-control" step="0.01" id="edit_prod_price_buy" placeholder="ราคาซื้อ" value=""/>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
-                                    <input type="number"  min="0" name="edit_product_price_sale" class="form-control" id="edit_prod_price_sale" placeholder="ราคาขาย" value="" />
+                                    <input type="number"  min="0" name="edit_product_price_sale" class="form-control" step="0.01" id="edit_prod_price_sale" placeholder="ราคาขาย" value="" />
                                 </div>
                             </div>
                         </div>
@@ -362,7 +363,7 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group ">
-                                    <input type="number" class="form-control" id="edit_prod_amount"  min="0" name="edit_product_amount" value="" />
+                                    <input type="number" step="0.01" class="form-control" id="edit_prod_amount"  min="0" name="edit_product_amount" value="" />
                                 </div>
                             </div>
                         </div>
@@ -586,17 +587,6 @@
         //     }
         // });
 
-        // ---------------------------------------------------------
-        $('#prod_table>a').click(function(){
-            console.log("test");
-        });
-
-        $('#tbEditBtn').click(function(){
-            console.log("test1");
-        });
-
-
-        
     });
     
     function displayCat(state = 'rerender') {
