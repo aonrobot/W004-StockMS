@@ -7,16 +7,20 @@
         {{ session('status') }}
     </div>
 @endif
-
+<style>
+    span.total {
+        font-size: 24px;
+    }
+</style>
 <div class="container main" >
 
     <div class="col-md-12" style="margin-bottom: 30px;">
         <div class="card">
             <div class="col-md-6">
-                <h2>สินค้าคงเหลือทั้งหมด <span class="badge badge-primary" id="totalQuantity">0</span> ชิ้น</h2>
+                <h3>สินค้าคงเหลือทั้งหมด <span class="badge badge-success total" id="totalQuantity">0</span> ชิ้น</h3>
             </div>
             <div class="col-md-6">
-                <h2>คิดเป็นราคารวมทั้งหมด <span class="badge badge-primary" id="totalPrice">0</span> บาท</h2>
+                <h3>คิดเป็นราคารวมทั้งหมด <span class="badge badge-success total" id="totalPrice">0</span> บาท</h3>
             </div>
         </div>
     </div>

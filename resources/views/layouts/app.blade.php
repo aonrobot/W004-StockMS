@@ -42,6 +42,8 @@
                 </button>
 
                 <!-- Navbar: Menu -->
+                @guest
+                @else
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
@@ -50,6 +52,8 @@
                         <a class="nav-link" href="{{ route('report') }}"><i class="fa fa-book"></i> Report</a>
                     </li>
                 </ul>
+                @endguest
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
