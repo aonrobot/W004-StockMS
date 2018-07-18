@@ -155,7 +155,7 @@ class ProductController extends Controller
      *
      * @return String
      */
-    public function getProductCode(){
+    public function genProductCode(){
         //System code is a string like -> P0001, P0010
         $codes = Product::where('code', 'like', 'P%')->get(['code']);
 
