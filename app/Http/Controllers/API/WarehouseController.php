@@ -37,13 +37,12 @@ class WarehouseController extends Controller
             ])->warehouse_id;
     
             return response()->json([
-                'id' => $whId,
-                'name' => $wh['name'],
-                'address' => $wh['address']
+                'created' => true,
+                'id' => $whId
             ]);
 
         } else {
-            return response()->json(['message' => 'Warehouse name should have some value']);
+            return response()->json(['created' => false, 'message' => 'Warehouse name should have some value']);
         }
     }
 
