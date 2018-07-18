@@ -1,3 +1,5 @@
+var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+
     var table = $('#prod_table').DataTable({
         "columnDefs": [{
             "orderable": false,
