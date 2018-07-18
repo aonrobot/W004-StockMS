@@ -27,20 +27,17 @@ $.ajax({
         "Accept":"application/json",
         "Authorization":Authorization
     },
-    success: function(data) {
-        console.log(data);
-        var quantity = Number($(quantity_sum).html());
-        if ( quantity !== NaN) {
-            $(total).html(quantity + data.total.cost);
-        }else{ 
-            $(total).html('n/a');
-        }
-    },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
         console.log(textStatus);
     }
+}).done(function (data) {
+    var quantity = Number($(quantity_sum).html());
+    if ( quantity !== NaN) {
+        $(total).html(quantity + data.total.cost);
+    }else{ 
+        $(total).html('n/a');
+    }
 });
-
 
 $.ajax({
     method: 'GET',

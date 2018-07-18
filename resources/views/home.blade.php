@@ -475,7 +475,6 @@
 
     //Event
     $(document).ready(function(){
-        console.log("Loading");
 
         // let proID = ''
         let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
@@ -489,13 +488,14 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
+                    
                     $('#prod_code').val(data.code);
                     // proID = data.code;
                 }
             });
 
-            // $('#prod_cat').empty();
-            // $('#prod_branch').empty();
+            $('#prod_cat').empty();
+            $('#prod_branch').empty();
 
             $.ajax({
                 method: 'GET',
@@ -505,7 +505,9 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
+
                     var select = $("<select>");
+                        select.append(`<option selected="true" value="">ไม่มีหมวดหมู่</option>`);
                     $.each(data, function(key,value) {
                         select.append(
                             $('<option></option>').val(value.id).html(value.name)
@@ -524,6 +526,7 @@
                 },
                 success: function(data) {
                     var select = $("<select>");
+                        select.append(`<option selected="true" value="1">คลังสินค้าหลัก</option>`);
                     $.each(data, function(key,value) {
                         select.append(
                             $('<option></option>').val(value.warehouse_id).html(value.name)
