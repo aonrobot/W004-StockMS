@@ -37,6 +37,23 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::apiResource('warehouse', 'WarehouseController');
 });
 
+//API: Inventory
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::prefix('inventory')->group(function () {
+        Route::prefix('quantity')->group(function () {
+            Route::get('sum', 'InventoryController@getSumQuantity');
+        });
+        Route::get('totalprice', 'InventoryController@getTotalPrice');
+    });
+});
+
+//API: Report
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::prefix('report')->group(function () {
+        Route::get('all', 'ReportController@index');
+    });
+});
+
 //Check API
 Route::middleware('auth:api')->get('/product/detail/default', function (Request $request) {
     echo 'ok';
