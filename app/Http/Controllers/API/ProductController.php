@@ -45,10 +45,10 @@ class ProductController extends Controller
             
             //Check category is exist
             if (!ProductCategory::find($product['category_id'])){
-                return response()->json(['message' => 'This category isn\'t exist']);
+                return response()->json(['created' => false, 'message' => 'This category isn\'t exist']);
             }
             else if (!Warehouse::where('warehouse_id', $productDetail['warehouse_id'])->count()){
-                return response()->json(['message' => 'This warehouse isn\'t exist']);
+                return response()->json(['created' => false, 'message' => 'This warehouse isn\'t exist']);
             } else {
                 try{
                     $productId = Product::create($product)->product_id;
@@ -72,7 +72,7 @@ class ProductController extends Controller
                 }
             }
         } else {
-            return response()->json(['message' => 'This product code is exist. please use anathor one']);
+            return response()->json(['created' => false, 'message' => 'This product code is exist. please use anathor one']);
         }
     }
 
