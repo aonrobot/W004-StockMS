@@ -19,6 +19,6 @@ class Inventory extends Model
      */
     public function product()
     {
-        return $this->hasOne('App\Phone');
+        return $this->hasOne('App\Product');
     }
 }

@@ -154,7 +154,7 @@ class ProductController extends Controller
             try{
                 Inventory::where('product_id', $id)->delete();
                 ProductHasWH::where('product_id', $id)->delete();
-                $product->delete();
+                Product::where('product_id', $id)->delete();
                 return response()->json(['destroyed' => true]);
             } catch(\Exception $e) {
                 return response()->json(['destroyed' => false]);

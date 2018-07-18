@@ -44,11 +44,8 @@ class CreateInventoryTable extends Migration
             $table->string('status', 24)->default('active');
             $table->timestamps();
 
-            $table->foreign('product_id')
-            ->references('product_id')->on('product_has_warehouse')
-            ->onDelete('cascade');
-            $table->foreign('warehouse_id')
-            ->references('warehouse_id')->on('product_has_warehouse')
+            $table->foreign('product_id', 'warehouse_id')
+            ->references('product_id', 'warehouse_id')->on('product_has_warehouse')
             ->onDelete('cascade');
         });
     }
