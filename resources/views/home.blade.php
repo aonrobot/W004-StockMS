@@ -95,6 +95,7 @@
                                 <div class="form-group ">
                                     <input type="text" class="form-control" id="prod_name" name="product_name" 
                                     value="" required />
+                                    <span class="text-danger" id="require_text"></span>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +110,6 @@
                                             id="prod_cat" 
                                             name="product_catagories" 
                                             value="">
-                                        <option selected="true" value="">ไม่มีหมวดหมู่</option>
                                     </select>
                                 </div>
                             </div>
@@ -193,7 +193,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="submitBtn" type="submit" class="btn btn-primary" >Submit</button>
+                        <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -472,50 +472,31 @@
 </div>
 
 <script>
+    
+    var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
     //Event
     $(document).ready(function(){
 
-        // let proID = ''
-        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
-
         $('#addProduct').click(function(){
             $.ajax({
                 method: 'GET',
-                url: "http://localhost/api/service/product/getcode",
+                url: "http://localhost/api/product/service/gencode",
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
                 },
                 success: function(data) {
-                    
+                    console.log(data)
                     $('#prod_code').val(data.code);
                     // proID = data.code;
                 }
             });
 
-            $('#prod_cat').empty();
+
             $('#prod_branch').empty();
 
-            $.ajax({
-                method: 'GET',
-                url: "http://localhost/api/category",
-                headers: {
-                    "Accept":"application/json",
-                    "Authorization":Authorization
-                },
-                success: function(data) {
-
-                    var select = $("<select>");
-                        select.append(`<option selected="true" value="">ไม่มีหมวดหมู่</option>`);
-                    $.each(data, function(key,value) {
-                        select.append(
-                            $('<option></option>').val(value.id).html(value.name)
-                        );
-                    });
-                    $("#prod_cat").append(select.html());
-                }
-            });
+            
 
             $.ajax({
                 method: 'GET',
@@ -526,7 +507,6 @@
                 },
                 success: function(data) {
                     var select = $("<select>");
-                        select.append(`<option selected="true" value="1">คลังสินค้าหลัก</option>`);
                     $.each(data, function(key,value) {
                         select.append(
                             $('<option></option>').val(value.warehouse_id).html(value.name)
@@ -551,7 +531,10 @@
                         "name": $("#cat_code").val(),
                         "description":""
                     }
+                    
                 }
+            }).done( function () {
+                displayCat();
             });
         });
 
@@ -571,9 +554,19 @@
                 }
             });
         }); 
+        // SUBMIT
+        $('#submitBtn').on("click", function(e) {
+            e.preventDefault();
 
-        $('#submitBtn').click(function(){
-            $.ajax({
+            var product_name = $("#prod_name");
+            
+            if (product_name.val().length === 0 ){
+
+                $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
+                $(product_name).addClass('is-invalid');
+                
+            }else {
+                $.ajax({
                 type: 'POST',
                 url: "http://localhost/api/product",
                 headers: {
@@ -596,9 +589,14 @@
                     }
                 },
                 success: function(data) {
-                    console.log(data)
-                }
+                    console.log(data);
+                    
+                },
             });
+            }
+            
+            
+            console.log('error');
         });
 
         // ---------------------------------------------------------
@@ -610,12 +608,57 @@
             console.log("test1");
         });
 
-        // $('#tbDeleteBtn').click(function(){
-        //     console.log("test2");
-        // });
+
+        // Call API
+        displayCat();
         
     });
+    
+    function displayCat() {
 
+        $('#prod_cat').empty();
+
+        $.ajax({
+                method: 'GET',
+                url: "http://localhost/api/category",
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                success: function(data) {
+                  
+                    var select = $("<select>");
+                    var lastIdx = data.length - 1; 
+                    $.each(data, function(key,value) {
+
+                        if ( lastIdx === key) {
+                            select.append(
+                                `<option value="${value.id}" selected="true"> ${value.name} </option>`
+                            );
+                        }else{
+                            select.append(
+                                `<option value="${value.id}"> ${value.name} </option>`
+                            );
+                        }       
+                    });
+                    $("#prod_cat").append(select.html());
+                }
+            });
+    }
+
+    // clear class
+    $('#addProd').on('show.bs.modal', function (event) {
+        
+        var text_warning = $('#require_text');
+        var product_name = $('#prod_name');
+        
+            text_warning.empty();
+        if (product_name.hasClass('is-invalid')) {
+    
+            product_name.removeClass('is-invalid');
+        }
+    })
+    
 </script>
 
 @endsection
