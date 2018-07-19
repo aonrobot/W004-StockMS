@@ -1,7 +1,7 @@
 function ajaxChangeQty(url, id, amout){
     $.ajax({
         type: 'POST',
-        url: "http://" + url,
+        url: url,
         headers: {
             "Accept":"application/json",
             "Authorization": Authorization
@@ -24,11 +24,11 @@ function changeQty(that, action, id){
     var amount = parseInt(intQty.val());
     switch(action){
         case 'increase' :
-            ajaxChangeQty('localhost/api/inventory/quantity/add', id, amount);
+            ajaxChangeQty('api/inventory/quantity/add', id, amount);
             var newData = parseInt(cell.data()) + amount;
             break;
         case 'decrease' :
-        ajaxChangeQty('localhost/api/inventory/quantity/remove', id, amount);
+        ajaxChangeQty('api/inventory/quantity/remove', id, amount);
             var newData = parseInt(cell.data()) - amount;
             break;
     }
@@ -53,7 +53,3 @@ function createChangeQty_event(){
         changeQty(this, 'decrease', id);
     })
 }
-
-$(document).ready(function(){
-    
-})
