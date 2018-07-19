@@ -20,8 +20,8 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-  - sed -i "2i165.227.110.210 mysql" /etc/hosts
-  - sed -i "2i165.227.110.210 stockms.test" /etc/hosts
+  - echo "165.227.110.210 mysql" >> /etc/hosts
+  - echo "165.227.110.210 stockms.test" >> /etc/hosts
   - curl http://localhost:4444/wd/hub/status
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://stockms.test &
   - php artisan serve &
