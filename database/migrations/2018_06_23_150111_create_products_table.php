@@ -14,34 +14,40 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('product_category', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->increments('id');
+            
             $table->string('name', 144)->nullable(false);
-            $table->text('description');
+            $table->longText('description')->nullable(true);
             $table->timestamps();
         });
 
         Schema::create('products', function (Blueprint $table) {
-            $table->integer('product_id')->primary();
+            $table->increments('product_id');
+            $table->integer('category_id')->unsigned()->default(1);
+
             $table->string('code', 64)->unique();
             $table->string('name', 144)->nullable(false);
-            $table->text('description');
+            $table->string('unitName', 144)->default(NULL);
+            $table->longText('description')->nullable(true);
             $table->string('status', 24)->default('active');
             $table->timestamps();
 
-            $table->foreign('product_id')
+            $table->foreign('category_id')
             ->references('id')->on('product_category')
             ->onDelete('cascade');
         });
 
         Schema::create('product_detail', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->increments('id');
+            $table->integer('product_id')->unsigned();
+
             $table->string('label', 144);
             $table->string('key', 144);
-            $table->text('value');
+            $table->text('value')->nullable(true);
             $table->string('type', 32)->default('textbox');
             $table->timestamps();
 
-            $table->foreign('id')
+            $table->foreign('product_id')
             ->references('product_id')->on('products')
             ->onDelete('cascade');
         });
