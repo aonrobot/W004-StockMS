@@ -7,6 +7,7 @@ body {
 
 body {
     color: #444;
+    min-height: 100vh;
 }
 
 .main {

@@ -140,11 +140,11 @@
                         <div class="row m-t-20">
                             <div class="col-md-4">
                                 <h4 style="margin-bottom: 0;">จำนวน</h4>
-                                <span style="color: #ccc; font-size: 16px;">(จำนวนสต๊อกปัจจุบัน)</span>
+                                <span style="color: #ccc; font-size: 13px;">(จำนวนสต๊อกปัจจุบัน เป็นจำนวนเต็มเท่านั้น)</span>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group ">
-                                    <input type="number" step="0.01" class="form-control" id="prod_amount"  min="0" name="product_amount" value="" />
+                                    <input type="number" class="form-control" id="prod_amount"  min="0" name="product_amount" value="" />
                                 </div>
                             </div>
                         </div>
@@ -345,11 +345,11 @@
                         <div class="row m-t-20">
                             <div class="col-md-4">
                                 <h4 style="margin-bottom: 0;">จำนวน</h4>
-                                <span style="color: #ccc; font-size: 16px;">(จำนวนสต๊อกปัจจุบัน)</span>
+                                <span style="color: #ccc; font-size: 13px;">(จำนวนสต๊อกปัจจุบัน เป็นจำนวนเต็มเท่านั้น)</span>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group ">
-                                    <input type="number" step="0.01" class="form-control" id="edit_prod_amount"  min="0" name="edit_product_amount" value="" />
+                                    <input type="number" class="form-control" id="edit_prod_amount"  min="0" name="edit_product_amount" value="" />
                                 </div>
                             </div>
                         </div>

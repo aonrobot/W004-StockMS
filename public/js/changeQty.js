@@ -37,19 +37,21 @@ function changeQty(that, action, id){
 }
 
 function createChangeQty_event(){
-    $('.qtyAmountInput').click(function(){
-        $(this).select();
-    })
-    $('.qtyAmountInput').change(function(){
-        var value = parseInt($(this).val());
-        if(value < 0) $(this).val('0')
-    })
-    $('.increaseOneQtyBtn').click(function(){
-        var id = $(this).data('id');
-        changeQty(this, 'increase', id);
-    })
-    $('.decreaseOneQtyBtn').click(function(){
-        var id = $(this).data('id');
-        changeQty(this, 'decrease', id);
-    })
+    table.on( 'draw', function () {
+        $('.qtyAmountInput').unbind( "click" ).click(function(){
+            $(this).select();
+        })
+        $('.qtyAmountInput').unbind( "change" ).change(function(){
+            var value = parseInt($(this).val());
+            if(value < 0) $(this).val('0')
+        })
+        $('.increaseOneQtyBtn').unbind( "click" ).click(function(){
+            var id = $(this).data('id');
+            changeQty(this, 'increase', id);
+        })
+        $('.decreaseOneQtyBtn').unbind( "click" ).click(function(){
+            var id = $(this).data('id');
+            changeQty(this, 'decrease', id);
+        })
+    } );
 }
