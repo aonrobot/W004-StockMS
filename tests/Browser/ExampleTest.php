@@ -16,7 +16,7 @@ class ExampleTest extends DuskTestCase
     public function testHome()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('/')
+            $browser->visit('/home')
                     ->assertSee('Stock Management System');
         });
     }
