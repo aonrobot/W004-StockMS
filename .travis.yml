@@ -8,6 +8,10 @@ php:
 addons:
    chrome: stable
 
+cache:
+   directories:
+      - ${TRAVIS_BUILD_DIR}/travis/lib-cache
+
 before_install:
    # Setup Selenium
    - export DISPLAY=:99.0
