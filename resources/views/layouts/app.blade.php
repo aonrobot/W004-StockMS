@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- API Token -->
-    <meta name="api-token" content="{{ Session::get('api-token') }}">
+    <meta name="api-token" content="{{ !empty(Session::get('api-token')) ? Session::get('api-token') : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQwMDFjY2EyMzE1ZmZiZGFhNjgzYzg5YjZlNTc4NWVjMzZiZjZiNDA3MWU1YWE1NjJkNTlhMzkxMTBmMWNmMDQ5NGJjMmFjYmU5YWY0NjA0In0.eyJhdWQiOiIxIiwianRpIjoiZDAwMWNjYTIzMTVmZmJkYWE2ODNjODliNmU1Nzg1ZWMzNmJmNmI0MDcxZTVhYTU2MmQ1OWEzOTExMGYxY2YwNDk0YmMyYWNiZTlhZjQ2MDQiLCJpYXQiOjE1MzE5NzAyMTgsIm5iZiI6MTUzMTk3MDIxOCwiZXhwIjoxNTYzNTA2MjE4LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.NhqMggIiDfa99oOY509P8sm9H79Zd86EVShKaUVWkPhwPT_VCcqimmrHRr925TSmTXALTKXVal9eWjAg9HUe4vkwC5pDjxsrhIKPtoPgDEhFxEOqmaoomqNYpHBsLXv6ggHv4H0fmnkhuD3gNdwLLex_8h2CLHKm5zrwTxySnJskkKcEK2vDxB98SnLWCDx2weLv8K4Nk5fhKTZ9YJe93s3TtZbmWVV4RVSsz07Dzx09YdM0Czdg5831pHY5_P9d8W-0QyiymV8D4rTeGGq2BrXR02Zlu861Nrz14Kdr0-mGra-W8ej93gmb-uJBiycA6UqtbeQ_J26h9H7PRQ6wnEcdGWcV70iXTBdjjc6MWRkt0Z4YZUN4sl9tT0-J6pq8Ia-scnsYAYVyuDukmZ0BSsyRN5g6dp3ChXoTpJTs26sN2gknhTIp8uLK97NL9xmYi4bUA81aqNSdbVTGyKg0dPVDRs0P_i_Bfuw77Fbs-vl-paNSHaaHMsunXDfrjXoLLu7WJmrrmo77e0y28iunjc-kjQsp8xKdPUSnFDav0H4SZO-e415wtAj-UoUjAPLgQLeFJtBn5M_L-OT8oz5AAtkhporvOTydortM4FD5TKpBFfOns8VoRnKEkcsYG1PCakDjcTzTCc57QIfBYf6b9xFqYGAvYkdKvihHDB7MxrY' }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -37,7 +37,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fa fa-dog"></i> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}<br>
+                <!-- <i class="fa fa-dog"></i> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}<br> -->
                 <small class="ml-2">Stock Management System</small>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">

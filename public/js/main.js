@@ -71,7 +71,7 @@ function initialDataTable () {
 
     $.ajax({
         type: 'GET',
-        url: "http://localhost/api/product",
+        url: "api/product",
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
@@ -123,7 +123,7 @@ $("#form_prod").submit(function (e) {
 
     $.ajax({
         type: 'POST',
-        url: "http://localhost/api/product",
+        url: "api/product",
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
@@ -263,7 +263,7 @@ $('#addBranch').click(function (e) {
         branch_list.append(`<option selected="true"> ${branch_name_value} </option>`);
         $.ajax({
             type: 'POST',
-            url: "http://localhost/api/warehouse",
+            url: "api/warehouse",
             headers: {
                 "Accept":"application/json",
                 "Authorization":Authorization
@@ -384,7 +384,7 @@ function editProd (data) {
     $('#edit_id').val(data);
     $.ajax({
         method: 'GET',
-        url: "http://localhost/api/product/" + data,
+        url: "api/product/" + data,
         headers: {
             "Accept":"application/json",
             "Authorization":Authorization
@@ -431,7 +431,7 @@ $("#edit_form_prod").submit(function (e) {
 
     $.ajax({
         type: 'PUT',
-        url: "http://localhost/api/product" + "/" + edit_id,
+        url: "api/product" + "/" + edit_id,
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
@@ -464,7 +464,7 @@ function getCat() {
 
     $.ajax({
         method: 'GET',
-        url: "http://localhost/api/category",
+        url: "api/category",
         headers: {
             "Accept":"application/json",
             "Authorization":Authorization
@@ -479,7 +479,7 @@ function getCat() {
 function getBranch() {
     $.ajax({
         method: 'GET',
-        url: "http://localhost/api/warehouse",
+        url: "api/warehouse",
         headers: {
             "Accept":"application/json",
             "Authorization":Authorization
@@ -516,7 +516,7 @@ function deleteProd (id) {
     console.log(id);
     $.ajax({
         method: 'DELETE',
-        url: "http://localhost/api/product/" + id,
+        url: "api/product/" + id,
         headers: {
             "Accept":"application/json",
             "Authorization":Authorization

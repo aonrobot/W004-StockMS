@@ -483,7 +483,7 @@
         $('#addProduct').click(function(){
             $.ajax({
                 method: 'GET',
-                url: "http://localhost/api/product/service/gencode",
+                url: "api/product/service/gencode",
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
@@ -499,7 +499,7 @@
         $('#addProdCat').click(function(){
             $.ajax({
                 type: 'POST',
-                url: "http://localhost/api/category",
+                url: "api/category",
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
@@ -520,7 +520,7 @@
             
             // $.ajax({
             //     type: 'POST',
-            //     url: "http://localhost/api/warehouse",
+            //     url: "api/warehouse",
             //     headers: {
             //         "Accept":"application/json",
             //         "Authorization":Authorization
@@ -559,7 +559,7 @@
 
         //         $.ajax({
         //             type: 'POST',
-        //             url: "http://localhost/api/product",
+        //             url: "api/product",
         //             headers: {
         //                 "Accept":"application/json",
         //                 "Authorization":Authorization
@@ -598,7 +598,7 @@
 
         $.ajax({
                 method: 'GET',
-                url: "http://localhost/api/category",
+                url: "api/category",
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
@@ -646,7 +646,7 @@
         
         $.ajax({
             method: 'GET',
-            url: "http://localhost/api/warehouse",
+            url: "api/warehouse",
             headers: {
                 "Accept":"application/json",
                 "Authorization":Authorization
