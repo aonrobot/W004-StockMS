@@ -16,7 +16,7 @@ before_install:
   - docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome
 
 install:
-  - cp .env.dusk.test .env
+  - cp .env.dusk.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
