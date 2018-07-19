@@ -16,3 +16,48 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//API: Product
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('product', 'ProductController');
+    Route::prefix('product')->group(function () {
+        Route::prefix('service')->group(function () {
+            Route::get('gencode', 'ProductController@genProductCode');
+        });
+    });
+});
+
+//API: Product Category
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('category', 'CategoryController');
+});
+
+//API: Warehouse
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('warehouse', 'WarehouseController');
+});
+
+//API: Inventory
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::prefix('inventory')->group(function () {
+        //Route::put('quantity/{id}', 'InventoryController@updateQuantity');
+        Route::prefix('quantity')->group(function () {
+            Route::get('sum', 'InventoryController@getSumQuantity');
+            Route::post('add', 'InventoryController@addQuantity');
+            Route::post('remove', 'InventoryController@removeQuantity');
+        });
+        Route::get('totalprice', 'InventoryController@getTotalPrice');
+    });
+});
+
+//API: Report
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::prefix('report')->group(function () {
+        Route::get('all', 'ReportController@index');
+    });
+});
+
+//Check API
+Route::middleware('auth:api')->get('/product/detail/default', function (Request $request) {
+    echo 'ok';
+});
