@@ -39,7 +39,7 @@ var table = $('#prod_table').DataTable({
         "ordering": false,
         render: function (data, type, full, meta) {
             return `
-                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="1"/>
+                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.btn}"/>
                     <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
                     <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
                 `;
@@ -109,7 +109,6 @@ $("#form_prod").submit(function (e) {
 
     $('body').busyLoad("show", busyBoxOptions);
 
-    // 
     var unit = '';
     var prod_code;
 
