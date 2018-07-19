@@ -9,7 +9,14 @@ use App\User;
 
 class ProductTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    //use DatabaseMigrations;
+
+    public function setUp()
+    {
+        parent::setUp();
+        \Artisan::call('migrate:fresh');
+        \Artisan::call('db:seed');
+    }
 
     /** @test */
     public function test_canSee_autoGenProductCode()
@@ -25,47 +32,52 @@ class ProductTest extends DuskTestCase
     }
 
     /** @test */
-    public function testAdd_onlyName_1()
+    public function testAdd_onlyName()
     {
-        $this->browse(function (Browser $browser){
-            $user = User::find(1);
+        $user = User::find(1);
+        $this->browse(function (Browser $browser) use($user){
+            
             $browser->loginAs($user)
             ->visit('/home')
+
+            //Add Product 1
             ->press('เพิ่มสินค้า')
             ->waitForText('เพิ่มสินค้า')
             ->value('#prod_name', '[DuskTest] Product 1')
             ->press('Submit')
-            ->assertSeeIn('#prod_table', '[DuskTest] Product 1');
-        });
-    }
+            ->waitUntilMissing('.modal-dialog')
+            ->assertSeeIn('#prod_table_wrapper', '[DuskTest] Product 1')
 
-    /** @test */
-    public function testAdd_onlyName_2()
-    {
-        $this->browse(function (Browser $browser){
-            $user = User::find(1);
-            $browser->loginAs($user)
-            ->visit('/home')
+            //Add Product 2
             ->press('เพิ่มสินค้า')
             ->waitForText('เพิ่มสินค้า')
             ->value('#prod_name', '[DuskTest] Product 2')
             ->press('Submit')
-            ->assertSeeIn('#prod_table', '[DuskTest] Product 2');
+            ->waitUntilMissing('.modal-dialog')
+            ->assertSeeIn('#prod_table_wrapper', '[DuskTest] Product 2');
+
+            $response = $this->actingAs($user, 'api')->json('DELETE', 'api/product/2');
+            $response
+                ->assertStatus(200)
+                ->assertJson([
+                    'destroyed' => true,
+                ]);
+
+            $browser->loginAs($user)
+            ->visit('/home')
+            ->assertDontSeeIn('#prod_table_wrapper', '[DuskTest] Product 1');
         });
+
     }
 
     /** @test */
-    // public function testRemove_someProduct_and_refresh()
+    // public function testIncreseQty()
     // {
-    //     $this->browse(function (Browser $browser){
-    //         $user = User::find(1);
+    //     $user = User::find(1);
+    //     $this->browse(function (Browser $browser) use($user){
     //         $browser->loginAs($user)
     //         ->visit('/home')
-    //         ->press('เพิ่มสินค้า')
-    //         ->waitForText('เพิ่มสินค้า')
-    //         ->value('#prod_name', '[DuskTest] Product 2')
-    //         ->press('Submit')
-    //         ->assertSeeIn('#prod_table', '[DuskTest] Product 2');
+    //         ->assertDontSeeIn('#prod_table_wrapper', '[DuskTest] Product 1');
     //     });
     // }
 

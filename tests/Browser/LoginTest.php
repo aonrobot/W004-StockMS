@@ -9,7 +9,7 @@ use App\User;
 
 class LoginTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    //use DatabaseMigrations;
     /**
      * A Dusk test example.
      *

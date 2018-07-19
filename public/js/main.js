@@ -1,73 +1,73 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
-    var table = $('#prod_table').DataTable({
-        "columnDefs": [{
-            "orderable": false,
-            "targets": 6
-        }],
-        columns: [{
-            "data": "prodID",
-            "width": "10%",
-            "render": function (data) {
-                return `<span id ="${data}">${data}</span>`;
-            }
-        },
-        {
-            "data": "prodName"
-        },
-        {
-            "data": "prodBuyPrice",
-            "className": "text-right",
-            "width": "12%"
-        },
-        {
-            "data": "prodSalePrice",
-            "className": "text-right",
-            "width": "12%"
-        },
-        {
-            "data": "prodAmount",
-            "className": "text-right",
-            "width": "12%"
-        },
-        {
-            "ordering": false,
-            render: function (data, type, full, meta) {
-                return `
+var table = $('#prod_table').DataTable({
+    "columnDefs": [{
+        "orderable": false,
+        "targets": 6
+    }],
+    columns: [{
+        "data": "prodID",
+        "width": "10%",
+        "render": function (data) {
+            return `<span id ="${data}">${data}</span>`;
+        }
+    },
+    {
+        "data": "prodName"
+    },
+    {
+        "data": "prodBuyPrice",
+        "className": "text-right",
+        "width": "12%"
+    },
+    {
+        "data": "prodSalePrice",
+        "className": "text-right",
+        "width": "12%"
+    },
+    {
+        "data": "prodAmount",
+        "className": "text-right",
+        "width": "12%"
+    },
+    {
+        "ordering": false,
+        render: function (data, type, full, meta) {
+            return `
                     <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="1"/>
                     <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
                     <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
                 `;
-            },
         },
-        {
-            "data": "prodUnit",
-            "className": "text-right",
-            "width": "12%"
-        },
-        {
-            render: function (data, type, full, meta) {
-                return `<div>   
-                            <a href="#" onclick="editProd(${full.btn})" class="edit-btn">
+    },
+    {
+        "data": "prodUnit",
+        "className": "text-right",
+        "width": "12%"
+    },
+    {
+        render: function (data, type, full, meta) {
+            return `<div>   
+                            <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
                                 Edit
                             </a> |
-                            <a href="#" class="delete-btn" onclick="deleteProd(${full.btn})" >
+                            <a href="#" class="delete-btn" >
                                 Delete
                             </a>
                         </div>`;
-            },
-            className: "table-btn",
-            width: "20%"
-        }
-        ],
-        "scrollX": true
-    });
-    initialDataTable();
+        },
+        className: "table-btn",
+        width: "20%"
+    }
+    ],
+    "scrollX": true
+});
+initialDataTable();
 
-function initialDataTable () {
+function initialDataTable() {
     table
-    .clear()
-    
+        .clear()
+
 
     $.ajax({
         type: 'GET',
@@ -77,21 +77,21 @@ function initialDataTable () {
             "Authorization": Authorization
         }
     }).done(function (response) {
-        console.log(response);
-        var data = response ; 
 
-        for (var i = 0 ; i < data.length ; i++ ) {
+        var data = response;
+
+        for (var i = 0; i < data.length; i++) {
             $('#prod_table').DataTable().row.add({
                 "prodID": data[i].code,
                 "prodName": data[i].name,
-                "prodBuyPrice": data[i].inventory.costPrice ,
+                "prodBuyPrice": data[i].inventory.costPrice,
                 "prodSalePrice": data[i].inventory.salePrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
                 "btn": data[i].product_id
             }).draw();
         }
-        
+
     });
 }
 
@@ -111,15 +111,15 @@ $("#form_prod").submit(function (e) {
     var param = {
         prodCat: $("#prod_cat").val(),
         prodCode: prod_code,
-        prodName : $("#prod_name").val(),
-        prodDetail : $("#prod_detail").val() ,
-        prodBranch : $("#prod_branch").val(),
-        quantity : $("#prod_amount").val(),
-        costPrice : $("#prod_price_buy").val(),
-        salePrice : $("#prod_price_sale").val(),
+        prodName: $("#prod_name").val(),
+        prodDetail: $("#prod_detail").val(),
+        prodBranch: $("#prod_branch").val(),
+        quantity: $("#prod_amount").val(),
+        costPrice: $("#prod_price_buy").val(),
+        salePrice: $("#prod_price_sale").val(),
         unit: unit
     }
-   
+
 
     $.ajax({
         type: 'POST',
@@ -144,7 +144,7 @@ $("#form_prod").submit(function (e) {
             }
         }
     }).done(function (response) {
-        console.log(response);
+
         if (response.created) {
 
             table.row.add({
@@ -156,9 +156,9 @@ $("#form_prod").submit(function (e) {
                 "prodUnit": param.unit,
                 "btn": response.product_id
             }).draw();
-        
+
             $('#addProd').modal('hide');
-        
+
         } else {
             $('#prod_code').addClass('is-invalid');
             $('#prod_code_warning').html(response.message);
@@ -166,20 +166,35 @@ $("#form_prod").submit(function (e) {
     });
 });
 
-$('#prod_table tbody').on('click', '.delete-btn', function () {
-    var txt;
-    if (confirm("คุณยืนยันที่จะลบข้อมูล?")) {
+$('#prod_table tbody').on('click', '.delete-btn', function (mm) {
 
+    if (confirm("คุณยืนยันที่จะลบข้อมูล?")) {
+        
+        var id = table.row($(this).parents('tr')).data()
+
+        $.ajax({
+            method: 'DELETE',
+            url: "api/product/" + id.btn,
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        }).done(function (response) {
+
+            if(!response.destroyed) {
+
+                console.log('Error');
+                return false;
+            }
+        });
         table
             .row($(this).parents('tr'))
             .remove()
             .draw();
-    } else {
 
+    } else {
         return;
     }
-
-
 });
 
 
@@ -212,7 +227,6 @@ $('#prod_branch_modal').on('show.bs.modal', function (event) {
     }
 })
 
-
 $('#addProdCat').click(function (e) {
     e.preventDefault();
 
@@ -234,7 +248,24 @@ $('#addProdCat').click(function (e) {
     } else {
 
         catagory_list.append(`<option selected="true"> ${catagory_name_value} </option>`);
+        // Add Catagories
+        $.ajax({
+            type: 'POST',
+            url: "api/category",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            },
+            data: {
+                "category": {
+                    "name": $("#cat_code").val(),
+                    "description": ""
+                }
 
+            }
+        }).done(function () {
+            displayCat();
+        });
         // Close Modal
         $('#prod_cat_modal').modal('hide')
 
@@ -265,16 +296,16 @@ $('#addBranch').click(function (e) {
             type: 'POST',
             url: "api/warehouse",
             headers: {
-                "Accept":"application/json",
-                "Authorization":Authorization
+                "Accept": "application/json",
+                "Authorization": Authorization
             },
             data: {
-                "warehouse": {  
+                "warehouse": {
                     "name": $("#branch_code").val(),
-                    "address":""
+                    "address": ""
                 }
             }
-        }).done( function () {
+        }).done(function () {
             displayBranch();
         });
 
@@ -288,118 +319,32 @@ $('#addProd').on('show.bs.modal', function (event) {
 })
 
 
-// EDIT  Catagory
-$('#edit_prod_cat_modal').on('show.bs.modal', function (event) {
-
-    var text_warning = $('#edit_text_warning');
-    var catagory_name = $('#edit_cat_code');
-    var catagory_list = $('#edit_prod_cat');
-
-    text_warning.empty();
-    catagory_name.val('');
-    if (catagory_name.hasClass('is-invalid')) {
-
-        catagory_name.removeClass('is-invalid');
-    }
-})
-
-$('#edit_addProdCat').click(function (e) {
-    e.preventDefault();
-
-
-    var text_warning = $('#edit_text_warning');
-    var catagory_name = $('#edit_cat_code');
-    var catagory_list = $('#edit_prod_cat');
-
-    var catagory_name_value = catagory_name.val();
-    // clear
-    text_warning.empty();
-
-    // if user not type any data
-    if (catagory_name.val().length === 0) {
-
-        catagory_name.addClass('is-invalid');
-        text_warning.append('กรุณาใส่หมวดหมู่');
-
-    } else {
-
-        catagory_list.append(`<option value="${catagory_name_value}" selected="true"> ${catagory_name_value} </option>`);
-
-        // Close Modal
-        $('#edit_prod_cat_modal').modal('hide')
-
-    }
-});
-
-// EDIT BRANCH
-
-$('#edit_prod_branch_modal').on('show.bs.modal', function (event) {
-
-    var warning = $('#edit_text_warning_branch');
-    var branch_name = $('#edit_branch_code');
-    var branch_list = $('#edit_prod_branch');
-
-    warning.empty();
-    branch_name.val('');
-
-    if (branch_name.hasClass('is-invalid')) {
-
-        branch_name.removeClass('is-invalid');
-    }
-})
-
-$('#edit_addBranch').click(function (e) {
-    e.preventDefault();
-
-    var warning = $('#edit_text_warning_branch');
-    var branch_name = $('#edit_branch_code');
-    var branch_list = $('#edit_prod_branch');
-
-    var branch_name_value = branch_name.val();
-    // clear
-    warning.empty();
-
-    // if user not type any data
-    if (branch_name.val().length === 0) {
-
-        branch_name.addClass('is-invalid');
-        warning.append('กรุณาใส่คลังสินค้า');
-
-    } else {
-
-        branch_list.append(`<option value="${branch_name_value}" selected="true"> ${branch_name_value} </option>`);
-
-        // Close Modal
-        $('#edit_prod_branch_modal').modal('hide')
-
-    }
-});
-
 // EDIT
-function editProd (data) {
-    
-    getBranch();
-    getCat();
+function editProd(data) {
 
     $('#edit_id').val(data);
     $.ajax({
         method: 'GET',
         url: "api/product/" + data,
         headers: {
-            "Accept":"application/json",
-            "Authorization":Authorization
+            "Accept": "application/json",
+            "Authorization": Authorization
         }
     }).done(function (response) {
+
         var data = response;
-        console.log(response);
+
+        branch.render('edit_prod_branch', data.inventory[0].warehouse_id);
+        catagory.render('edit_prod_cat', data.category_id);
+
         $('#edit_prod_code').val(data.code);
         $('#edit_prod_name').val(data.name);
-        $('#edit_prod_cat').val(data.category_id);
+        // $('#edit_prod_cat').val(data.category_id);
         $('#edit_prod_price_buy').val(Number(data.inventory[0].costPrice));
         $('#edit_prod_price_sale').val(Number(data.inventory[0].salePrice));
         $('#edit_prod_unit').val(data.unitName);
         $('#edit_prod_amount').val(Number(data.inventory[0].quantity));
-        $('#edit_prod_branch').val(data.inventory[0].warehouse_id);
+        // $('#edit_prod_branch').val(data.inventory[0].warehouse_id);
         $('#edit_prod_detail').val(data.description);
 
         $("#edit_modal").modal()
@@ -419,12 +364,12 @@ $("#edit_form_prod").submit(function (e) {
     var param = {
         prodCat: $("#edit_prod_cat").val(),
         prodCode: $("#edit_prod_code").val(),
-        prodName : $("#edit_prod_name").val(),
-        prodDetail : $("#edit_prod_detail").val() ,
-        prodBranch : $("#edit_prod_branch").val(),
-        quantity : $("#edit_prod_amount").val(),
-        costPrice : $("#edit_prod_price_buy").val(),
-        salePrice : $("#edit_prod_price_sale").val(),
+        prodName: $("#edit_prod_name").val(),
+        prodDetail: $("#edit_prod_detail").val(),
+        prodBranch: $("#edit_prod_branch").val(),
+        quantity: $("#edit_prod_amount").val(),
+        costPrice: $("#edit_prod_price_buy").val(),
+        salePrice: $("#edit_prod_price_sale").val(),
         unit: unit
     }
     var edit_id = $('#edit_id').val();
@@ -460,70 +405,198 @@ $("#edit_form_prod").submit(function (e) {
     });
 });
 
-function getCat() {
+var catagory = {
 
-    $.ajax({
-        method: 'GET',
-        url: "api/category",
-        headers: {
-            "Accept":"application/json",
-            "Authorization":Authorization
+    postAPI(value) {
+
+        return $.ajax({
+            type: 'POST',
+            url: "api/category",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            },
+            data: {
+                "category": {
+                    "name": value,
+                    "description": ""
+                }
+
+            }
+        });
+    },
+    getAPI() {
+        return $.ajax({
+            method: 'GET',
+            url: "api/category",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        })
+    },
+    add(e, textElem, inputElem, selectElem, modalElem) {
+        e.preventDefault();
+
+        var catagory_name = $('#' + inputElem);
+        if (catagory_name.val().length === 0) {
+            validate(textElem, inputElem);
+        } else {
+            catagory.postAPI(catagory_name.val()).done(function (response) {
+                catagory.render(selectElem, 'last');
+                catagory.closeModal(modalElem);
+            })
         }
-    }).done(function (response) {
+    },
+    render(elem, defaultSelected) {
 
-        addSelectCat(response);
+        var elem = $('#' + elem);
 
-    });
+        catagory.getAPI().done(function (res) {
 
+            var select = $("<select>");
+            var option = "";
+            // Clear option in select
+            elem.empty();
+            var selected = defaultSelected;
+
+            if (selected === 'last') {
+
+                selected = res.length;
+
+                for (var i = 0; i < res.length; i++) {
+
+                    if ((selected - 1) === i) {
+                        select.append(
+                            `<option value="${res[i].id}" selected="true"> ${res[i].name} </option>`
+                        );
+                    } else {
+                        select.append(
+                            `<option value="${res[i].id}"> ${res[i].name} </option>`
+                        );
+                    }
+                }
+            } else {
+                for (var i = 0; i < res.length; i++) {
+
+                    option += `<option value="${res[i].id}"> ${res[i].name} </option>`;
+                }
+            }
+
+            select.append(option);
+            $(elem).append(select.html());
+            $(elem).val(selected);
+            // Append to DOM
+
+
+        });
+    },
+    closeModal(modalID) {
+        $('#' + modalID).modal('hide')
+    }
 }
-function getBranch() {
-    $.ajax({
-        method: 'GET',
-        url: "api/warehouse",
-        headers: {
-            "Accept":"application/json",
-            "Authorization":Authorization
+function validate(textElem, inputElem) {
+
+    $('#' + textElem).append('กรุณาใส่หมวดหมู่');
+    $('#' + inputElem).addClass('is-invalid');
+}
+function clear(textElem, inputElem) {
+
+    $('#' + textElem).empty();
+    $('#' + inputElem).val('');
+    $('#' + inputElem).removeClass('is-invalid');
+}
+// Clear Edit Add Catagory Modal
+$('#edit_prod_cat_modal').on('show.bs.modal', function (event) {
+    clear('edit_text_warning', 'edit_cat_code');
+})
+
+var branch = {
+
+    postAPI(value) {
+
+        return $.ajax({
+            type: 'POST',
+            url: "api/warehouse",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            },
+            data: {
+                "warehouse": {
+                    "name": value,
+                    "address": ""
+                }
+            }
+        });
+    },
+    getAPI() {
+        return $.ajax({
+            method: 'GET',
+            url: "api/warehouse",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        })
+    },
+    render(elem, defaultSelected) {
+
+        var elem = $('#' + elem);
+
+        branch.getAPI().done(function (res) {
+
+            var select = $("<select>");
+            var option = "";
+            // Clear option in select
+            elem.empty();
+            var selected = defaultSelected;
+
+            if (selected === 'last') {
+
+                selected = res.length;
+
+                for (var i = 0; i < res.length; i++) {
+
+                    if ((selected - 1) === i) {
+                        select.append(
+                            `<option value="${res[i].warehouse_id}" selected="true"> ${res[i].name} </option>`
+                        );
+                    } else {
+                        select.append(
+                            `<option value="${res[i].warehouse_id}"> ${res[i].name} </option>`
+                        );
+                    }
+                }
+            } else {
+                for (var i = 0; i < res.length; i++) {
+
+                    option += `<option value="${res[i].warehouse_id}"> ${res[i].name} </option>`;
+                }
+            }
+            select.append(option);
+            $(elem).append(select.html());
+            $(elem).val(selected);
+        });
+    },
+    add(e, textElem, inputElem, selectElem, modalElem) {
+        e.preventDefault();
+
+        var branch_name = $('#' + inputElem);
+        if (branch_name.val().length === 0) {
+            validate(textElem, inputElem);
+        } else {
+            branch.postAPI(branch_name.val()).done(function (response) {
+                branch.render(selectElem, 'last');
+                branch.closeModal(modalElem);
+            })
         }
-    }).done(function (response) {
-
-        addSelectBranch(response);
-
-    });
-}
-function addSelectCat(data) {
-    
-    var select = $('#edit_prod_cat');
-
-    for(var i = 0 ; i < data.length ; i++) {
-        select.append(
-            `<option value="${data[i].id}">${ data[i].name }</option> `
-        ); 
+    },
+    closeModal(modalID) {
+        $('#' + modalID).modal('hide')
     }
 }
 
-function addSelectBranch(data) {
-    
-    var select = $('#edit_prod_branch');
-
-    for(var i = 0 ; i < data.length ; i++) {
-        select.append(
-            `<option value="${data[i].warehouse_id}">${ data[i].name }</option> `
-        ); 
-    }
-}
-
-function deleteProd (id) {
-    console.log(id);
-    $.ajax({
-        method: 'DELETE',
-        url: "api/product/" + id,
-        headers: {
-            "Accept":"application/json",
-            "Authorization":Authorization
-        }
-    }).done(function (response) {
-
-        console.log(response);
-
-    });
-}   
+$('#edit_prod_branch_modal').on('show.bs.modal', function (event) {
+    clear('edit_text_warning_branch', 'edit_branch_code');
+});
