@@ -40,8 +40,8 @@ var table = $('#prod_table').DataTable({
         render: function (data, type, full, meta) {
             return `
                     <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="1"/>
-                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
-                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="1" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
                 `;
         },
     },
