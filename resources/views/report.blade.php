@@ -47,8 +47,10 @@
 
 <script>
     $(document).ready(function(){
+
+        $('body').busyLoad("show", busyBoxOptions);
+
         let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
-        
 
         window.odometerOptions = {
             auto: false, // Don't automatically initialize everything with class 'odometer'
@@ -95,6 +97,9 @@
                 `)
             });
             $('#reportTable').append(c)
+
+            $('body').busyLoad("hide", busyBoxOptions);
+
         })
         
     })

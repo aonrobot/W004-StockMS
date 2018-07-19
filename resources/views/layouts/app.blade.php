@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.css') }}">
 
     <link rel="stylesheet" href="{{ asset('vendor/odometer/css/odometer-theme-default.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -105,13 +106,16 @@
             @yield('content')
         </main>
     </div>
+    <div id="fakeLoader"></div>
 </body>
-
 
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
-<script src="{{ asset('vendor/odometer/js/odometer.min.js') }}"></script>
+
 <script src="{{ asset('js/main.js') }}"></script>
+
+<script src="{{ asset('vendor/odometer/js/odometer.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
 
 </html>
 
