@@ -38,6 +38,7 @@ var table = $('#prod_table').DataTable({
     {
         "ordering": false,
         render: function (data, type, full, meta) {
+            
             return `
                     <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.btn}"/>
                     <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
@@ -69,6 +70,19 @@ var table = $('#prod_table').DataTable({
 });
 initialDataTable();
 
+function defaultValue (elem, decimal){
+
+    var elem = $('#'+elem);
+    var value = elem.val()
+
+    if (elem.val().length === 0) {
+
+        elem.val((0).toFixed(decimal));
+        return (0).toFixed(decimal) ;
+    }else {
+        return value;
+    }
+}
 function initialDataTable() {
     table
         .clear()
@@ -124,9 +138,9 @@ $("#form_prod").submit(function (e) {
         prodName: $("#prod_name").val(),
         prodDetail: $("#prod_detail").val(),
         prodBranch: $("#prod_branch").val(),
-        quantity: $("#prod_amount").val(),
-        costPrice: $("#prod_price_buy").val(),
-        salePrice: $("#prod_price_sale").val(),
+        quantity: defaultValue('prod_amount', 0),
+        costPrice: defaultValue('prod_price_buy', 2),
+        salePrice:  defaultValue('prod_price_sale', 2),
         unit: unit
     }
 
