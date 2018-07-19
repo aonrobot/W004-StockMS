@@ -1,21 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
 
-                <div class="card-body">
-                    
-
-                    You are logged in!
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 @if (session('status'))
     <div class="alert alert-success" role="alert">
         {{ session('status') }}
@@ -374,7 +360,10 @@
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group ">
-                                    <select class="form-control" id="edit_prod_branch" name="branch" value="main_branch">
+                                    <select class="form-control" 
+                                            id="edit_prod_branch" 
+                                            name="branch" 
+                                            value="main_branch">
                                     </select>
                                 </div>
                             </div>
@@ -431,7 +420,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="edit_addProdCat" type="submit" class="btn btn-primary" >Submit</button>
+                        <button id="edit_addProdCat" type="submit" class="btn btn-primary" onclick ="catagory.add(event,'edit_text_warning','edit_cat_code','edit_prod_cat','edit_prod_cat_modal')" >Submit</button>
                     </div>
                 </form>
             </div>
@@ -463,7 +452,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="edit_addBranch" type="submit" class="btn btn-primary" >Submit</button>
+                        <button id="edit_addBranch" type="submit" class="btn btn-primary" 
+                        onclick ="branch.add(event,'edit_text_warning_branch','edit_branch_code','edit_prod_branch','edit_prod_branch_modal')" >Submit</button>
                     </div>
                 </form>
             </div>
@@ -494,102 +484,6 @@
                 }
             });
         });
-
-        // Add Catagories
-        $('#addProdCat').click(function(){
-            $.ajax({
-                type: 'POST',
-                url: "http://localhost/api/category",
-                headers: {
-                    "Accept":"application/json",
-                    "Authorization":Authorization
-                },
-                data: {
-                    "category":{
-                        "name": $("#cat_code").val(),
-                        "description":""
-                    }
-                    
-                }
-            }).done( function () {
-                displayCat();
-            });
-        });
-        // Add Branch
-        // $('#addBranch').click(function(){
-            
-            // $.ajax({
-            //     type: 'POST',
-            //     url: "http://localhost/api/warehouse",
-            //     headers: {
-            //         "Accept":"application/json",
-            //         "Authorization":Authorization
-            //     },
-            //     data: {
-            //         "warehouse": {  
-            //             "name": $("#branch_code").val(),
-            //             "address":""
-            //         }
-            //     }
-            // });
-        // }); 
-
-
-        // SUBMIT
-        // $('#submitBtn').on("click", function(e) {
-        //     e.preventDefault();
-
-        //     var product_name = $("#prod_name");
-            
-        //     if (product_name.val().length === 0 ){
-
-        //         $('#require_text').html('ใส่ชื่อสินค้าที่ต้องการ');
-        //         $(product_name).addClass('is-invalid');
-                
-        //     }else {
-
-        //         var unit = '';
-        //         var prod_code;
-
-        //         if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
-        //         else { unit = $("#prod_unit").val() }
-
-        //         if ($("#prod_code").val().length === 0) { prod_code = prodID }
-        //         else {  prod_code = $("#prod_code").val() }
-
-        //         $.ajax({
-        //             type: 'POST',
-        //             url: "http://localhost/api/product",
-        //             headers: {
-        //                 "Accept":"application/json",
-        //                 "Authorization":Authorization
-        //             },
-        //             data: {
-        //                 "product": { 
-        //                     "category_id": $("#prod_cat").val(),
-        //                     "code": prod_code ,
-        //                     "name": $("#prod_name").val(),
-        //                     "unitName": unit,
-        //                     "description": $("#prod_detail").val(),
-        //                     "detail": {  
-        //                         "warehouse_id": $("#prod_branch").val(),
-        //                         "quantity": $("#prod_amount").val(),
-        //                         "costPrice": $("#prod_price_buy").val(),
-        //                         "salePrice": $("#prod_price_sale").val()
-        //                     }
-        //                 }
-        //             }
-        //         }).done(function (response) {
-        //             if (response.created){
-        //                 $('#addProd').modal('hide')
-        //             }else {
-        //                 $('#prod_code').addClass('is-invalid');
-        //                 $('#prod_code_warning').html(response.message);
-        //             }
-        //         });
-        //     }
-        // });
-
     });
     
     function displayCat(state = 'rerender') {
