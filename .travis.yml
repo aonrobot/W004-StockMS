@@ -8,24 +8,11 @@ php:
 addons:
    chrome: stable
 
-cache:
-   directories:
-      - ${TRAVIS_BUILD_DIR}/travis/lib-cache
-
-before_install:
-   # Setup Selenium
-   - export DISPLAY=:99.0
-   - sh -e /etc/init.d/xvfb start
-   - sleep 3
-   - sh -c "if [ ! -e ${TRAVIS_BUILD_DIR}/travis/lib-cache/selenium.jar ]; then wget -O ${TRAVIS_BUILD_DIR}/travis/lib-cache/selenium.jar https://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.0.jar; fi;"
-   - java -jar ${TRAVIS_BUILD_DIR}/travis/lib-cache/selenium.jar -port 4444 >/dev/null 2>&1 & # WARNING - Takes a long time to start up. Keep here
-
 install:
    - cp .env.example .env
    - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-   - curl http://localhost:4444/wd/hub/status
    - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
    - php artisan serve &
 

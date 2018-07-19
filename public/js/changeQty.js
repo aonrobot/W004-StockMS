@@ -4,7 +4,7 @@ function ajaxChangeQty(url, id, amout){
         url: "http://" + url,
         headers: {
             "Accept":"application/json",
-            "Authorization":Authorization
+            "Authorization": Authorization
         },
         data: {
             "product_id": id,
@@ -36,7 +36,7 @@ function changeQty(that, action, id){
     cell.data(newData).draw()
 }
 
-$(document).ready(function(){
+function createChangeQty_event(){
     $('.qtyAmountInput').click(function(){
         $(this).select();
     })
@@ -52,4 +52,8 @@ $(document).ready(function(){
         var id = $(this).data('id');
         changeQty(this, 'decrease', id);
     })
+}
+
+$(document).ready(function(){
+    
 })

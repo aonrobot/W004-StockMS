@@ -461,11 +461,9 @@
     </div>
 </div>
 
-<script src="{{ asset('js/changeQty.js') }}"></script>
 <script>
     
     var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
-
 
     var prodID ;
     //Event
@@ -596,7 +594,6 @@
     })
     
 </script>
-
 <script src="{{asset('js/changeQty.js')}}"></script>
 
 @endsection
