@@ -1,4 +1,9 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+var busyBoxOptions = {
+    background: "rgba(0, 0, 0, 0.6)",
+    spinner: "cube",
+    animation: "fade"
+}
 
 var table = $('#prod_table').DataTable({
     "columnDefs": [{
@@ -98,6 +103,9 @@ function initialDataTable() {
 $("#form_prod").submit(function (e) {
 
     event.preventDefault();
+
+    $('body').busyLoad("show", busyBoxOptions);
+
     // 
     var unit = '';
     var prod_code;
@@ -159,6 +167,8 @@ $("#form_prod").submit(function (e) {
 
             $('#addProd').modal('hide');
 
+            $('body').busyLoad("hide", busyBoxOptions);
+
         } else {
             $('#prod_code').addClass('is-invalid');
             $('#prod_code_warning').html(response.message);
@@ -170,6 +180,8 @@ $('#prod_table tbody').on('click', '.delete-btn', function (mm) {
 
     if (confirm("คุณยืนยันที่จะลบข้อมูล?")) {
         
+        $('body').busyLoad("show", busyBoxOptions);
+
         var id = table.row($(this).parents('tr')).data()
 
         $.ajax({
@@ -186,6 +198,9 @@ $('#prod_table tbody').on('click', '.delete-btn', function (mm) {
                 console.log('Error');
                 return false;
             }
+
+            $('body').busyLoad("hide", busyBoxOptions);
+
         });
         table
             .row($(this).parents('tr'))

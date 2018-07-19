@@ -10,10 +10,13 @@ function ajaxChangeQty(url, id, amout){
             "product_id": id,
             "amount": amout
         }
+    }).done(function(){
+        $('body').busyLoad("hide", busyBoxOptions);
     });
 }
 
 function changeQty(that, action, id){
+    $('body').busyLoad("show", busyBoxOptions);
     var intQty = $(`.qtyAmountInput[data-id=${id}]`);
     var r = $(that).data('row');
     var c = $(that).data('col');
