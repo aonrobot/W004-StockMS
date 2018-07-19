@@ -21,7 +21,7 @@ install:
 
 before_script:
   - sudo -- sh -c -e "echo -e '165.227.110.210 mysql' >> /etc/hosts";
-  - sudo -- sh -c -e "echo -e '165.227.110.210 stockms.test' >> /etc/hosts";
+  - sudo -- sh -c -e "echo -e '127.0.0.1 stockms.test' >> /etc/hosts";
   - curl http://localhost:4444/wd/hub/status
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://stockms.test &
   - php artisan serve &
