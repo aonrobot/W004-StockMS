@@ -65,7 +65,7 @@
         function ajaxSetValue(url, setTo, callback){
             $.ajax({
                 method: 'GET',
-                url: "http://" + url,
+                url: url,
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
@@ -77,12 +77,12 @@
             });
         }
         
-        ajaxSetValue('localhost/api/inventory/quantity/sum', '#totalQuantity')
-        ajaxSetValue('localhost/api/inventory/totalprice', '', function(data){
+        ajaxSetValue('api/inventory/quantity/sum', '#totalQuantity')
+        ajaxSetValue('api/inventory/totalprice', '', function(data){
             setValue('#totalPrice', data.total.cost)
         })
 
-        ajaxSetValue('localhost/api/report/all', '', function(data){
+        ajaxSetValue('api/report/all', '', function(data){
             var c = $('<tbody />');
             _.forEach(data, function(ele){
                 c.append(`
