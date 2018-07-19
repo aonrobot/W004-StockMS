@@ -41,7 +41,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                <!-- <i class="fa fa-dog"></i> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}<br> -->
+                <i class="fa fa-dog"></i> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}<br>
                 <small class="ml-2">Stock Management System</small>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -106,16 +106,15 @@
             @yield('content')
         </main>
     </div>
-    <div id="fakeLoader"></div>
 </body>
 
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
-
-<script src="{{ asset('js/main.js') }}"></script>
-
 <script src="{{ asset('vendor/odometer/js/odometer.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
-
+@guest
+@else
+<script src="{{ asset('js/main.js') }}"></script>
+@endguest
 </html>
 

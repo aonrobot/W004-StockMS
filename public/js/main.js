@@ -73,6 +73,7 @@ function initialDataTable() {
     table
         .clear()
 
+    $('body').busyLoad("show", busyBoxOptions);
 
     $.ajax({
         type: 'GET',
@@ -97,6 +98,8 @@ function initialDataTable() {
             }).draw();
         }
 
+        $('body').busyLoad("hide", busyBoxOptions);
+        createChangeQty_event();
     });
 }
 
