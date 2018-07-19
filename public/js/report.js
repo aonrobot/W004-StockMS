@@ -6,7 +6,7 @@ var total = $('#total');
 
 $.ajax({
     method: 'GET',
-    url: "http://localhost/api/inventory/quantity/sum",
+    url: "api/inventory/quantity/sum",
     headers: {
         "Accept":"application/json",
         "Authorization":Authorization
@@ -22,7 +22,7 @@ $.ajax({
 
 $.ajax({
     method: 'GET',
-    url: "http://localhost/api/inventory/totalprice",
+    url: "api/inventory/totalprice",
     headers: {
         "Accept":"application/json",
         "Authorization":Authorization
@@ -41,7 +41,7 @@ $.ajax({
 
 $.ajax({
     method: 'GET',
-    url: "http://localhost/api/report/all",
+    url: "api/report/all",
     headers: {
         "Accept":"application/json",
         "Authorization":Authorization
