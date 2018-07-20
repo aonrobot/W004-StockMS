@@ -27,7 +27,7 @@ before_script:
   - curl http://localhost:4444/wd/hub/status &
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - php artisan serve &
-  - curl http://localhost &
+  - curl http://127.0.0.1 &
 
 script:
   - php artisan key:generate
