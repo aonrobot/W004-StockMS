@@ -25,9 +25,8 @@ install:
 
 before_script:
   - curl http://localhost:4444/wd/hub/status &
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-  - php artisan serve -q -n --host=localhost --port=80&
   - curl http://127.0.0.1 &
+  - curl http://localhost &
 
 script:
   - php artisan key:generate
