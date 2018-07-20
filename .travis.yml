@@ -25,11 +25,9 @@ install:
 
 before_script:
   - curl http://localhost:4444/wd/hub/status &
-  - curl http://127.0.0.1 &
-  - curl http://localhost &
+  - curl http://localhost:80/home &
 
 script:
   - php artisan key:generate
   - php artisan migrate --seed
-  - php artisan passport:install
   - php artisan dusk
