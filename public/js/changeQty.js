@@ -36,22 +36,26 @@ function changeQty(that, action, id){
     cell.data(newData).draw()
 }
 
+function createQtyEvent(){
+    $('.qtyAmountInput').unbind( "click" ).click(function(){
+        $(this).select();
+    })
+    $('.qtyAmountInput').unbind( "change" ).change(function(){
+        var value = parseInt($(this).val());
+        if(value < 0) $(this).val('0')
+    })
+    $('.increaseOneQtyBtn').unbind( "click" ).click(function(){
+        var id = $(this).data('id');
+        changeQty(this, 'increase', id);
+    })
+    $('.decreaseOneQtyBtn').unbind( "click" ).click(function(){
+        var id = $(this).data('id');
+        changeQty(this, 'decrease', id);
+    })
+}
 function createChangeQty_event(){
+    createQtyEvent()
     table.on( 'draw', function () {
-        $('.qtyAmountInput').unbind( "click" ).click(function(){
-            $(this).select();
-        })
-        $('.qtyAmountInput').unbind( "change" ).change(function(){
-            var value = parseInt($(this).val());
-            if(value < 0) $(this).val('0')
-        })
-        $('.increaseOneQtyBtn').unbind( "click" ).click(function(){
-            var id = $(this).data('id');
-            changeQty(this, 'increase', id);
-        })
-        $('.decreaseOneQtyBtn').unbind( "click" ).click(function(){
-            var id = $(this).data('id');
-            changeQty(this, 'decrease', id);
-        })
+        createQtyEvent()
     } );
 }
