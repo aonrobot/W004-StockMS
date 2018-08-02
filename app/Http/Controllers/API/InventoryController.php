@@ -63,33 +63,44 @@ class InventoryController extends Controller
         //
     }
 
-    public function addQuantity(Request $request){
-        $product_id = $request->input('product_id');
+    public function updateQuantity(Request $request, $id){
+        $type = $request->input('type');
+        $product_id = $id;
         $amount = $request->input('amount');
+        
         $inventory = Inventory::where('product_id', $product_id);
         $quantity = $inventory->get(['quantity'])[0]->quantity;
 
-        $inventory->update([
-            'quantity' => $quantity + $amount
-        ]);
-        return response()->json(['updated' => true]);
+        $total = 0;
+        try{
+            switch ($type){
 
-    }
+                case 'increase' :
+                    $total = $quantity + $amount;
+                    $inventory->update([
+                        'quantity' => $total
+                    ]);
+                break;
+    
+                case 'decrease' :
+                    if($quantity - $amount < 0){
+                        return response()->json(['updated' => false, 'message' => 'Not enought item']);
+                    } else {
+                        $total = $quantity - $amount;
+                        $inventory->update([
+                            'quantity' => $total
+                        ]);
+                    }
+                break;
 
-    public function removeQuantity(Request $request){
-        $product_id = $request->input('product_id');
-        $amount = $request->input('amount');
-        $inventory = Inventory::where('product_id', $product_id);
-        $quantity = $inventory->get(['quantity'])[0]->quantity;
-
-        if($quantity - $amount < 0){
-            return response()->json(['updated' => false, 'message' => 'Not enought item']);
-        } else {
-            $inventory->update([
-                'quantity' => $quantity - $amount
-            ]);
-            return response()->json(['updated' => true]);
+                default:
+                    return response()->json(['updated' => false, 'message' => 'Method type not support']);
+            }
+            return response()->json(['updated' => true, 'total' => $total]);
+        } catch (\Exception $e){
+            return response()->json(['updated' => false]);            
         }
+        
     }
 
     public function getSumQuantity(){

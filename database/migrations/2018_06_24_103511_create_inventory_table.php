@@ -15,7 +15,6 @@ class CreateInventoryTable extends Migration
     {
         Schema::create('warehouse', function (Blueprint $table) {
             $table->increments('warehouse_id');
-
             $table->string('name', 144);
             $table->mediumText('address')->nullable(true);
             $table->string('status', 24)->default('active');
@@ -33,9 +32,9 @@ class CreateInventoryTable extends Migration
         });
 
         Schema::create('inventory', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('product_id')->unsigned();
             $table->integer('warehouse_id')->unsigned();
-
             $table->integer('quantity')->default(0);
             $table->integer('minLevel')->default(0);
             $table->integer('maxLevel')->default(0);
@@ -47,6 +46,18 @@ class CreateInventoryTable extends Migration
             $table->foreign('product_id', 'warehouse_id')
             ->references('product_id', 'warehouse_id')->on('product_has_warehouse')
             ->onDelete('cascade');
+        });
+
+        Schema::create('inventoryLog', function(Blueprint $table){
+            $table->increments('id');
+            $table->integer('inventory_id')->unsigned();
+            $table->string('type', 32);
+            $table->integer('amount')->default(0);
+            $table->mediumText('remark')->nullable(true);
+            $table->timestamps();
+
+            $table->foreign('inventory_id')
+            ->references('id')->on('inventory');
         });
     }
 

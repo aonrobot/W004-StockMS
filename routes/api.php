@@ -41,10 +41,10 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
 Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::prefix('inventory')->group(function () {
         //Route::put('quantity/{id}', 'InventoryController@updateQuantity');
+
+        Route::put('quantity/{id}', 'InventoryController@updateQuantity');
         Route::prefix('quantity')->group(function () {
             Route::get('sum', 'InventoryController@getSumQuantity');
-            Route::post('add', 'InventoryController@addQuantity');
-            Route::post('remove', 'InventoryController@removeQuantity');
         });
         Route::get('totalprice', 'InventoryController@getTotalPrice');
     });

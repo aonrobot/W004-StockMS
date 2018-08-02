@@ -1,18 +1,25 @@
-function ajaxChangeQty(url, id, amout){
+function ajaxChangeQty(url, amout, type){
+    var result;
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: url,
+        async:false,
         headers: {
             "Accept":"application/json",
             "Authorization": Authorization
         },
         data: {
-            "product_id": id,
-            "amount": amout
+            "amount": amout,
+            "type": type
         }
-    }).done(function(){
+    }).done(function(data){
         $('body').busyLoad("hide", busyBoxOptions);
+        result = data
+        !(data.updated) ? swal(data.message, 'error', 'error') : ''
     });
+
+    return result
+
 }
 
 function changeQty(that, action, id){
@@ -24,16 +31,16 @@ function changeQty(that, action, id){
     var amount = parseInt(intQty.val());
     switch(action){
         case 'increase' :
-            ajaxChangeQty('api/inventory/quantity/add', id, amount);
-            var newData = parseInt(cell.data()) + amount;
+            var result = ajaxChangeQty('api/inventory/quantity/' + id, amount, 'increase');
+            var newData =  result.total
             break;
         case 'decrease' :
-        ajaxChangeQty('api/inventory/quantity/remove', id, amount);
-            var newData = parseInt(cell.data()) - amount;
+            var result = ajaxChangeQty('api/inventory/quantity/' + id, amount, 'decrease');
+            var newData =  result.total
             break;
     }
     intQty.val('0');
-    cell.data(newData).draw()
+    if(newData != undefined) cell.data(newData).draw()
 }
 
 function createQtyEvent(){
