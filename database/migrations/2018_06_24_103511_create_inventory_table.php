@@ -54,6 +54,8 @@ class CreateInventoryTable extends Migration
             $table->string('type', 32);
             $table->integer('amount')->default(0);
             $table->mediumText('remark')->nullable(true);
+            $table->date('log_date');
+            $table->time('log_time');
             $table->timestamps();
 
             $table->foreign('inventory_id')
