@@ -31,7 +31,11 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Custom style -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }} "/>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.css') }}">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/regular.css" integrity="sha384-zkhEzh7td0PG30vxQk1D9liRKeizzot4eqkJ8gB3/I+mZ1rjgQk+BSt2F6rT2c+I" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.css') }}"> -->
 
     <link rel="stylesheet" href="{{ asset('vendor/odometer/css/odometer-theme-default.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
@@ -58,6 +62,9 @@
                             <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('adjust') }}"><i class="fa fa-warehouse"></i> Adjust Stock</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('report') }}"><i class="fa fa-book"></i> Report</a>
                         </li>
                     </ul>
@@ -81,14 +88,14 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    <i class="fa fa-user-astronaut"></i> {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="fa fa-power-off"></i> {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

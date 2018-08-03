@@ -50,6 +50,11 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     });
 });
 
+//API: Inventory Log
+Route::middleware('auth:api')->namespace('API')->group(function () {
+    Route::apiResource('invenLog', 'InventoryLogController');
+});
+
 //API: Report
 Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::prefix('report')->group(function () {

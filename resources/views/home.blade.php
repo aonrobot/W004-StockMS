@@ -14,8 +14,8 @@
             <div class="col-md-6 m-t-50">
                 <h4 class="title">สินค้าทั้งหมด </h4>
             </div>
-            <div class="col-md-6 m-t-50">
-                <button id="addProduct" class="btn btn-primary pull-right m-b-20" type="button" data-toggle="modal" data-target="#addProd">
+            <div class="col-md-6 m-t-50 text-right">
+                <button id="addProduct" class="btn btn-primary m-b-20" type="button" data-toggle="modal" data-target="#addProd">
                     เพิ่มสินค้า
                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
