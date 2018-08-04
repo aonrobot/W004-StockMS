@@ -51,6 +51,12 @@ return [
             'days' => 7,
         ],
 
+        'stockms' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/stockms.log'),
+            'level' => 'info'
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

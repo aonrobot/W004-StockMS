@@ -57,7 +57,7 @@ class LoginController extends Controller
             $request->session()->put('api-token', $token);
             return redirect()->intended('home');
         } else {
-            return redirect('login');
+            return redirect('login')->with('status', 'Username หรือ Password ผิดครับ');;
         }
     }
 }

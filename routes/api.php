@@ -42,7 +42,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::prefix('inventory')->group(function () {
         //Route::put('quantity/{id}', 'InventoryController@updateQuantity');
 
-        Route::put('quantity/{id}', 'InventoryController@updateQuantity');
+        Route::put('quantity/{id}', 'InventoryController@update');
         Route::prefix('quantity')->group(function () {
             Route::get('sum', 'InventoryController@getSumQuantity');
         });
@@ -52,7 +52,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
 
 //API: Inventory Log
 Route::middleware('auth:api')->namespace('API')->group(function () {
-    Route::apiResource('invenLog', 'InventoryLogController');
+    //Route::apiResource('invenLog', 'InventoryLogController');
+    Route::get('inventoryLog/{date}', 'InventoryLogController@showByDate');
 });
 
 //API: Report

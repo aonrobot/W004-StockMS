@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
 use App\Inventory;
+use App\Library\Log\Inventory as LogInventory;
 
 class InventoryController extends Controller
 {
@@ -40,6 +42,26 @@ class InventoryController extends Controller
         //
     }
 
+    private function increase($inventory, $quantity, $amount){
+        $total = $quantity + $amount;
+        $inventory->update([
+            'quantity' => $total
+        ]);
+        return $total;
+    }
+
+    private function decrease($inventory, $quantity, $amount){
+        if($quantity - $amount < 0) {
+            return false;
+        } else {
+            $total = $quantity - $amount;
+            $inventory->update([
+                'quantity' => $total
+            ]);
+            return $total;
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -49,7 +71,45 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product_id = $id;
+        $warehouse_id = $request->input('warehouse_id');
+        $type = $request->input('type');
+        $amount = $request->input('amount');
+        $date = $request->input('date');
+        $date = isset($date) ? $date : null;
+        $remark = $request->input('remark');
+        $remark = isset($remark) ? $remark : null;
+        
+        // Check product id
+        if(!\App\Product::where('product_id', $product_id)->count()) return response()->json(['error' => 'Not found this product id']);
+
+        $inventory = Inventory::where('product_id', $product_id); // TODO: If make warehouse system should (&& where(warehouse_id)) to find inventory
+        $invenId = $inventory->first(['id'])->id;
+        $quantity = $inventory->get(['quantity'])[0]->quantity;
+
+        try{
+            switch ($type) {
+                case 'increase' :
+                    $total = $this->increase($inventory, $quantity, $amount);
+                    LogInventory::write($invenId, $type, $amount, null, null);
+                break;
+    
+                case 'decrease' :
+                    $total = $this->decrease($inventory, $quantity, $amount);
+                    if($total === false){
+                        return response()->json(['updated' => false, 'message' => 'Not enought item']);
+                    }
+                    LogInventory::write($invenId, $type, $amount, null, null);
+                break;
+
+                default:
+                    return response()->json(['updated' => false, 'message' => 'Type not support']);
+            }
+            return response()->json(['updated' => true, 'total' => $total]);
+        } catch (\Exception $e){
+            Log::error($e);
+            return response()->json(['updated' => false]);            
+        }
     }
 
     /**
@@ -61,46 +121,6 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function updateQuantity(Request $request, $id){
-        $type = $request->input('type');
-        $product_id = $id;
-        $amount = $request->input('amount');
-        
-        $inventory = Inventory::where('product_id', $product_id);
-        $quantity = $inventory->get(['quantity'])[0]->quantity;
-
-        $total = 0;
-        try{
-            switch ($type){
-
-                case 'increase' :
-                    $total = $quantity + $amount;
-                    $inventory->update([
-                        'quantity' => $total
-                    ]);
-                break;
-    
-                case 'decrease' :
-                    if($quantity - $amount < 0){
-                        return response()->json(['updated' => false, 'message' => 'Not enought item']);
-                    } else {
-                        $total = $quantity - $amount;
-                        $inventory->update([
-                            'quantity' => $total
-                        ]);
-                    }
-                break;
-
-                default:
-                    return response()->json(['updated' => false, 'message' => 'Method type not support']);
-            }
-            return response()->json(['updated' => true, 'total' => $total]);
-        } catch (\Exception $e){
-            return response()->json(['updated' => false]);            
-        }
-        
     }
 
     public function getSumQuantity(){
