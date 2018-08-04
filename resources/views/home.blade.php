@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button id="add_branch" class="btn btn-link" type="button" data-toggle="modal" data-target="#prod_branch_modal"> 
+                                <button id="add_branch" class="btn btn-link" type="button" data-toggle="modal" data-target="#prod_branch_modal" disabled> 
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     เพิ่มคลังสินค้า
                                 </button>
@@ -368,7 +368,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-link" type="button" data-toggle="modal" data-target="#edit_prod_branch_modal"> 
+                                <button class="btn btn-link" type="button" data-toggle="modal" data-target="#edit_prod_branch_modal" disabled = "true"> 
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                     เพิ่มคลังสินค้า
                                 </button>
