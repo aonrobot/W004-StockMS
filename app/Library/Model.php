@@ -5,8 +5,7 @@ namespace App\Library {
 	class Model {
 
 		static public function checkIntegrity() {
-            Response::json(['error' => 'Not found this inventory id']);
-            die();
+            
 		}
 
 	}
