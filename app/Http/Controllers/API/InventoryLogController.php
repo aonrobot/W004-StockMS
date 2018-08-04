@@ -28,42 +28,65 @@ class InventoryLogController extends Controller
     public function store(Request $request)
     {
         /*
-            data
+            Request data
                 {
+                    date
                     inventory_id
                     type
                     amount
                     remark
-                    log_date
                 }
         */
         
-        $inven_id = $request->input('inventory_id'); // find product_id + warehouse_id in Inventory
+        // Get data from request
+        $invenId = $request->input('inventory_id'); // find product_id + warehouse_id in Inventory
         $date = $request->input('date');
         $type = $request->input('type');
         $amount = $request->input('amount');
         $remark = $request->input('remark');
 
-        $log = InventoryLog::where('inventory_id', $inven_id)->where('log_date', $date)->where('type', $type);
+        // Check 
+        //\App\Library\Model::checkIntegrity();
+        if(!\App\Inventory::where('id', $invenId)->count()) return response()->json(['error' => 'Not found this inventory id']);
+
+        // Find Log
+        $log = InventoryLog::where('inventory_id', $invenId)->where('log_date', $date)->where('type', $type);
         $count_log = $log->count();
-            
+        
+        // Create time from current time
         $d = Carbon::now();
         $timeNow = $d->toTimeString();
 
         // Create New Record
         if(!$count_log) {
-            InventoryLog::create([
-                'inventory_id' => $inven_id,
+            $invenLogId = InventoryLog::create([
+                'inventory_id' => $invenId,
                 'type' => $type,
                 'amount' => $amount, 
                 'remark' => $remark,
                 'log_date' => $date,
                 'log_time' => $timeNow
+            ])->id;
+            
+            // Response id
+            return response()->json([
+                'created' => true,
+                'message' => 'create new log',
+                'id' => $invenLogId
             ]);
+        
+        // Update only amount
         } else {
             $lastAmount = $log->first(['amount'])->amount;
             $newAmount = $lastAmount + $amount;
             $log->update(['amount' => $newAmount]);
+
+            // Response amount
+            return response()->json([
+                'created' => true,
+                'message' => 'update log id ' . $log->first(['id'])->id,
+                'amount' => $newAmount
+            ]);
         }
     }
 
