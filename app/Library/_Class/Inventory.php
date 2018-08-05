@@ -30,8 +30,8 @@ namespace App\Library\_Class {
             // Check inventory id
             if(!\App\Inventory::where('id', $invenId)->count()) return ['error' => 'Not found a product in this warehouse'];
             // Check Amount must isn't negative number
-            if($amount < 0) return ['error' => 'Amount must isn\'t negative number!!!'];
-            
+            if($amount < 0) return ['updated' => false, 'message' => 'Amount must isn\'t negative number!!!'];
+
             $inventory = \App\Inventory::where('id', $invenId);
             $quantity = $inventory->first(['quantity'])->quantity;
 
