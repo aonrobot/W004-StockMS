@@ -48,8 +48,15 @@ namespace App\Library\_Class {
                         }
                     break;
 
+                    case 'outoforder':
+                        $total = (!$inverse) ? self::decrease($inventory, $quantity, $amount) : self::increase($inventory, $quantity, $amount);
+                        if($total === false){
+                            return ['updated' => false, 'message' => 'Not enought item'];
+                        }
+                    break;
+
                     default:
-                        return ['updated' => false, 'message' => 'Type not support'];
+                        return ['updated' => false, 'message' => 'Type dont support. Dont have (' . $type . ') at this time.'];
                 }
                 return ['updated' => true, 'total' => $total];
             } catch (\Exception $e){
