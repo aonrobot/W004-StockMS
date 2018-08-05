@@ -14,11 +14,20 @@
     <div class="row m-b-30">
         <div class="col-md-6">
             <p class="m-b-0 m-t-20">เลือกวันที่ต้องการแสดงสินค้า</p>
-            <input class="datepicker" data-date-format="dd/mm/yyyy" style="width: 100%;" value="04/08/2018" />
+
+            <div class="input-group date">
+                <input class="datepicker form-control" data-date-format="dd/mm/yyyy" id="datePicker" />
+
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
             <p class="m-b-0 m-t-20">เลือกคลังสินค้าที่ต้องการแสดง</p>
-            <select disabled class="form-control">
+            <select disabled class="form-control" id="warehouseSelect">
                 <option selected >คลังสินค้าหลัก</option>
             </select>
                 <!-- <button class="btn btn-primary m-t-20 col-md-8">แสดง</button> -->
@@ -33,7 +42,8 @@
             </button>
         </div>
         <div class="col-md-12 card">
-            <p>no items</p>
+            <h5 class="">วันที่ <span id="adjustDate"></span></h5>
+            <h5 id="adjustWarehouse"></h5>
         </div>
     </div>  
 
@@ -51,9 +61,7 @@
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <p class="m-b-0 form-label">เลือกสินค้าที่ต้องการเพิ่ม หรือ ลด จำนวน</p>
-                            <select class="js-example-basic-single form-control" name="state" style="width: 100%;">
-                                <option value="AL">Alabama</option>
-                                <option value="WY">Wyoming</option>
+                            <select class="js-example-basic-single form-control" name="state" style="width: 100%;" id="productSelect">
                             </select>
                         </div>
 
@@ -109,7 +117,7 @@
     var d = new Date();
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
+    var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
     $(document).ready(function(){
 
@@ -121,15 +129,80 @@
             d.getFullYear() 
         );
 
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            startDate: '-3d'
+        $("#datePicker").datepicker({
+            todayHighlight: true
         });
         
-        
+        $("#datePicker").datepicker("setDate", new Date); 
+        $("#adjustDate").html(convertDate(new Date()));
+        $("#adjustWarehouse").html($("#warehouseSelect").val());
         $('.js-example-basic-single').select2();
-    })
+
+    });
+
+
+    $.ajax({
+        method: 'GET',
+        url: "api/inventoryLog/byDate/"+'2018-08-04',
+        headers: {
+            "Accept":"application/json",
+            "Authorization":Authorization
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus);
+        }
+    }).done(function (data) {
+        console.log(data);
+    });
+
     
+    $('#manageStock').on('show.bs.modal', function (event) {
+        product.get().done(function(res){
+            var selectElem = $("#productSelect");
+            var option = [];
+            
+            for (var i = 0 ; i < res.length ; i++) {
+                option.push({
+                    id: res[i].product_id,
+                    text: `<span class="badge badge-info">${res[i].code}</span> ${res[i].name}`  
+                });
+            }   
+            $(selectElem).select2({
+                data: option,
+                escapeMarkup: function(markup) {
+                    return markup;
+                }
+            });
+        });
+    })
+
+    var product = {
+        
+        init(){
+            this.get();
+        },
+
+        get() {
+            return $.ajax({
+                method: 'GET',
+                url: "api/product",
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            })
+        }
+    }
+
+    function convertDate(inputFormat) {
+        function pad(s) { return (s < 10) ? '0' + s : s; }
+            var d = new Date(inputFormat);
+            return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+    }
+
 </script>
 
 @endsection
