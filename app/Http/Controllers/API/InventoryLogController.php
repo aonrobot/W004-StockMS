@@ -50,7 +50,7 @@ class InventoryLogController extends Controller
         $date = $request->input('date');
         $remark = $request->input('remark');
 
-        $resultArray = LogInventory::write($invenId, $type, $amount, $remark, $date);
+        $resultArray = LogInventory::write($invenId, $type, $amount, $date, $remark);
 
         return response()->json($resultArray);
     }

@@ -59,6 +59,8 @@ class InventoryController extends Controller
         $amount = $request->input('amount');
         $date = $request->input('date');
         $date = isset($date) ? $date : null;
+        //Format Date
+        if($date !== null) $date = \Carbon\Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
         $remark = $request->input('remark');
         $remark = isset($remark) ? $remark : null;
         
