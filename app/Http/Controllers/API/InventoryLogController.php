@@ -110,13 +110,34 @@ class InventoryLogController extends Controller
         $newAmount = $request->input('amount');
         $remark = $request->input('remark');
 
+        if($newAmount < 0) return response()->json(['updated' => false, 'message' => 'Amount must isn\'t negative number!!!']);
+
         // TODO Unit test
         // !! newAmount must isn't negative number 
         // log(increase) oldAmount = 15, newAmount 20 -> inventory quantity = (+5)
-        // log(increase) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
+        // log(increase) oldAmount = 20, newAmount 15 -> inventory quantity = (-5)
+        // log(decrease) oldAmount = 15, newAmount 20 -> inventory quantity = (-5)
+        // log(decrease) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
+
         $log = InventoryLog::where('id', $id)->first();
+        $invenId = $log->inventory_id;
         $type = $log->type;
         $oldAmount = $log->amount;
+        $diffAmount = abs($oldAmount - $newAmount);
+
+        // Update InventoryLog
+        $log->update(['amount' => $newAmount, 'remark' => $remark]);
+
+        // Update Inventory
+        if($oldAmount < $newAmount) {
+            $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+        } else if ($oldAmount > $newAmount) {
+            $result = ClassInventory::ajustInverse($invenId, $type, $diffAmount);
+        } else {
+            $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+        }
+
+        return response()->json($result);
         //$adjustAmount = 
     }
 

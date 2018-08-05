@@ -38,11 +38,11 @@ var table = $('#prod_table').DataTable({
     {
         "ordering": false,
         render: function (data, type, full, meta) {
-            
+            console.log(full)
             return `
-                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.btn}"/>
-                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
-                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
+                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
                 `;
         },
     },
@@ -108,6 +108,7 @@ function initialDataTable() {
                 "prodSalePrice": data[i].inventory.salePrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
+                "invenID": data[i].inventory.id,
                 "btn": data[i].product_id
             }).draw();
         }
@@ -178,6 +179,7 @@ $("#form_prod").submit(function (e) {
                 "prodSalePrice": param.salePrice,
                 "prodAmount": param.quantity,
                 "prodUnit": param.unit,
+                "invenID": response.inventory_id,
                 "btn": response.product_id
             }).draw();
 

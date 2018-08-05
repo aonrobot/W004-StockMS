@@ -60,7 +60,7 @@ class ProductController extends Controller
                         'product_id' => $productId,
                         'warehouse_id' => $productDetail['warehouse_id']
                     ]);
-                    Inventory::create([
+                    $invenId = Inventory::create([
                         'product_id' => $productId,
                         'warehouse_id' => $productDetail['warehouse_id'],
                         'quantity' => empty($quantity) ? 0 : intval($quantity),
@@ -68,8 +68,8 @@ class ProductController extends Controller
                         'maxLevel' => 0,
                         'costPrice' => empty($cPrice) ? 0.0 : floatval($cPrice),
                         'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
-                    ]);
-                    return response()->json(['created' => true, 'product_id' => $productId]);
+                    ])->id;
+                    return response()->json(['created' => true, 'product_id' => $productId, 'inventory_id' => $invenId]);
 
                 } catch(\Exception $e) {
                     return response()->json(['created' => false]);
