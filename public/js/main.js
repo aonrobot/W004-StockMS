@@ -38,7 +38,6 @@ var table = $('#prod_table').DataTable({
     {
         "ordering": false,
         render: function (data, type, full, meta) {
-            console.log(full)
             return `
                     <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
                     <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>

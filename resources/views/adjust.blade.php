@@ -207,3 +207,6 @@
 
 @endsection
 
+@section('page_script')
+<!-- For add custom script of this blade -->
+@endsection
