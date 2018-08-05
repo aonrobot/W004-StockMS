@@ -28,7 +28,7 @@
         <div class="col-md-4">
             <p class="m-b-0 m-t-20">เลือกคลังสินค้าที่ต้องการแสดง</p>
             <select disabled class="form-control" id="warehouseSelect">
-                <option selected >คลังสินค้าหลัก</option>
+                <option selected value="1">คลังสินค้าหลัก</option>
             </select>
                 <!-- <button class="btn btn-primary m-t-20 col-md-8">แสดง</button> -->
         </div>
@@ -61,51 +61,56 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <p class="m-b-0 form-label">เลือกสินค้าที่ต้องการเพิ่ม หรือ ลด จำนวน</p>
-                                <select class="js-example-basic-single form-control" name="state" style="width: 100%;" id="productSelect">
+                                <p class="m-b-0 form-label">เลือกสินค้าที่ต้องการเพิ่ม หรือ ลด จำนวน<sup class="text-danger">*</sup></p>
+                                <select class="js-example-basic-single form-control" name="state" style="width: 100%;" id="adjustProduct" required>
 
-                                    <option selected disabled class="text-center" style="margin:0 auto;">
+                                    <option value="" selected disabled class="text-center" style="margin:0 auto;">
                                         --- เลือกสินค้า ---
                                     </option>
                                 </select>
                             </div>
 
                             <div class="col-md-12 form-group">
-                                <p class="m-b-0 form-label  m-t-20">เลือกประเภท</p>
+                                <p class="m-b-0 form-label  m-t-20">เลือกประเภท<sup class="text-danger">*</sup></p>
                                 <div class="p-10">
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" id="plus" name="increase" checked />
-                                        <label class="custom-control-label" for="plus">
+                                        <input type="radio" class="custom-control-input" id="increase" name="adjustType" checked value="increase" />
+                                        <label class="custom-control-label" for="increase">
                                             เพิ่มสินค้า
                                         </label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" id="minus" name="decrease" />
-                                        <label class="custom-control-label" for="minus">
+                                        <input type="radio" class="custom-control-input" id="decrease" name="adjustType" value="decrease" />
+                                        <label class="custom-control-label" for="decrease">
                                             ลดสินค้า
                                         </label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" id="broken" name="outoforder" />
-                                        <label class="custom-control-label" for="broken">
+                                        <input type="radio" class="custom-control-input" id="outoforder" name="adjustType" value="outoforder" />
+                                        <label class="custom-control-label" for="outoforder">
                                             สินค้าชำรุด
                                         </label>
                                     </div>
                                 </div>
 
-                                <p class="m-b-0 m-t-20 form-label">ใส่จำนวนที่ต้องการ</p>
-                                <input type="number" class=" form-control" placeholder="จำนวนตัวเลข" />
+                                <p class="m-b-0 m-t-20 form-label">ใส่จำนวนที่ต้องการ<sup class="text-danger">*</sup></p>
+                                <input type="number" class=" form-control" placeholder="จำนวนตัวเลข" required id="adjustAmount" />
+                                <!-- WARNING!!! -->
+                                <span id="amount-warning" class="text-danger">
+                                    ขณะนี้มีสินค้าจำนวน <strong id="amount-warning-number">12</strong> </br> 
+                                    ไม่สามารถลดจำนวนสินค้าน้อยไปกว่า จำนวนสินค้าที่มีอยู่ 
+                                </span>
 
                                 <p class="m-b-0 m-t-20 form-label">NOTE:</p>
-                                <textarea class=" form-control" ></textarea>
+                                <textarea class=" form-control" id="adjustRemark"></textarea>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button id="submitAddInventory" type="submit" class="btn btn-primary" >Submit</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="submitAddInventory" type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -138,16 +143,26 @@
         
         $("#datePicker").datepicker("setDate", new Date); 
         $("#adjustDate").html(convertDate(new Date()));
-        $("#adjustWarehouse").html($("#warehouseSelect").val());
+        $("#adjustWarehouse").html($("#warehouseSelect").find('option:selected').text());
         $('.js-example-basic-single').select2();
 
     });
 
     // Modal Add Inventory Show 
     $('#manageStock').on('show.bs.modal', function (event) {
+
+        // init  Clear
+        $('#amount-warning').hide();
+        
+        $('#adjustProduct').html(`<option value="" selected disabled class="text-center" style="margin:0 auto;">--- เลือกสินค้า ---</option>`);
+        $('#increase').prop("checked", true);
+        $('#adjustAmount').val('');
+        $('#adjustAmount').removeClass('is-invalid');
+        $('#adjustRemark').val('');
+
         product.get().done(function(res){
-            console.log(res);
-            var selectElem = $("#productSelect");
+
+            var selectElem = $("#adjustProduct");
             var option = [];
             
             for (var i = 0 ; i < res.length ; i++) {
@@ -159,7 +174,8 @@
                         <span class="float-right sub-title">
                             จำนวน ${res[i].inventory.quantity }  ${res[i].unitName }   
                         </span>
-                    `  
+                    `,
+                    quantity: res[i].inventory.quantity 
                 }); 
             }   
             $(selectElem).select2({
@@ -185,9 +201,6 @@
                     console.log(textStatus);
                 }
             })
-        },
-        update() {
-
         }
     }
 
@@ -206,6 +219,21 @@
                     console.log(textStatus);
                 }
             });
+        },
+        update(prodID , param) {
+            return $.ajax({
+                method: 'PUT',
+                // Format Date = dd/mm/yyyy
+                url:  "api/inventory/quantity/" + prodID,
+                data: param,
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
         }
     } 
 
@@ -213,18 +241,35 @@
     $("#addInventoryForm").submit(function (e) {
 
         event.preventDefault();
-        // 
-        // {
-        //     "warehouse_id": 1,
-        //     "type": "increase",                // increase, decrease, outoforder
-        //     "amount": 2,
-        //     "date": "2018-09-03",         // (Optional) YYYY-DD-MM
-        //     "remark": "text comment"   // (Optional)
-        // }
+        var product_id = $('#adjustProduct').val();
+        var warehouse_id = $('#warehouseSelect').val();
+        var type = document.querySelector('input[name="adjustType"]:checked').value;
+        var amount = $('#adjustAmount').val();
+        var date = $('#datePicker').val();
+        var remark = $('#adjustRemark').val();
 
+        var param = {
+            "warehouse_id": warehouse_id,
+            "type": type,         
+            "amount": amount,
+            "date": date,         
+            "remark": remark   
+        }
+        console.log(param);
+        var currentQuantity = $("#adjustProduct").select2('data')[0].quantity;
+
+        if (  ( type==="decrease" || type==="outoforder" ) && ( amount > currentQuantity ) ) {
+
+            $('#adjustAmount').addClass('is-invalid');
+            $('#amount-warning-number').html(currentQuantity);
+            $('#amount-warning').show();
+
+        }else{
+            inventory.update(product_id , param).done(function(res){console.log(res)});
+            $('#manageStock').modal('hide');
+        }
     });
-
-
+    
     function convertDate(inputFormat) {
         function pad(s) { return (s < 10) ? '0' + s : s; }
             var d = new Date(inputFormat);
