@@ -13,7 +13,7 @@ namespace App\Library\Log {
             Log::channel('stockms')->info('Inventory Log : ' . $paraStr);
         }
         
-        static public function write($invenId, $type, $amount, $remark = 'no comment', $date) 
+        static public function write($invenId, $type, $amount, $date, $remark = 'no comment') 
         {
             // Check date isn't empty
             $date = ($date == null) ? Carbon::now()->toDateString() : $date;

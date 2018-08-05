@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
 use Carbon\Carbon;
 use App\Inventory;
 use App\InventoryLog;
@@ -49,7 +50,7 @@ class InventoryLogController extends Controller
         $date = $request->input('date');
         $remark = $request->input('remark');
 
-        $resultArray = LogInventory::write($invenId, $type, $amount, $remark, $date);
+        $resultArray = LogInventory::write($invenId, $type, $amount, $date, $remark);
 
         return response()->json($resultArray);
     }
@@ -67,8 +68,13 @@ class InventoryLogController extends Controller
 
     // Dateformat input = DD/MM/YYY or something
     public function showByDate($d, $m, $y){
-        $d = Carbon::create($y, $m, $d);
-        $date = $d->format('Y-m-d');
+        try{
+            $d = Carbon::create($y, $m, $d);
+            $date = $d->format('Y-m-d');
+        } catch(\Exception $e){
+            Log::error($e);
+            return response()->json(['show' => false, 'message' => 'Invalid date format']);
+        }
         
         $invens = Inventory::get();
         foreach($invens as $index => $inven){
@@ -110,13 +116,34 @@ class InventoryLogController extends Controller
         $newAmount = $request->input('amount');
         $remark = $request->input('remark');
 
+        if($newAmount < 0) return response()->json(['updated' => false, 'message' => 'Amount must isn\'t negative number!!!']);
+
         // TODO Unit test
         // !! newAmount must isn't negative number 
         // log(increase) oldAmount = 15, newAmount 20 -> inventory quantity = (+5)
-        // log(increase) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
+        // log(increase) oldAmount = 20, newAmount 15 -> inventory quantity = (-5)
+        // log(decrease) oldAmount = 15, newAmount 20 -> inventory quantity = (-5)
+        // log(decrease) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
+
         $log = InventoryLog::where('id', $id)->first();
+        $invenId = $log->inventory_id;
         $type = $log->type;
         $oldAmount = $log->amount;
+        $diffAmount = abs($oldAmount - $newAmount);
+
+        // Update InventoryLog
+        $log->update(['amount' => $newAmount, 'remark' => $remark]);
+
+        // Update Inventory
+        if($oldAmount < $newAmount) {
+            $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+        } else if ($oldAmount > $newAmount) {
+            $result = ClassInventory::ajustInverse($invenId, $type, $diffAmount);
+        } else {
+            $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+        }
+
+        return response()->json($result);
         //$adjustAmount = 
     }
 
