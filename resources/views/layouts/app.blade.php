@@ -19,6 +19,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" ></script>
     
+    
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -36,8 +37,11 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/regular.css" integrity="sha384-zkhEzh7td0PG30vxQk1D9liRKeizzot4eqkJ8gB3/I+mZ1rjgQk+BSt2F6rT2c+I" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.css') }}"> -->
-
     <link rel="stylesheet" href="{{ asset('vendor/odometer/css/odometer-theme-default.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap-datepicker.min.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+
     <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
 </head>
 <body>
@@ -123,6 +127,11 @@
 <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.26.9/dist/sweetalert2.all.min.js"></script>
 <!-- <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script> -->
+<!-- Date Picker -->
+<script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
 <script src="{{ asset('js/main.js') }}"></script>
 @endguest
 </html>
