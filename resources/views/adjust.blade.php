@@ -57,51 +57,54 @@
                     <h4 class="modal-title">จัดการสต๊อก</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 form-group">
-                            <p class="m-b-0 form-label">เลือกสินค้าที่ต้องการเพิ่ม หรือ ลด จำนวน</p>
-                            <select class="js-example-basic-single form-control" name="state" style="width: 100%;" id="productSelect">
-                            </select>
-                        </div>
+                <form id="addInventoryForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <p class="m-b-0 form-label">เลือกสินค้าที่ต้องการเพิ่ม หรือ ลด จำนวน</p>
+                                <select class="js-example-basic-single form-control" name="state" style="width: 100%;" id="productSelect">
 
-                        <div class="col-md-12 form-group">
-                        <p class="m-b-0 form-label">เลือกประเภท</p>
-                            <div class="p-10">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="plus" name="defaultExampleRadios" checked />
-                                    <label class="custom-control-label" for="plus">
-                                        เพิ่มสินค้า
-                                    </label>
+                                    <option selected disabled class="text-center" style="margin:0 auto;">
+                                        --- เลือกสินค้า ---
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 form-group">
+                                <p class="m-b-0 form-label  m-t-20">เลือกประเภท</p>
+                                <div class="p-10">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="plus" name="increase" checked />
+                                        <label class="custom-control-label" for="plus">
+                                            เพิ่มสินค้า
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="minus" name="decrease" />
+                                        <label class="custom-control-label" for="minus">
+                                            ลดสินค้า
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="broken" name="outoforder" />
+                                        <label class="custom-control-label" for="broken">
+                                            สินค้าชำรุด
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="minus" name="defaultExampleRadios" />
-                                    <label class="custom-control-label" for="minus">
-                                        ลดสินค้า
-                                    </label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="broken" name="defaultExampleRadios" />
-                                    <label class="custom-control-label" for="broken">
-                                        สินค้าชำรุด
-                                    </label>
-                                </div>
+
+                                <p class="m-b-0 m-t-20 form-label">ใส่จำนวนที่ต้องการ</p>
+                                <input type="number" class=" form-control" placeholder="จำนวนตัวเลข" />
+
+                                <p class="m-b-0 m-t-20 form-label">NOTE:</p>
+                                <textarea class=" form-control" ></textarea>
                             </div>
                         </div>
-                        <div class="col-md-12 form-group">
-                            <p class="m-b-0 form-label">ใส่จำนวนที่ต้องการ</p>
-                            <input type="number" class=" form-control" placeholder="จำนวนตัวเลข" />
-                        </div>
-
-                        <div class="col-md-12 form-group">
-                            <p class="m-b-0 form-label">NOTE:</p>
-                            <textarea class=" form-control" ></textarea>
-                        </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="submitAddInventory" type="submit" class="btn btn-primary" >Submit</button>
                 </div>
             </div>
         </div>
@@ -140,32 +143,24 @@
 
     });
 
-
-    $.ajax({
-        method: 'GET',
-        url: "api/inventoryLog/byDate/"+'2018-08-04',
-        headers: {
-            "Accept":"application/json",
-            "Authorization":Authorization
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus);
-        }
-    }).done(function (data) {
-        console.log(data);
-    });
-
-    
+    // Modal Add Inventory Show 
     $('#manageStock').on('show.bs.modal', function (event) {
         product.get().done(function(res){
+            console.log(res);
             var selectElem = $("#productSelect");
             var option = [];
             
             for (var i = 0 ; i < res.length ; i++) {
                 option.push({
                     id: res[i].product_id,
-                    text: `<span class="badge badge-info">${res[i].code}</span> ${res[i].name}`  
-                });
+                    text: `
+                        <span class="badge badge-info">${res[i].code}</span> 
+                        ${res[i].name}
+                        <span class="float-right sub-title">
+                            จำนวน ${res[i].inventory.quantity }  ${res[i].unitName }   
+                        </span>
+                    `  
+                }); 
             }   
             $(selectElem).select2({
                 data: option,
@@ -177,10 +172,6 @@
     })
 
     var product = {
-        
-        init(){
-            this.get();
-        },
 
         get() {
             return $.ajax({
@@ -194,8 +185,45 @@
                     console.log(textStatus);
                 }
             })
+        },
+        update() {
+
         }
     }
+
+    var inventory = {
+        get () {
+
+            return $.ajax({
+                method: 'GET',
+                // Format Date = dd/mm/yyyy
+                url: "api/inventoryLog/byDate/",
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        }
+    } 
+
+        
+    $("#addInventoryForm").submit(function (e) {
+
+        event.preventDefault();
+        // 
+        // {
+        //     "warehouse_id": 1,
+        //     "type": "increase",                // increase, decrease, outoforder
+        //     "amount": 2,
+        //     "date": "2018-09-03",         // (Optional) YYYY-DD-MM
+        //     "remark": "text comment"   // (Optional)
+        // }
+
+    });
+
 
     function convertDate(inputFormat) {
         function pad(s) { return (s < 10) ? '0' + s : s; }
