@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
 use Carbon\Carbon;
 use App\Inventory;
 use App\InventoryLog;
@@ -67,8 +68,13 @@ class InventoryLogController extends Controller
 
     // Dateformat input = DD/MM/YYY or something
     public function showByDate($d, $m, $y){
-        $d = Carbon::create($y, $m, $d);
-        $date = $d->format('Y-m-d');
+        try{
+            $d = Carbon::create($y, $m, $d);
+            $date = $d->format('Y-m-d');
+        } catch(\Exception $e){
+            Log::error($e);
+            return response()->json(['show' => false, 'message' => 'Invalid date format']);
+        }
         
         $invens = Inventory::get();
         foreach($invens as $index => $inven){
