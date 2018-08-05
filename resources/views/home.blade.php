@@ -594,7 +594,10 @@
     })
     
 </script>
-<script src="{{asset('js/changeQty.js')}}"></script>
 
 @endsection
 
+@section('page_script')
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/changeQty.js') }}"></script>
+@endsection
