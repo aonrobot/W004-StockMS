@@ -52,8 +52,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
 
 //API: Inventory Log
 Route::middleware('auth:api')->namespace('API')->group(function () {
-    //Route::apiResource('invenLog', 'InventoryLogController');
-    Route::get('inventoryLog/byDate/{date}', 'InventoryLogController@showByDate');
+    Route::get('inventoryLog/byDate/{d}/{m}/{y}', 'InventoryLogController@showByDate');
+    Route::apiResource('inventoryLog', 'InventoryLogController');
 });
 
 //API: Report
