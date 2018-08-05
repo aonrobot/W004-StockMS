@@ -5,9 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use App\Library\Log\Inventory as LogInventory;
 use App\Inventory;
 use App\InventoryLog;
+use App\Library\Log\Inventory as LogInventory;
+use App\Library\_Class\Inventory as ClassInventory;
 
 class InventoryLogController extends Controller
 {
@@ -64,7 +65,11 @@ class InventoryLogController extends Controller
         //
     }
 
-    public function showByDate($date){
+    // Dateformat input = DD/MM/YYY or something
+    public function showByDate($d, $m, $y){
+        $d = Carbon::create($y, $m, $d);
+        $date = $d->format('Y-m-d');
+        
         $invens = Inventory::get();
         foreach($invens as $index => $inven){
             $invenLog = InventoryLog::where('inventory_id', $inven->id)->where('log_date', $date);
@@ -102,7 +107,17 @@ class InventoryLogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $newAmount = $request->input('amount');
+        $remark = $request->input('remark');
+
+        // TODO Unit test
+        // !! newAmount must isn't negative number 
+        // log(increase) oldAmount = 15, newAmount 20 -> inventory quantity = (+5)
+        // log(increase) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
+        $log = InventoryLog::where('id', $id)->first();
+        $type = $log->type;
+        $oldAmount = $log->amount;
+        //$adjustAmount = 
     }
 
     /**
@@ -113,6 +128,18 @@ class InventoryLogController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(!\App\InventoryLog::where('id', $id)->count()) return ['error' => 'Not found this log'];
+        $log = InventoryLog::where('id', $id)->first();
+        $invenId = $log->inventory_id;
+        $type = $log->type;
+        $amount = $log->amount;
+
+        $result = ClassInventory::ajustInverse($invenId, $type, $amount);
+        if($result['updated'] == true){
+            InventoryLog::destroy($id);
+            return response()->json($result);
+        } else {
+            return response()->json($result);
+        }
     }
 }
