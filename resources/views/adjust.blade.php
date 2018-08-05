@@ -16,7 +16,7 @@
             <p class="m-b-0 m-t-20">เลือกวันที่ต้องการแสดงสินค้า</p>
 
             <div class="input-group date">
-                <input class="datepicker form-control" data-date-format="dd/mm/yyyy" id="datePicker" />
+                <input class="datepicker form-control" data-date-format="dd/mm/yyyy" id="datePicker"  />
 
                 <div class="input-group-append">
                     <span class="input-group-text">
@@ -44,8 +44,14 @@
         <div class="col-md-12 card">
             <h5 class="">วันที่ <span id="adjustDate"></span></h5>
             <h5 id="adjustWarehouse"></h5>
+            <hr />
+            
+            <div class="col-md-12" id="display" style="min-height: 200px;">
+            
+                
+            </div>
         </div>
-    </div>  
+    </div>
 
 
     <!-- Modal -->
@@ -138,15 +144,26 @@
         );
 
         $("#datePicker").datepicker({
-            todayHighlight: true
+            todayHighlight: true,
+            format : 'dd/mm/yyyy',
+            endDate: '+1d'
+
+        }).on('changeDate', function(ev){
+            $("#adjustDate").html($("#datePicker").val());
+            inventory.get().done(function (res) {
+                inventory.render(res);
+            });
         });
-        
-        $("#datePicker").datepicker("setDate", new Date); 
+
+        $("#datePicker").datepicker("setDate", new Date()); 
         $("#adjustDate").html(convertDate(new Date()));
         $("#adjustWarehouse").html($("#warehouseSelect").find('option:selected').text());
         $('.js-example-basic-single').select2();
 
+        inventory.get().done(function (res){console.log(res)});
+
     });
+
 
     // Modal Add Inventory Show 
     $('#manageStock').on('show.bs.modal', function (event) {
@@ -206,11 +223,11 @@
 
     var inventory = {
         get () {
-
+            var date = $("#datePicker").val();
             return $.ajax({
                 method: 'GET',
                 // Format Date = dd/mm/yyyy
-                url: "api/inventoryLog/byDate/",
+                url: "api/inventoryLog/byDate/" + date,
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization
@@ -234,6 +251,52 @@
                     console.log(textStatus);
                 }
             });
+        },
+        render (data) {
+            
+            var display = $("#display");
+                display.empty();
+            
+            if(data.length === 0){ 
+                display.append(`
+                    <div class="text-center" id="notfound">
+                        <img src="./notfound.png" style="max-width: 100%;" width="30%"/> 
+                    </div>`
+                );
+            }else{
+                
+                var ul = $(`<ul class="list-group list-group-flush"></ul>`);
+                var li = '';
+                for(var i = 0 ; i < data.length ; i++) {
+                    li += 
+                        `<li class="list-group-item">
+                            <div class="row"> 
+                                <div class="col-md-1 flex flex-v-center">
+                                    <span class="badge badge-info m-r-20">${ data[i].product_detail.code }</span>
+                                </div>
+                                <div class="col-md-4  flex flex-v-center">
+                                    ${ data[i].product_detail.name }
+                                </div>
+                                <div class="col-md-2 flex flex-v-center">ไม่รู้ใส่ตัวแปรไหนว้อย</div>
+                                <div class="col-md-2 flex flex-v-center">ไม่รู้ใส่ตัวแปรไหนว้อย</div>
+                                <div class="col-md-2">
+                                    <span class="float-right  m-r-20"> 
+                                        จำนวนคงเหลือ  
+                                        <b>${ data[i].quantity }</b> 
+                                        ${ data[i].product_detail.unitName }
+                                    </span>
+                                </div>
+                                <div class="col-xs-1  flex flex-v-center">
+                                    <a href="#" class="edit-inventory-btn float-right" >
+                                        Edit
+                                    </a> 
+                                </div>
+                            </div>
+                        </li>`;
+                }
+                ul.append(li);
+                display.append(ul);
+            }
         }
     } 
 
@@ -255,7 +318,6 @@
             "date": date,         
             "remark": remark   
         }
-        console.log(param);
         var currentQuantity = $("#adjustProduct").select2('data')[0].quantity;
 
         if (  ( type==="decrease" || type==="outoforder" ) && ( amount > currentQuantity ) ) {
@@ -265,7 +327,8 @@
             $('#amount-warning').show();
 
         }else{
-            inventory.update(product_id , param).done(function(res){console.log(res)});
+            inventory.update(product_id , param);
+            inventory.get().done(function(res) { inventory.render(res)} );
             $('#manageStock').modal('hide');
         }
     });

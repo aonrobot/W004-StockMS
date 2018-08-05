@@ -97,6 +97,7 @@ header .dropdown-menu {
 .m-b-20 { margin-bottom: 20px }
 .m-b-30 { margin-bottom: 30px }
 .m-b-0 { margin-bottom: 0;}
+.m-r-20 { margin-right: 20px}
 .no-padding { padding: 0 !important }
 .p-10 { padding: 10px !important}
 
@@ -238,4 +239,15 @@ table.dataTable tbody tr:hover .table-btn > div {
 .text-small {
     font-size: 13px;
     color: #ccc;
+}
+
+.list-group-item:hover {
+    background: #f5f8fc;
+}
+
+.edit-inventory-btn {
+    visibility: hidden;
+}
+.list-group-item:hover .edit-inventory-btn {
+    visibility: visible;
 }
