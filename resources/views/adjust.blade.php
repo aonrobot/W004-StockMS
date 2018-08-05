@@ -46,7 +46,7 @@
             <h5 id="adjustWarehouse"></h5>
             <hr />
             
-            <div class="col-md-12" id="display" style="min-height: 200px;">
+            <div class="col-md-12" id="display" style="min-height: 200px; padding: 0;">
             
                 
             </div>
@@ -146,7 +146,8 @@
         $("#datePicker").datepicker({
             todayHighlight: true,
             format : 'dd/mm/yyyy',
-            endDate: '+1d'
+            endDate: '+1d',
+            orientation: "right",
 
         }).on('changeDate', function(ev){
             $("#adjustDate").html($("#datePicker").val());
@@ -265,38 +266,132 @@
                 );
             }else{
                 
-                var ul = $(`<ul class="list-group list-group-flush"></ul>`);
-                var li = '';
+                // var ul = $(`<ul class="list-group list-group-flush"></ul>`);
+                var div = $(`<div id="accordion"></div>`);
+                var elem = '';
                 for(var i = 0 ; i < data.length ; i++) {
-                    li += 
-                        `<li class="list-group-item">
-                            <div class="row"> 
-                                <div class="col-md-1 flex flex-v-center">
-                                    <span class="badge badge-info m-r-20">${ data[i].product_detail.code }</span>
+                   
+                    var log = '<ul class="list-group list-group-flush log-list">';
+                    for (var j = 0 ; j < data[i].log.length ; j++) {
+                        var type ;
+                        if (data[i].log[j].type === 'increase') type = '<i class="fa fa-arrow-up text-success" aria-hidden="true"></i> เพิ่มสินค้า'
+                        else if (data[i].log[j].type === 'decrease') type = '<i class="fa fa-arrow-down text-danger" aria-hidden="true"></i> ลดสินค้า'
+                        else if (data[i].log[j].type === 'outoforder') type = '<i class="fa fa-arrow-down text-warning" aria-hidden="true"></i> สินค้าชำรุด'
+                        else null
+
+                        log += `
+                            <li class="list-group-item"> 
+                                <div class="row">
+                                    <div class="col-md-7 flex flex-v-center">
+                                        <i class="fa fa-clock sub-title m-r-10" aria-hidden="true"></i> ${ data[i].log[j].updated_at } 
+                                    </div>
+                                    <div class="col-md-3">
+                                        ${type} <strong>${ data[i].log[j].amount }</strong> ${ data[i].product_detail.unitName } 
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <a href="javscript:return false;" class=" m-r-5" onclick="inventory.edit(${data[i].log[j].id})">
+                                            Edit 
+                                        </a> 
+                                         | 
+                                        <a href="javscript:return false;" class="text-danger m-l-5" onclick="inventory.delete(${data[i].log[j].id})">
+                                            Delete
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-md-4  flex flex-v-center">
-                                    ${ data[i].product_detail.name }
-                                </div>
-                                <div class="col-md-2 flex flex-v-center">ไม่รู้ใส่ตัวแปรไหนว้อย</div>
-                                <div class="col-md-2 flex flex-v-center">ไม่รู้ใส่ตัวแปรไหนว้อย</div>
-                                <div class="col-md-2">
-                                    <span class="float-right  m-r-20"> 
-                                        จำนวนคงเหลือ  
-                                        <b>${ data[i].quantity }</b> 
-                                        ${ data[i].product_detail.unitName }
-                                    </span>
-                                </div>
-                                <div class="col-xs-1  flex flex-v-center">
-                                    <a href="#" class="edit-inventory-btn float-right" >
-                                        Edit
-                                    </a> 
+                            </li>
+                        `;
+                    }
+
+                    log += `</ul>`;
+
+                    elem += `
+                        <div class="card card-inventory">
+                            <div id="heading${ data[i].id }" class="card-heading-inventory">
+                                <div data-toggle="collapse" data-target="#collapse${ data[i].id }" aria-expanded="false" aria-controls="collapse${ data[i].id }">
+                                    <div class="row"> 
+                                        <div class="col-md-1 flex flex-v-center">
+                                            <span class="badge badge-info m-r-20">${ data[i].product_detail.code }</span>
+                                        </div>
+                                        <div class="col-md-4  flex flex-v-center">
+                                            ${ data[i].product_detail.name }
+                                        </div>
+                                        <div class="col-md-2 text-right">
+                                            เพิ่มขึ้นทั้งหมด <br />  
+                                            <span class="text-success">
+                                                <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                                ${ data[i].logConclude.sumIncrease }
+                                            </span>
+                                        </div>
+                                        <div class="col-md-2 text-right">
+                                            ลดลงทั้งหมด <br />  
+                                            <span class="text-danger">
+                                                <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                ${ data[i].logConclude.sumDecrease }
+                                            </span>
+                                        </div>
+                                        <div class="col-md-2 text-right">
+                                            <span class="float-right  m-r-20"> 
+                                                จำนวนคงเหลือ  <br/>
+                                                <b>${ data[i].quantity }</b> 
+                                                ${ data[i].product_detail.unitName }
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-1  flex flex-v-center">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </li>`;
+
+                            <div id="collapse${ data[i].id }" class="collapse" aria-labelledby="heading${ data[i].id }" data-parent="#accordion">
+                                <div class="card-body card-body-inventory">
+                                    ${log}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
                 }
-                ul.append(li);
-                display.append(ul);
+                div.append(elem);
+                display.append(div);
             }
+        },
+        edit(id) {
+            
+        },
+        editUpdate() {
+            // $.ajax({
+            //     method: 'PUT',
+            //     url:  "api/inventoryLog/" + id,
+            //     data: {  
+            //         "amount": ,
+            //         "remark": 
+            //     },
+            //     headers: {
+            //         "Accept":"application/json",
+            //         "Authorization":Authorization
+            //     },
+            //     error: function(XMLHttpRequest, textStatus, errorThrown) {
+            //         console.log(textStatus);
+            //     }
+            // }).done(function (res) {
+            //     console.log(res);
+            // });
+        },
+        delete(id) {
+            $.ajax({
+                method: 'DELETE',
+                url:  "api/inventoryLog/" + id,
+                headers: {
+                    "Accept":"application/json",
+                    "Authorization":Authorization
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus);
+                },
+            }).done(function (res) {
+                inventory.get().done(function(res) { inventory.render(res)} );
+            });
         }
     } 
 

@@ -97,6 +97,9 @@ header .dropdown-menu {
 .m-b-20 { margin-bottom: 20px }
 .m-b-30 { margin-bottom: 30px }
 .m-b-0 { margin-bottom: 0;}
+.m-l-5 { margin-left: 5px}
+.m-r-5 { margin-right: 5px}
+.m-r-10 { margin-right: 10px}
 .m-r-20 { margin-right: 20px}
 .no-padding { padding: 0 !important }
 .p-10 { padding: 10px !important}
@@ -240,14 +243,42 @@ table.dataTable tbody tr:hover .table-btn > div {
     font-size: 13px;
     color: #ccc;
 }
-
-.list-group-item:hover {
+.card-body:hover  {
+    cursor: default !important;
+}
+.card-body:hover .card-inventory {
+    background: #fff;
+}
+.card-heading-inventory:hover{
     background: #f5f8fc;
+    cursor: pointer;
+}
+.card-heading-inventory {
+    padding: 10px;
 }
 
+.card-inventory {
+    padding: 0;
+}
 .edit-inventory-btn {
     visibility: hidden;
 }
 .list-group-item:hover .edit-inventory-btn {
     visibility: visible;
+}
+
+.log-list {
+    padding: 0;
+}
+
+.log-list li {
+    padding: 5px 10px;
+    padding-left: 2em;
+    font-size: 12px;
+    background: #f5f8fc;
+}
+.card-body-inventory {
+    max-height: 300px;
+    overflow: auto;
+    background: #f5f8fc;
 }
