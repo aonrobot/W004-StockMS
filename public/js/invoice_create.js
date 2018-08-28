@@ -54,8 +54,7 @@ function addRow (){
                     </div>
                 </td>
                 <td class="td__amount">
-                    <input type="text" class="form-control"/>
-                    
+                    <input type="number" class="form-control text-right" onchange="row_value.total(${ ROW_INDEX })" />
                 </td>
                 <td class="text-right td__unit">
                     
@@ -126,9 +125,17 @@ function removeRow (idx){
                     </div>
                 </div>
             `); 
+
+            // Re-render UnitValue 
+            var oldAmount_elem = $("#"+ elem.id + " td.td__amount");
+            var oldAmount = $(oldAmount_elem).find("input").val();
+            $(oldAmount_elem).html(`
+                <input type="number" class="form-control text-right" onchange="row_value.total(${ reduce_index })" value="${ oldAmount }" />`);
         }
     });
     ROW_INDEX -= 1;
+    // Sum Invoice Total
+    sumTotal();
 }
 
 $('#product_modal').on('shown.bs.modal', function(e){
@@ -223,13 +230,16 @@ function addProdInRow (rowIdx, target) {
     var targetID = target.id.split('_')[1]; /// number ex.1,2,3,  
 
     var $row_elem = $("#row_" + targetID);
-        // console.log($($row_elem + " .td__prodCode input").val());
+
         $($row_elem).find(".td__prodCode input").val(row_data.prodID);
         $($row_elem).find(".td__prodName input").val(row_data.prodName);
         $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
         $($row_elem).find(".td__unit").html(`
             <span class="badge badge-light">${ row_data.prodUnit }</span>
         `);
+
+    // Count Total 
+    row_value.total(targetID);
 
     // Close Modal
     $('#product_modal').modal('hide');
@@ -246,6 +256,7 @@ var row_value = {
             $unitValue_val = 0;
         } 
         $unitValue.val( $unitValue_val += 1);
+        row_value.total(idx);
     },
 
     minus: function(idx) {
@@ -257,6 +268,39 @@ var row_value = {
             $unitValue_val = 0;
         } 
         $unitValue.val( $unitValue_val -= 1);
+        row_value.total(idx);
+    },
+    total: function (idx) {
+        
+        var $row_elem = $("#row_" + idx);
+        var $unitValue_val = parseInt($("#unitValue_" + idx).val());
+        var $amount = $($row_elem).find(".td__amount input").val();
+        var $total = $($row_elem).find(".td__total");
+        
+        if ( isNaN($amount) ||
+             isNaN($unitValue_val) ||
+            !$amount.length  ) return;
+
+        $($total).html((Number($amount) * Number($unitValue_val)).toFixed(2));
+
+        // Sum Invoice Total
+        sumTotal();
     }
 } 
 
+
+
+function sumTotal() {
+
+    var sum = 0 ;
+
+    $(".td__total").map(function (obj, elem) {
+
+        sum += Number($(elem).html());
+    });
+    
+    $(".INVOICE_TOTAL").map(function (obj, elem) {
+
+        $(elem).html(sum);
+    });
+}

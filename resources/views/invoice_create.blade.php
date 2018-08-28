@@ -119,7 +119,7 @@
                         </td>
                         
                         <td class="td__amount">
-                            <input type="text" class="form-control"/>
+                            <input type="number" class="form-control text-right" onchange="row_value.total(1)" />
                         </td>
                         
                         <td class="text-right td__unit">
@@ -139,7 +139,35 @@
                 <span>+ เพิ่มสินค้า </span>
             </button>
         </div>
+        <!-- Card Footer --> 
+        <div class="col-md-12 float-right text-right">
+            <h5><strong>มูลค่ารวม : <span class="INVOICE_TOTAL"> 0.00 </span></strong></h5>
+        </div>
+    </div>
+    
+    <hr class="m-t-30" />
 
+    <div class="row form-group m-t-30">
+        <div class="col-md-3 text-right">
+            <p><strong>มูลค่ารวมสุทธิ </strong></p>
+            <p>สินค้าจาก</p>
+            
+        </div>
+        <div class="col-md-4">  
+            <p><strong><span class="INVOICE_TOTAL"> 0.00 </span></strong></p>
+            <select name="" id="" class="form-control">
+                <option value="" disabled selected>คลังสินค้าหลัก</option>
+            </select>
+        </div>
+    </div>
+    <hr class=" m-t-30" />
+    <div class="row m-t-30">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-lg btn-primary">
+                บันทึก
+                <i class="fa fa-save" aria-hidden="true"></i>
+            </button>
+        </div>
     </div>
 </div>
 
