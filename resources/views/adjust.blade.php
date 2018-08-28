@@ -135,6 +135,8 @@
 
     $(document).ready(function(){
 
+        $("#datePicker").datepicker("setDate", new Date()); 
+
         $('#date').html(
             ' Today : ' + 
             days[d.getDay()] + ' ' +
@@ -156,7 +158,6 @@
             });
         });
 
-        $("#datePicker").datepicker("setDate", new Date()); 
         $("#adjustDate").html(convertDate(new Date()));
         $("#adjustWarehouse").html($("#warehouseSelect").find('option:selected').text());
         $('.js-example-basic-single').select2();
