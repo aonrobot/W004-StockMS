@@ -153,6 +153,7 @@
             $("#adjustDate").html($("#datePicker").val());
             inventory.get().done(function (res) {
                 inventory.render(res);
+                console.log(res)
             });
         });
 
