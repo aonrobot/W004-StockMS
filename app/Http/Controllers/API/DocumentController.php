@@ -56,20 +56,20 @@ class DocumentController extends Controller
         $detail = $request->input('detail');
         $lineitems = $request->input('lineitems');
 
-        /*
-            :   Clean data before sent to create document
-        */
+        /**
+         *  Clean data before sent to create document
+         */
 
         $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
         // Find and add product_id
-        foreach($lineitems as $index => $item) {
+        foreach ($lineitems as $index => $item) {
             $product_id = \App\Product::where('code', $item['product_code'])->first()->product_id;
             $lineitems[$index]['product_id'] = $product_id; 
         }
 
-        /*
-            :   Create document
-        */
+        /**
+         *  Create document
+         */
 
         $type = $detail['type'];
 
