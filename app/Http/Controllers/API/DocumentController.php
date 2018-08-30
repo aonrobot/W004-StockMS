@@ -20,9 +20,29 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if(!empty($request->input('type'))) {
+            $type = $request->input('type');
+
+            $docs = DocumentDetail::where('type', $type)->get();
+
+            return response()->json($docs);
+        }
+
+        if(!empty($request->input('id'))) {
+            $id = $request->input('id');
+
+            $doc = DocumentDetail::where('id', $id)->first();
+
+            return response()->json($doc);
+        }
+
+        if(!empty($request->input('number'))) {
+            $number = $request->input('number');
+
+            return $this->show($number);
+        }
     }
 
     /**
@@ -51,7 +71,16 @@ class DocumentController extends Controller
      */
     public function show($id)
     {
-        //
+        $number = $id;
+
+        $doc = DocumentDetail::where('number', $number)->first();
+        $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
+        foreach($lineitems as $item){
+            $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
+            $doc['lineitems'] = $item;
+        }
+
+        return response()->json($doc);
     }
 
     /**
