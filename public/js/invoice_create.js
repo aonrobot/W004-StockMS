@@ -1,6 +1,8 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 var ROW_INDEX = 1;
 
+$("#invoice_date").datepicker("setDate", new Date()); 
+
 $(document).ready(function(){
 
     $("#datePicker").datepicker("setDate", new Date()); 
@@ -303,4 +305,52 @@ function sumTotal() {
 
         $(elem).html(sum);
     });
+}
+
+
+function createInvoice () {
+
+    var id = $("#invoice_id").val();
+    var date = $("#invoice_date").val();
+    var reference = $("#invoice_ref").val();
+    var table_body = $("#table_body");
+    var arr = [];
+
+    $(table_body).find('tr').map(function (obj, elem) {
+
+        var prodCode = $(elem).find('td:eq(2) input').val();
+        var prodName = $(elem).find('td:eq(3) input').val();
+        var prodUnitValue = $(elem).find('td:eq(4) input').val();
+        var prodAmount = $(elem).find('td:eq(5) input').val();
+        var obj = {};
+
+            obj = {
+                "product_id": prodCode,
+                "amount": prodAmount,
+                "price": prodUnitValue,
+                "discount": 0
+            }
+
+        arr.push(obj)
+
+        // if (1) {
+        //     $('#warning_modal').modal('show');
+        // }
+    });
+    
+    var json_data = {
+        "detail" : {
+            "number": id,
+            "customer_id": null,
+            "ref_id": reference,
+            "source_wh_id": 1,
+            "target_wh_id": null,
+            "type": "inv",                 
+            "tax_type": "without_tax",
+            "comment": "",
+            "status": "create",            
+            "date": date
+        },
+        "lineitems" : arr
+    }
 }

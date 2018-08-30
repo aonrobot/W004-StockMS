@@ -78,7 +78,6 @@
                                 <a class="dropdown-item flex flex-v-center" 
                                 href="{{ route('invoice_create') }}" >
                                     <div>
-                                        <i class="fa fa-power-off"></i>
                                         <span> สร้างรายการขาย</span>
                                     </div>
                                 </a>
@@ -86,7 +85,6 @@
                                 <a class="dropdown-item flex flex-v-center" 
                                 href="{{ route('invoice_view') }}">
                                     <div>
-                                        <i class="fa fa-power-off"></i>
                                         <span> ดูรายการขาย</span>
                                     </div>
                                 </a>
