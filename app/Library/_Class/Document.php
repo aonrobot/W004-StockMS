@@ -13,13 +13,13 @@ namespace App\Library\_Class {
             try
             {
                 //if ui sent empty number it will auto gen
-                if($detail['number'] == "") {
+                if ($detail['number'] == "") {
                     $detail['number'] = DocumentUtil::genDocNumber($type);
                 }
-                if(!isset($detail['status'])) {
+                if (!isset($detail['status'])) {
                     $detail['status'] = "create";
                 }
-                if($detail['status'] == "") {
+                if ($detail['status'] == "") {
                     $detail['status'] = "create";
                 }
 
@@ -27,8 +27,8 @@ namespace App\Library\_Class {
                 $doc_source_wh_id = $detail['source_wh_id'];
                 $doc_target_wh_id = $detail['target_wh_id'];
 
-                switch($type){
-
+                switch($type)
+                {
                     /*
 
                         ████████╗██████╗  █████╗ ███╗   ██╗███████╗███████╗███████╗██████╗ 
@@ -41,12 +41,11 @@ namespace App\Library\_Class {
                             swh_id = source warehouse id
                             twh_id = target warehouse id
 
-                            type :
-                                                            source          target      inventory
-                                ___________________________________________________________________________________________________
-                                transferIn           ->      null            *           increase target
-                                transferOut          ->      *               null        decrease source
-                                transferBetween      ->      *               *           decrease from source and increase target
+                            typeName                     source          target      inventory
+                            ___________________________________________________________________________________________________
+                            transferIn           ->      null            *           increase target
+                            transferOut          ->      *               null        decrease source
+                            transferBetween      ->      *               *           decrease from source and increase target
                     */
                     case 'tf' :
 
@@ -60,7 +59,7 @@ namespace App\Library\_Class {
                             $product_id = $item['product_id'];
                             $amount = $item['amount'];
 
-                            if($amount <= 0) continue;
+                            if ($amount <= 0) continue;
 
                             \App\DocumentLineItems::create([
                                 "document_id" => $doc_id,
@@ -68,9 +67,9 @@ namespace App\Library\_Class {
                                 "amount" => $amount
                             ]);
 
-                            if($doc_source_wh_id == null && $doc_target_wh_id != null) {
+                            if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                                 $currentQuantity = InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
-                            } elseif($doc_source_wh_id != null && $doc_target_wh_id == null) {
+                            } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
                                 $currentQuantity = InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
                             } else {
                                 InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
@@ -93,18 +92,18 @@ namespace App\Library\_Class {
                     case 'inv':
 
                         $checkResult = ProductUtil::checkQuantity($lineitems);
-                        if(count($checkResult) > 0) return [
+                        if (count($checkResult) > 0) return [
                             'created' => false,
                             'message' => $checkResult
                         ];
 
-                        if(empty($detail['tax_type'])) {
+                        if (empty($detail['tax_type'])) {
                             $detail['tax_type'] = 'withoutTax';
                         }
 
                         $doc_id = \App\DocumentDetail::create($detail)->id;
                         
-                        foreach($lineitems as $item)
+                        foreach ($lineitems as $item)
                         {
                             $product_id = $item['product_id'];
 
@@ -116,8 +115,8 @@ namespace App\Library\_Class {
                             $item['total'] = ($price * $amount) - $discount;
                             \App\DocumentLineItems::create($item);
 
-                            if($doc_source_wh_id == null) {
-                                if($doc_target_wh_id !== null) {
+                            if ($doc_source_wh_id == null) {
+                                if ($doc_target_wh_id !== null) {
                                     $doc_source_wh_id = $doc_target_wh_id;
                                 } else {
                                     return ['created' => false, 'message' => 'source warehouse id could not [null]'];
@@ -141,13 +140,13 @@ namespace App\Library\_Class {
                     */
                     case 'po':
 
-                        if(empty($detail['tax_type'])) {
+                        if (empty($detail['tax_type'])) {
                             $detail['tax_type'] = 'withoutTax';
                         }
-                        
+
                         $doc_id = \App\DocumentDetail::create($detail)->id;
                         
-                        foreach($lineitems as $item)
+                        foreach ($lineitems as $item)
                         {
                             $product_id = $item['product_id'];
 
@@ -157,8 +156,8 @@ namespace App\Library\_Class {
                             $item['total'] = 0;
                             \App\DocumentLineItems::create($item);
 
-                            if($doc_target_wh_id == null) {
-                                if($doc_source_wh_id !== null) {
+                            if ($doc_target_wh_id == null) {
+                                if ($doc_source_wh_id !== null) {
                                     $doc_target_wh_id = $doc_source_wh_id;
                                 } else {
                                     return ['created' => false, 'message' => 'target warehouse id could not [null]'];
@@ -185,9 +184,14 @@ namespace App\Library\_Class {
                     'document_number' => \App\DocumentDetail::find($doc_id)->number
                 ];
 
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
+
+                if (isset($doc_id)) {
+                    \App\DocumentDetail::find($doc_id)->delete();
+                }
+
                 Log::error($e);
-                \App\DocumentDetail::find($doc_id)->delete();
+
                 return ['created' => false, 'message' => 'Error to create document please contact engineer.'];
             }
         }
