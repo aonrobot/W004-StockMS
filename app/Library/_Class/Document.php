@@ -186,9 +186,8 @@ namespace App\Library\_Class {
                 ];
 
             } catch(\Exception $e) {
-
-                \App\DocumentDetail::find($doc_id)->delete();
                 Log::error($e);
+                \App\DocumentDetail::find($doc_id)->delete();
                 return ['created' => false, 'message' => 'Error to create document please contact engineer.'];
             }
         }

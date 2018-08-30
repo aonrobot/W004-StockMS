@@ -116,3 +116,15 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
         return;
     }
 });
+
+var DOC_TYPE = "inv"
+$.ajax({
+    type: 'GET',
+    url: "api/document?type=" + DOC_TYPE,
+    headers: {
+        "Accept": "application/json",
+        "Authorization": Authorization
+    }
+}).done(function (res){
+    console.log(res);
+})

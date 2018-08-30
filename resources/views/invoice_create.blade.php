@@ -7,7 +7,6 @@
         {{ session('status') }}
     </div>
 @endif
-
 <link rel="stylesheet" href="{{ asset('./css/invoice-style.css') }} "/>
 
 <div class="container main" >
@@ -46,7 +45,7 @@
     </div>
     <div class="row form-group">
         <div class="col-md-3 text-right">
-            <p>อ้างอิง<sup class="text-danger">*</sup> : </p>
+            <p>อ้างอิง : </p>
         </div>
         <div class="col-md-4">
             <input class="form-control" type="text" id="invoice_ref" />
@@ -96,7 +95,7 @@
                             <input type="search" class="form-control"/>
                         </td>
                         <td class="td__prodName">
-                            <input type="text" class="form-control"/>
+                            <input type="search" class="form-control"/>
                         </td>
                         
                         <td class="td__unitValue">

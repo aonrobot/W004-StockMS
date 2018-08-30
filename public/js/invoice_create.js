@@ -1,62 +1,89 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 var ROW_INDEX = 1;
 
-$("#invoice_date").datepicker("setDate", new Date()); 
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-    $("#datePicker").datepicker("setDate", new Date()); 
-    $("#datePicker").datepicker({
+    $("#invoice_date").datepicker("setDate", new Date());
+    $("#invoice_date").datepicker({
         todayHighlight: true,
-        format : 'dd/mm/yyyy',
+        format: 'dd/mm/yyyy',
         endDate: '+1d',
         orientation: "right",
     });
+
+    get.invoice_id().done(function (res) {
+        $("#invoice_id").val(res);
+    });
 });
 
-function addRow (){
-        ROW_INDEX += 1;
+
+
+// AutoCOMPLETE
+
+// var autocompleteOptions = {
+//     minLength: 1,
+//     source: function (request, response) {
+//         $.ajax({
+//             type: "GET",
+//             url: "/api/product/service/autoComplete?searchType=&q=",
+//             data: {
+//                 json: '["ActionScript", "AppleScript", "Asp", "BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion", "Erlang", "Fortran", "Groovy", "Haskell", "Java", "JavaScript", "Lisp", "Perl", "PHP", "Python", "Ruby", "Scala", "Scheme"]',
+//                 delay: 1
+//             },
+//             success: function (data) {
+//                 response(data);
+//             }
+//         });
+//     }
+// };
+
+// $("input[type=search]").autocomplete(autocompleteOptions);
+
+
+function addRow() {
+    ROW_INDEX += 1;
 
     var $table_body = $("#table_body");
-        $table_body.append(`
-            <tr id="row_${ ROW_INDEX }">
+    $table_body.append(`
+            <tr id="row_${ ROW_INDEX}">
                 <td class="td__btn-add">
-                    <button id="btn_${ ROW_INDEX }" class="btn-default btn-circle" 
+                    <button id="btn_${ ROW_INDEX}" class="btn-default btn-circle" 
                             data-toggle="modal" data-target=".bd-example-modal-lg">
                         <i class="fa fa-list" aria-hidden="true"></i>
                     </button>
                 </td>
                 <td class="text-right td__index">
-                    ${ ROW_INDEX }
+                    ${ ROW_INDEX}
                 </td>
                 <td class="td__prodCode">
                     <input type="search" class="form-control"/>
                 </td>
                 <td class="td__prodName">
-                    <input type="text" class="form-control"/>
+                    <input type="search" class="form-control"/>
                 </td>
                 <td class="td__unitValue">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text pointer" 
-                                onclick="row_value.minus(${ ROW_INDEX })">
+                                onclick="row_value.minus(${ ROW_INDEX})">
                                 -
                             </span>
                         </div>
 
-                        <input type="number" id="unitValue_${ ROW_INDEX }" value="0" 
+                        <input type="number" id="unitValue_${ ROW_INDEX}" value="0" 
                                     class="text-center form-control form__number" />
 
                         <div class="input-group-append">
                             <span class="input-group-text pointer"
-                                onclick="row_value.plus(${ ROW_INDEX })">
+                                onclick="row_value.plus(${ ROW_INDEX})">
                                 +
                             </span>
                         </div>
                     </div>
                 </td>
                 <td class="td__amount">
-                    <input type="number" class="form-control text-right" onchange="row_value.total(${ ROW_INDEX })" />
+                    <input type="number" class="form-control text-right" onchange="row_value.total(${ ROW_INDEX})" />
                 </td>
                 <td class="text-right td__unit">
                     
@@ -65,74 +92,79 @@ function addRow (){
                     0.00
                 </td>
                 <td class="td__btn-remove"> 
-                    <i class="fa fa-minus-circle pointer btn-remove-row" aria-hidden="true" onclick="removeRow(${ ROW_INDEX })"></i>
+                    <i class="fa fa-minus-circle pointer btn-remove-row" aria-hidden="true" onclick="removeRow(${ ROW_INDEX})"></i>
                 </td>
             </tr>
         `);
+    // Bind Auto Complete
+    // var getSearchType = $("#row_" + ROW_INDEX + " td input[type=search]");
+    // getSearchType.map(function (obj, elem) {
+    //     $(elem).focus().autocomplete(autocompleteOptions);
+    // })
 }
 
-function removeRow (idx){
+function removeRow(idx) {
 
-    if (ROW_INDEX === 0 ) return;
+    if (ROW_INDEX === 0) return;
 
     var $delete_row = $("#row_" + idx);
-        $delete_row.remove();
+    $delete_row.remove();
 
     $("#table_body tr").filter(function (obj, elem) {
-        
-        var index = elem.id.split('_')[1];
-        var reduce_index = index - 1 ;
-        if ( index > idx ) {
 
-            elem.id = 'row_' + ( reduce_index ) ;
+        var index = elem.id.split('_')[1];
+        var reduce_index = index - 1;
+        if (index > idx) {
+
+            elem.id = 'row_' + (reduce_index);
 
             // Re-render First Column a.k.a. = 0
-            $("#"+ elem.id + " td:eq(0)").html(`
-                <button id="btn_${ reduce_index }" class="btn-default btn-circle" 
+            $("#" + elem.id + " td:eq(0)").html(`
+                <button id="btn_${ reduce_index}" class="btn-default btn-circle" 
                 data-toggle="modal" data-target=".bd-example-modal-lg">
                     <i class="fa fa-list" aria-hidden="true"></i>
                 </button>`);
 
             // Re-render Second Column a.k.a. = 1
-            $("#"+ elem.id + " td:eq(1)").html(reduce_index);
+            $("#" + elem.id + " td:eq(1)").html(reduce_index);
 
             // Re-render Last Column a.k.a. = 8
-            $("#"+ elem.id + " td:eq(8)").html(`
+            $("#" + elem.id + " td:eq(8)").html(`
                 <i class="fa fa-minus-circle pointer btn-remove-row" 
                     aria-hidden="true" 
-                    onclick="removeRow(${ reduce_index })">
+                    onclick="removeRow(${ reduce_index})">
                 </i>`);
 
             // Re-render Plus & Minus Button
-            var oldValue_elem = $("#"+ elem.id + " td.td__unitValue input");
+            var oldValue_elem = $("#" + elem.id + " td.td__unitValue input");
             var oldValue = oldValue_elem.val();
-                
-            $("#"+ elem.id + " td.td__unitValue").html(`
+
+            $("#" + elem.id + " td.td__unitValue").html(`
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text pointer" 
-                            onclick="row_value.minus(${ reduce_index })">
+                            onclick="row_value.minus(${ reduce_index})">
                             -
                         </span>
                     </div>
 
-                    <input type="number" id="unitValue_${ reduce_index }" value="${ oldValue }" 
+                    <input type="number" id="unitValue_${ reduce_index}" value="${oldValue}" 
                                 class="text-center form-control form__number" />
 
                     <div class="input-group-append">
                         <span class="input-group-text pointer"
-                            onclick="row_value.plus(${ reduce_index })">
+                            onclick="row_value.plus(${ reduce_index})">
                             +
                         </span>
                     </div>
                 </div>
-            `); 
+            `);
 
             // Re-render UnitValue 
-            var oldAmount_elem = $("#"+ elem.id + " td.td__amount");
+            var oldAmount_elem = $("#" + elem.id + " td.td__amount");
             var oldAmount = $(oldAmount_elem).find("input").val();
             $(oldAmount_elem).html(`
-                <input type="number" class="form-control text-right" onchange="row_value.total(${ reduce_index })" value="${ oldAmount }" />`);
+                <input type="number" class="form-control text-right" onchange="row_value.total(${ reduce_index})" value="${oldAmount}" />`);
         }
     });
     ROW_INDEX -= 1;
@@ -140,11 +172,11 @@ function removeRow (idx){
     sumTotal();
 }
 
-$('#product_modal').on('shown.bs.modal', function(e){
+$('#product_modal').on('shown.bs.modal', function (e) {
     // This is ID of Modal Button
     var btn_id = e.relatedTarget.id;
     initialDataTable(btn_id);
- });
+});
 
 
 var modal_table = $('#modal_prod_table').DataTable({
@@ -158,7 +190,7 @@ var modal_table = $('#modal_prod_table').DataTable({
             "render": function (data) {
                 return `<span id ="${data}">${data}</span>`;
             },
-        },  
+        },
         {
             "data": "prodName",
         },
@@ -215,9 +247,9 @@ function initialDataTable(btn_id) {
                 "prodSalePrice": data[i].inventory.salePrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
-                "btn":  {
+                "btn": {
                     "id": data[i].product_id,
-                    "target" : btn_id
+                    "target": btn_id
                 }
             }).draw();
         }
@@ -226,18 +258,18 @@ function initialDataTable(btn_id) {
     });
 }
 
-function addProdInRow (rowIdx, target) {
+function addProdInRow(rowIdx, target) {
 
     var row_data = modal_table.row(rowIdx - 1).data();  /// json object
     var targetID = target.id.split('_')[1]; /// number ex.1,2,3,  
 
     var $row_elem = $("#row_" + targetID);
 
-        $($row_elem).find(".td__prodCode input").val(row_data.prodID);
-        $($row_elem).find(".td__prodName input").val(row_data.prodName);
-        $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
-        $($row_elem).find(".td__unit").html(`
-            <span class="badge badge-light">${ row_data.prodUnit }</span>
+    $($row_elem).find(".td__prodCode input").val(row_data.prodID);
+    $($row_elem).find(".td__prodName input").val(row_data.prodName);
+    $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
+    $($row_elem).find(".td__unit").html(`
+            <span class="badge badge-light">${ row_data.prodUnit}</span>
         `);
 
     // Count Total 
@@ -248,59 +280,59 @@ function addProdInRow (rowIdx, target) {
 }
 
 var row_value = {
-    
-    plus : function(idx) {
-        
+
+    plus: function (idx) {
+
         var $unitValue = $("#unitValue_" + idx);
         var $unitValue_val = parseInt($unitValue.val());
-        
-        if( isNaN($unitValue_val) ) {
+
+        if (isNaN($unitValue_val)) {
             $unitValue_val = 0;
-        } 
-        $unitValue.val( $unitValue_val += 1);
+        }
+        $unitValue.val($unitValue_val += 1);
         row_value.total(idx);
     },
 
-    minus: function(idx) {
+    minus: function (idx) {
 
         var $unitValue = $("#unitValue_" + idx);
         var $unitValue_val = parseInt($unitValue.val());
-        
-        if( isNaN($unitValue_val) ) {
+
+        if (isNaN($unitValue_val)) {
             $unitValue_val = 0;
-        } 
-        $unitValue.val( $unitValue_val -= 1);
+        }
+        $unitValue.val($unitValue_val -= 1);
         row_value.total(idx);
     },
     total: function (idx) {
-        
+
         var $row_elem = $("#row_" + idx);
         var $unitValue_val = parseInt($("#unitValue_" + idx).val());
         var $amount = $($row_elem).find(".td__amount input").val();
         var $total = $($row_elem).find(".td__total");
-        
-        if ( isNaN($amount) ||
-             isNaN($unitValue_val) ||
-            !$amount.length  ) return;
+
+        if (isNaN($amount) ||
+            isNaN($unitValue_val) ||
+            !$amount.length) return;
 
         $($total).html((Number($amount) * Number($unitValue_val)).toFixed(2));
 
         // Sum Invoice Total
         sumTotal();
     }
-} 
+}
 
 
 
 function sumTotal() {
 
-    var sum = 0 ;
+    var sum = 0;
 
     $(".td__total").map(function (obj, elem) {
 
         sum += Number($(elem).html());
     });
-    
+
     $(".INVOICE_TOTAL").map(function (obj, elem) {
 
         $(elem).html(sum);
@@ -308,13 +340,19 @@ function sumTotal() {
 }
 
 
-function createInvoice () {
+function createInvoice() {
 
     var id = $("#invoice_id").val();
     var date = $("#invoice_date").val();
     var reference = $("#invoice_ref").val();
     var table_body = $("#table_body");
     var arr = [];
+
+    if (id === '' ||
+        date === '') {
+        $('#warning_modal').modal('show');
+        return;
+    }
 
     $(table_body).find('tr').map(function (obj, elem) {
 
@@ -324,33 +362,56 @@ function createInvoice () {
         var prodAmount = $(elem).find('td:eq(5) input').val();
         var obj = {};
 
-            obj = {
-                "product_id": prodCode,
-                "amount": prodAmount,
-                "price": prodUnitValue,
-                "discount": 0
-            }
+        obj = {
+            "product_id": prodCode,
+            "amount": prodAmount,
+            "price": prodUnitValue,
+            "discount": 0
+        }
 
-        arr.push(obj)
-
-        // if (1) {
-        //     $('#warning_modal').modal('show');
-        // }
+        arr.push(obj);
     });
-    
+
     var json_data = {
-        "detail" : {
+        "detail": {
             "number": id,
             "customer_id": null,
             "ref_id": reference,
             "source_wh_id": 1,
             "target_wh_id": null,
-            "type": "inv",                 
+            "type": "inv",
             "tax_type": "without_tax",
             "comment": "",
-            "status": "create",            
+            "status": "create",
             "date": date
         },
-        "lineitems" : arr
+        "lineitems": arr
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: "api/document",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": Authorization
+        },
+        data: json_data
+    }).done(function(res) {
+        console.log(res);
+    });
+}
+
+var get = {
+    invoice_id: function () {
+        return (
+            $.ajax({
+                type: 'GET',
+                url: "api/document/service/gennumber/inv",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": Authorization
+                }
+            })
+        );
     }
 }
