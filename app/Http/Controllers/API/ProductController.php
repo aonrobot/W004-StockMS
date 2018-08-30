@@ -4,16 +4,19 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
 
 use App\Product;
 use App\ProductCategory;
 use App\ProductHasWH;
 use App\Warehouse;
 use App\Inventory;
+use App\Library\Log\Inventory as LogInventory;
+
 
 class ProductController extends Controller
 {
-    //TODO: max, min Level it will create in next sprent
+    // TODO: max, min Level it will create in next sprent
     /**
      * Display a listing of the resource.
      *
@@ -40,6 +43,8 @@ class ProductController extends Controller
         $product = $request->input('product');
         $productDetail = $request->input('product.detail');
 
+        $warehouseId = $productDetail['warehouse_id'];
+
         //Check product code
         if (!Product::where('code', $product['code'])->count()){
 
@@ -51,27 +56,35 @@ class ProductController extends Controller
             if (!ProductCategory::find($product['category_id'])){
                 return response()->json(['created' => false, 'message' => 'This category isn\'t exist']);
             }
-            else if (!Warehouse::where('warehouse_id', $productDetail['warehouse_id'])->count()){
+            else if (!Warehouse::where('warehouse_id', $warehouseId)->count()) {
                 return response()->json(['created' => false, 'message' => 'This warehouse isn\'t exist']);
             } else {
-                try{
+                try {
+
                     $productId = Product::create($product)->product_id;
+                    $quantity = empty($quantity) ? 0 : intval($quantity);
                     ProductHasWH::create([
                         'product_id' => $productId,
-                        'warehouse_id' => $productDetail['warehouse_id']
+                        'warehouse_id' => $warehouseId
                     ]);
+
                     $invenId = Inventory::create([
                         'product_id' => $productId,
-                        'warehouse_id' => $productDetail['warehouse_id'],
-                        'quantity' => empty($quantity) ? 0 : intval($quantity),
+                        'warehouse_id' => $warehouseId,
+                        'quantity' => 0,
                         'minLevel' => 0,
                         'maxLevel' => 0,
                         'costPrice' => empty($cPrice) ? 0.0 : floatval($cPrice),
                         'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
                     ])->id;
+
+                    $result = \App\Library\_Class\Document::quickTransfer(null, $warehouseId, [['product_id' => $productId, 'amount' => $quantity]]);
+                    if($result['created'] == false) return response()->json(['created' => false, 'message' => 'cant create document']);
+
                     return response()->json(['created' => true, 'product_id' => $productId, 'inventory_id' => $invenId]);
 
                 } catch(\Exception $e) {
+                    
                     return response()->json(['created' => false]);
                 }
             }
@@ -89,7 +102,8 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::where('product_id', $id)->get();
-        if($product->count()){
+
+        if($product->count()) {
             $product[0]->inventory = Product::find($product[0]->product_id)->inventory;
             return response()->json($product[0]);
         } else {
@@ -109,7 +123,7 @@ class ProductController extends Controller
         $product = $request->input('product');
         $productDetail = $request->input('product.detail');
 
-        try{
+        try {
             $quantity = $productDetail['quantity'];
             $cPrice = $productDetail['costPrice'];
             $sPrice = $productDetail['salePrice'];
@@ -152,11 +166,13 @@ class ProductController extends Controller
         $product = Product::find($id);
         if($product->count()){
             try{
-                Inventory::where('product_id', $id)->delete();
+                $invens = Inventory::where('product_id', $id);
+                $invens->delete();
                 ProductHasWH::where('product_id', $id)->delete();
                 Product::where('product_id', $id)->delete();
                 return response()->json(['destroyed' => true]);
             } catch(\Exception $e) {
+                Log::error($e);
                 return response()->json(['destroyed' => false]);
             }
         } else {
@@ -167,7 +183,7 @@ class ProductController extends Controller
     /**
      * Generate Product Code
      *
-     * @return String
+     * @return JSON
      */
     public function genProductCode(){
         //System code is a string like -> P0001, P0010
@@ -184,5 +200,37 @@ class ProductController extends Controller
         return response()->json([
             "code" => 'P' . str_pad((max($codeList) + 1), 4, '0', STR_PAD_LEFT)
         ]);
+    }
+
+    /**
+     * Get Product Price
+     *
+     * @return JSON
+     */
+    public function getProductPrice($id){
+
+        $price = Product::where('product_id', $id)->first()->inventory;
+        return response()->json([
+            "product_id" => $id,
+            "price" => $price[0]['salePrice']
+        ]);
+    }
+
+    public function autoComplete(Request $request){
+        $q = $request->input('q');
+
+        if($request->input('searchType') == '0') {
+            $products = Product::where('code', 'like', $q)
+            ->orWhere('code', 'like', '%' . $q)
+            ->orWhere('code', 'like', $q . '%')
+            ->orWhere('code', 'like', '%' . $q . '%')->get();
+        } else {
+            $products = Product::where('name', 'like', $q)
+            ->orWhere('name', 'like', '%' . $q)
+            ->orWhere('name', 'like', $q . '%')
+            ->orWhere('name', 'like', '%' . $q . '%')->get();
+        }
+
+        return response()->json($products);
     }
 }

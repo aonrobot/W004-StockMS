@@ -48,19 +48,79 @@ class CreateInventoryTable extends Migration
             ->onDelete('cascade');
         });
 
-        Schema::create('inventoryLog', function(Blueprint $table){
+        /* 
+            INV : Invoice (have amount detail, )
+            PO : Purchase Order (have detail)
+            TF : Tranfer (have detail)
+            CN :
+            DN :
+            RGA :
+
+            status
+                1. wait
+                2. complete
+                3. cancel
+        */
+
+        Schema::create('documentDetail', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('inventory_id')->unsigned();
+            $table->string('number');
+            $table->integer('customer_id')->unsigned()->nullable(true);
+            $table->integer('ref_id')->unsigned()->nullable(true);       
+            $table->integer('source_wh_id')->unsigned()->nullable(true);
+            $table->integer('target_wh_id')->unsigned()->nullable(true);
+
             $table->string('type', 32);
+            $table->string('tax_type', 32)->nullable(true)->default('withoutTax');
+            $table->mediumText('comment')->nullable(true);
+            $table->string('status', 24);
+
+            $table->date('date');
+            $table->timestamps();
+        });
+
+        Schema::create('documentLineItems', function(Blueprint $table) {
+            $table->increments('id');
+            $table->integer('document_id')->unsigned()->nullable(true);
+            $table->integer('product_id')->unsigned();
+
             $table->integer('amount')->default(0);
-            $table->mediumText('remark')->nullable(true);
-            $table->date('log_date');
-            $table->time('log_time');
+            $table->decimal('price', 10, 2)->default(0.00);
+            $table->decimal('discount', 10, 2)->default(0.00);
+            $table->decimal('total', 10, 2)->default(0.00);
+
             $table->timestamps();
 
-            $table->foreign('inventory_id')
-            ->references('id')->on('inventory');
+            $table->foreign('document_id')
+            ->references('id')->on('documentDetail')
+            ->onDelete('cascade');
         });
+
+        Schema::create('transaction', function(Blueprint $table) {
+            $table->increments('id');
+            $table->integer('document_id')->unsigned();
+            $table->integer('balance')->default(0);
+
+            $table->timestamps();
+        });
+
+        // Schema::create('inventoryLog', function(Blueprint $table){
+        //     $table->increments('id');
+        //     $table->integer('product_id')->unsigned();
+        //     $table->integer('document_id')->unsigned();
+        //     $table->integer('from_wh_id')->unsigned();
+        //     $table->integer('to_wh_id')->unsigned();
+        //     $table->string('type', 32);
+        //     $table->integer('amount')->default(0);
+        //     $table->integer('quantity')->default(0);
+        //     $table->mediumText('remark')->nullable(true);
+        //     $table->date('log_date');
+        //     $table->time('log_time');
+        //     $table->timestamps();
+
+        //     $table->foreign('inventory_id')
+        //     ->references('id')->on('inventory');
+        // });
     }
 
     /**

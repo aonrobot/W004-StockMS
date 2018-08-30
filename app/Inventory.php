@@ -21,9 +21,4 @@ class Inventory extends Model
     {
         return $this->hasOne('App\Product');
     }
-
-    public function inventoryLog()
-    {
-        return $this->hasMany('App\InventoryLog');
-    }
 }

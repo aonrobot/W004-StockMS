@@ -1,12 +1,13 @@
 <?php
 namespace App\Library\_Class {
     use Carbon\Carbon;
-    use App\InventoryLog;
     use Log;
 
 	class Inventory {
 
-        static private function increase($inventory, $quantity, $amount){
+        static public function increase($product_id, $wh_id, $amount){
+            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
+            $quantity = $inventory->first()->quantity;
             $total = $quantity + $amount;
             $inventory->update([
                 'quantity' => $total
@@ -14,7 +15,9 @@ namespace App\Library\_Class {
             return $total;
         }
     
-        static private function decrease($inventory, $quantity, $amount){
+        static public function decrease($product_id, $wh_id, $amount){
+            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
+            $quantity = $inventory->first()->quantity;
             if($quantity - $amount < 0) {
                 return false;
             } else {
@@ -24,49 +27,6 @@ namespace App\Library\_Class {
                 ]);
                 return $total;
             }
-        }
-
-        static public function ajust($invenId, $type, $amount, $inverse = false){
-            // Check inventory id
-            if(!\App\Inventory::where('id', $invenId)->count()) return ['error' => 'Not found a product in this warehouse'];
-            // Check Amount must isn't negative number
-            if($amount < 0) return ['updated' => false, 'message' => 'Amount must isn\'t negative number!!!'];
-
-            $inventory = \App\Inventory::where('id', $invenId);
-            $quantity = $inventory->first(['quantity'])->quantity;
-
-            try{
-                switch ($type) {
-                    case 'increase':
-                        $total = (!$inverse) ? self::increase($inventory, $quantity, $amount) : self::decrease($inventory, $quantity, $amount);
-                    break;
-        
-                    case 'decrease':
-                        $total = (!$inverse) ? self::decrease($inventory, $quantity, $amount) : self::increase($inventory, $quantity, $amount);
-                        if($total === false){
-                            return ['updated' => false, 'message' => 'Not enought item'];
-                        }
-                    break;
-
-                    case 'outoforder':
-                        $total = (!$inverse) ? self::decrease($inventory, $quantity, $amount) : self::increase($inventory, $quantity, $amount);
-                        if($total === false){
-                            return ['updated' => false, 'message' => 'Not enought item'];
-                        }
-                    break;
-
-                    default:
-                        return ['updated' => false, 'message' => 'Type dont support. Dont have (' . $type . ') at this time.'];
-                }
-                return ['updated' => true, 'total' => $total];
-            } catch (\Exception $e){
-                Log::error($e);
-                return ['updated' => false];            
-            }
-        }
-
-        static public function ajustInverse($invenId, $type, $amount){
-            return self::ajust($invenId, $type, $amount, true);
         }
     }
 }
