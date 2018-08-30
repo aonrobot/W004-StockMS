@@ -11,7 +11,7 @@ namespace App\Library\_Class {
         {
             $result = [];
             foreach($products as $p) {
-                $product = Product::find($p['product_id']);
+                $product = Product::where('product_id', $p['product_id']);
                 $over = $product->inventory->where('quantity', '<', $p['amount'])->count();
                 if($over) {
                     array_push($result, [
