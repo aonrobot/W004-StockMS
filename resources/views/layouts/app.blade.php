@@ -120,7 +120,7 @@
                             <!--  -->
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('adjust') }}"><i class="fa fa-warehouse"></i> สินค้า</a>
+                            <a class="nav-link" href="{{ route('product') }}"><i class="fa fa-warehouse"></i> สินค้า</a>
                         </li>
                     </ul>
                     @endguest

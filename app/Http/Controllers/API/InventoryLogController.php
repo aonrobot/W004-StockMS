@@ -84,8 +84,8 @@ class InventoryLogController extends Controller
                 continue;
             }
 
-            $sumIncrease = InventoryLog::where('inventory_id', $inven->id)->where('type', 'increase')->sum('amount');
-            $sumDecrease = InventoryLog::where('inventory_id', $inven->id)->where('type', 'decrease')->sum('amount');
+            $sumIncrease = intval($invenLog->where('type', 'increase')->sum('amount'));
+            $sumDecrease = intval($invenLog->where('type', 'decrease')->sum('amount'));
             $diffSum = $sumIncrease - $sumDecrease;
 
             $invens[$index]['product_detail'] = \App\Product::where('product_id', $inven->product_id)->first()->toArray();
@@ -94,6 +94,9 @@ class InventoryLogController extends Controller
                 'sumIncrease' => $sumIncrease,
                 'sumDecrease' => $sumDecrease
             ];
+
+            $invenTypeCreate = InventoryLog::where('inventory_id', $inven->id)->where('type', 'create');
+            if($invenTypeCreate->count() > 0) $diffSum += intval($invenTypeCreate->first(['amount'])->amount);
             $invens[$index]['reCheckQuantity'] = [
                 'fromLog' => $diffSum,
                 'fromInventory' => $inven->quantity,
@@ -116,6 +119,9 @@ class InventoryLogController extends Controller
         $newAmount = $request->input('amount');
         $remark = $request->input('remark');
 
+        $log = InventoryLog::where('id', $id)->first();
+
+        if(empty($log)) return response()->json(['updated' => false, 'message' => 'This log id not found']);
         if($newAmount < 0) return response()->json(['updated' => false, 'message' => 'Amount must isn\'t negative number!!!']);
 
         // TODO Unit test
@@ -125,7 +131,9 @@ class InventoryLogController extends Controller
         // log(decrease) oldAmount = 15, newAmount 20 -> inventory quantity = (-5)
         // log(decrease) oldAmount = 20, newAmount 15 -> inventory quantity = (+5)
 
-        $log = InventoryLog::where('id', $id)->first();
+        $date = $log->log_date;
+        if($date != Carbon::now()->toDateString()) return response()->json(['updated' => false, 'message' => 'You cant edit past log']);
+
         $invenId = $log->inventory_id;
         $type = $log->type;
         $oldAmount = $log->amount;
@@ -137,10 +145,16 @@ class InventoryLogController extends Controller
         // Update Inventory
         if($oldAmount < $newAmount) {
             $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+
+            // TODO Update currentQuantity in invantoryLog (newer date)
         } else if ($oldAmount > $newAmount) {
             $result = ClassInventory::ajustInverse($invenId, $type, $diffAmount);
+
+            // TODO Update currentQuantity in invantoryLog (newer date)
         } else {
             $result = ClassInventory::ajust($invenId, $type, $diffAmount);
+            
+            // TODO Update currentQuantity in invantoryLog (newer date)
         }
 
         return response()->json($result);
@@ -163,6 +177,7 @@ class InventoryLogController extends Controller
 
         $result = ClassInventory::ajustInverse($invenId, $type, $amount);
         if($result['updated'] == true){
+            // TODO Update currentQuantity in invantoryLog (newer date)
             InventoryLog::destroy($id);
             return response()->json($result);
         } else {

@@ -12,6 +12,15 @@ namespace App\Library\Log {
             $paraStr = 'Inventory id: ' . $invenId . ' | ' . $type . ' | ' . $amount . ' | ' . $remark . ' | ' . $date;
             Log::channel('stockms')->info('Inventory Log : ' . $paraStr);
         }
+
+        static private function writeCurrentQty($invenId){
+            $quantity = intval(InventoryModel::where('id', $invenId)->first(['quantity'])->quantity);
+            return $quantity;
+        }
+
+        static public function updateCurrentQty($date, $amount){
+
+        }
         
         static public function write($invenId, $type, $amount, $date, $remark = 'no comment') 
         {
@@ -21,7 +30,7 @@ namespace App\Library\Log {
             self::logFile($invenId, $type, $amount, $remark, $date);
 
             // Check Inventory id
-            if(!InventoryModel::where('id', $invenId)->count()) return ['error' => 'Not found this inventory id'];
+            if(!InventoryModel::where('id', $invenId)->count()) return ['created' => false, 'message' => 'Not found this inventory id'];
 
             // Find Log
             $invenLog = InventoryLog::where('inventory_id', $invenId)->where('log_date', $date)->where('type', $type);
@@ -33,22 +42,25 @@ namespace App\Library\Log {
 
             // Create New Record
             //if(!$invenLogCount) {
-                $invenLogId = InventoryLog::create([
-                    'inventory_id' => $invenId,
-                    'type' => $type,
-                    'amount' => $amount, 
-                    'remark' => $remark,
-                    'log_date' => $date,
-                    'log_time' => $timeNow
-                ])->id;
-                
-                // Response id
-                return [
-                    'created' => true,
-                    'message' => 'create new log',
-                    'id' => $invenLogId,
-                    'amount' => $amount
-                ];
+            $invenLogId = InventoryLog::create([
+                'inventory_id' => $invenId,
+                'type' => $type,
+                'amount' => $amount, 
+                'remark' => $remark,
+                'quantity' => 0,
+                'log_date' => $date,
+                'log_time' => $timeNow
+            ])->id;
+
+            InventoryLog::where('id', $invenLogId)->update(['quantity' => self::writeCurrentQty($invenId)]);
+            
+            // Response id
+            return [
+                'created' => true,
+                'message' => 'create new log',
+                'id' => $invenLogId,
+                'amount' => $amount
+            ];
             
             // Update only amount
             // } else {

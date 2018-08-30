@@ -23,6 +23,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::prefix('product')->group(function () {
         Route::prefix('service')->group(function () {
             Route::get('gencode', 'ProductController@genProductCode');
+            Route::get('price/{id}', 'ProductController@getProductPrice');
+            Route::get('autoComplete', 'ProductController@autoComplete');
         });
     });
 });
@@ -50,11 +52,21 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     });
 });
 
-//API: Inventory Log
+//API: Document
 Route::middleware('auth:api')->namespace('API')->group(function () {
-    Route::get('inventoryLog/byDate/{d}/{m}/{y}', 'InventoryLogController@showByDate');
-    Route::apiResource('inventoryLog', 'InventoryLogController');
+    Route::apiResource('document', 'DocumentController');
+    Route::prefix('document')->group(function () {
+        Route::prefix('service')->group(function () {
+            Route::get('gennumber/{type}', 'DocumentController@genDocNumber');
+        });
+    });
 });
+
+//API: Inventory Log
+// Route::middleware('auth:api')->namespace('API')->group(function () {
+//     Route::get('inventoryLog/byDate/{d}/{m}/{y}', 'InventoryLogController@showByDate');
+//     Route::apiResource('inventoryLog', 'InventoryLogController');
+// });
 
 //API: Report
 Route::middleware('auth:api')->namespace('API')->group(function () {

@@ -20,7 +20,8 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('/adjust', function () { return view('adjust'); })->name('adjust');    
+    Route::get('/product', function () { return view('product'); })->name('product');    
+    // Route::get('/adjust', function () { return view('adjust'); })->name('adjust');    
     Route::get('/report', function () { return view('report'); })->name('report');
     Route::get('/invoice_create', function () { return view('invoice_create'); })->name('invoice_create');
     Route::get('/invoice_view', function () { return view('invoice_view'); })->name('invoice_view');
