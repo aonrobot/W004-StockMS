@@ -32,6 +32,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Custom style -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }} "/>
+    
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/regular.css" integrity="sha384-zkhEzh7td0PG30vxQk1D9liRKeizzot4eqkJ8gB3/I+mZ1rjgQk+BSt2F6rT2c+I" crossorigin="anonymous">
@@ -46,11 +47,11 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel nav-style">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fa fa-dog"></i> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}<br>
-                <small class="ml-2">Stock Management System</small>
+                <a class="navbar-brand nav-style__logo" href="{{ url('/') }}">
+                    <i class="fa fa-dog"></i><p> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}</p>
+                    <span>Stock Management System</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -63,13 +64,65 @@
                     @else
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home" ></i> Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item dropdown">
+
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre id="navbarInvoice">
+                                <i class="fa fa-book"></i> 
+                                รายการขาย <span class="caret"></span>
+                            </a>
+                            <!-- Invoice Order Menu -->
+                                <div class="dropdown-menu dropdown-menu__wrap" aria-labelledby="navbarInvoice">
+
+                                <a class="dropdown-item flex flex-v-center" 
+                                href="{{ route('invoice_create') }}" >
+                                    <div>
+                                        <i class="fa fa-power-off"></i>
+                                        <span> สร้างรายการขาย</span>
+                                    </div>
+                                </a>
+
+                                <a class="dropdown-item flex flex-v-center" 
+                                href="{{ route('invoice_view') }}">
+                                    <div>
+                                        <i class="fa fa-power-off"></i>
+                                        <span> ดูรายการขาย</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <!--  -->
+                        
+                        </li>
+                        <li class="nav-item dropdown">
+
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre id="navbarPurchase">
+                                <i class="fa fa-shopping-cart"></i> 
+                                รายการซื้อ <span class="caret"></span>
+                            </a>
+                            <!-- Purchase Order Menu -->
+                                <div class="dropdown-menu dropdown-menu__wrap" aria-labelledby="navbarPurchase">
+
+                                    <a class="dropdown-item flex flex-v-center" 
+                                       href="{{ route('invoice_create') }}" >
+                                        <div>
+                                            <i class="fa fa-power-off"></i>
+                                            <span> เพิ่มรายการซื้อ</span>
+                                        </div>
+                                    </a>
+
+                                    <a class="dropdown-item flex flex-v-center" 
+                                       href="{{ route('invoice_view') }}">
+                                        <div>
+                                            <i class="fa fa-power-off"></i>
+                                            <span> ดูรายการซื้อ</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            <!--  -->
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('adjust') }}"><i class="fa fa-warehouse"></i> Adjust Stock</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('report') }}"><i class="fa fa-book"></i> Report</a>
+                            <a class="nav-link" href="{{ route('adjust') }}"><i class="fa fa-warehouse"></i> สินค้า</a>
                         </li>
                     </ul>
                     @endguest
