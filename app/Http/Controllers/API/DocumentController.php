@@ -56,6 +56,12 @@ class DocumentController extends Controller
         $detail = $request->input('detail');
         $lineitems = $request->input('lineitems');
 
+        // Find and add product_id
+        foreach($lineitems as $index => $item) {
+            $product_id = \App\Product::where('code', $item['product_code'])->first()->product_id;
+            $lineitems[$index]['product_id'] = $product_id; 
+        }
+
         $type = $detail['type'];
 
         $result = Document::create($type, $detail, $lineitems);
