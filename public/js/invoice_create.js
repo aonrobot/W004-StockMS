@@ -346,6 +346,7 @@ function createInvoice() {
     var date = $("#invoice_date").val();
     var reference = $("#invoice_ref").val();
     var table_body = $("#table_body");
+    var checkNullValue = true;
     var arr = [];
 
     if (id === '' ||
@@ -362,6 +363,13 @@ function createInvoice() {
         var prodAmount = $(elem).find('td:eq(5) input').val();
         var obj = {};
 
+        if(prodCode === '' ||
+           prodName === '' || 
+           prodAmount === '' ) {
+            $('#warning_modal').modal('show');
+            checkNullValue = false;
+        }
+
         obj = {
             "product_code": prodCode,
             "amount": prodUnitValue,
@@ -371,6 +379,8 @@ function createInvoice() {
 
         arr.push(obj);
     });
+    // Return if input value is null
+    if (!checkNullValue) return;
 
     var json_data = {
         "detail": {
@@ -397,7 +407,11 @@ function createInvoice() {
         },
         data: json_data
     }).done(function(res) {
-        console.log(res);
+        if (res.created) {
+            window.location = '/invoice_view';
+        }else {
+            alert('มีบางอย่างขัดข้องโปรดลองใหม่อีกครั้ง');
+        }
     });
 }
 

@@ -40,6 +40,58 @@
 </div>
 
 
+<div id="detail_modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xlarge">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">รายละเอียดรายการขาย</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+        <div class="row">
+            <div class="col-md-3 text-right">
+                <p>ประเภท : </p>
+            </div>
+            <div class="col-md-4">
+                <p><strong>ขายสินค้าออก</strong></p>
+            </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <p>รายการ : </p>
+                </div>
+                <div class="col-md-4">
+                    <p id="doc_id">
+                        INV201808312333001
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <p>วันที่ทำรายการ : </p>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <p id="doc_date">
+                            12/231/12312
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <p>อ้างอิง : </p>
+                </div>
+                <div class="col-md-4">
+                    <p id="doc_refer"> - </p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
 
 @endsection
 

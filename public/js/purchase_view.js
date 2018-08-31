@@ -56,7 +56,7 @@ function initialDataTable() {
 
     // $('body').busyLoad("show", busyBoxOptions);
 
-    var DOC_TYPE = "inv"
+    var DOC_TYPE = "po"
     $.ajax({
         type: 'GET',
         url: "api/document?type=" + DOC_TYPE,
@@ -119,6 +119,7 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
 });
 
 
+
 function viewDetail(id) {
 
     $.ajax({
@@ -129,13 +130,7 @@ function viewDetail(id) {
             "Authorization": Authorization
         }
     }).done(function (response) {
-
-        if ( Object.keys(response).length ) {
-
-            $("#doc_id").html(response.number);
-            $("#doc_date").html(response.date);
-            $("#doc_refer").html(response.ref_id ? response.ref_id : '-');
-            $("#detail_modal").modal('show');
-        }
+        console.log(response);
+        $("#detail_modal").modal('show');
     });
 }   

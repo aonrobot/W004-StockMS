@@ -319,6 +319,7 @@ function createPurchase() {
     var date = $("#purchase_date").val();
     var reference = $("#purchase_ref").val();
     var table_body = $("#table_body");
+    var checkNullValue = true;
     var arr = [];
 
     if (id === '' ||
@@ -333,6 +334,14 @@ function createPurchase() {
         var prodName = $(elem).find('td:eq(3) input').val();
         var prodUnitValue = $(elem).find('td:eq(4) input').val();
         var prodAmount = $(elem).find('td:eq(5) input').val();
+        
+        if(prodCode === '' ||
+           prodName === '' || 
+           prodAmount === '' ) {
+            $('#warning_modal').modal('show');
+            checkNullValue = false;
+        }
+
         var obj = {};
 
         obj = {
@@ -345,6 +354,9 @@ function createPurchase() {
         arr.push(obj);
     });
 
+    // Return if input value is null
+    if (!checkNullValue) return;
+
     var json_data = {
         "detail": {
             "number": id,
@@ -352,7 +364,7 @@ function createPurchase() {
             "ref_id": reference,
             "source_wh_id": 1,
             "target_wh_id": null,
-            "type": "inv",
+            "type": "po",
             "tax_type": "without_tax",
             "comment": "",
             "status": "create",
@@ -370,7 +382,11 @@ function createPurchase() {
         },
         data: json_data
     }).done(function(res) {
-        console.log(res);
+        if (res.created) {
+            window.location = '/purchase_view';
+        }else {
+            alert('มีบางอย่างขัดข้องโปรดลองใหม่อีกครั้ง');
+        }
     });
 }
 
