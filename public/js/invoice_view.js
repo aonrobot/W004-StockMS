@@ -3,31 +3,32 @@ var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 var invoice_view_table = $('#invoice_view_table').DataTable({
     "columnDefs": [{
         "orderable": false,
-        "targets": 5
+        "targets": 4
     }],
     columns: [
         {
-            "data": "prodID",
+            "render": function ( data, type, full, meta ) {
+                return  meta.row + 1;
+            },
+            "width": "5%"
+        },
+        {
+            "data": "invID",
             "render": function (data) {
-                return `<span id ="${data}">${data}</span>`;
+                return `<a id ="${data}" href="#"> ${data} </a>`;
             },
         },  
         {
-            "data": "prodName",
+            "data": "invDate",
+            "width": "20%"
         },
         {
             "data": "prodSalePrice",
             "className": "text-right",
+            "width": "15%"
         },
-        {
-            "data": "prodAmount",
-            "className": "text-right",
-        },
-        {
-            "data": "prodUnit",
-            "className": "text-right",
-        },
-        {
+        {   
+            "ordering": false,
             render: function (data, type, full, meta) {
                 return `<div>   
                                 <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
@@ -53,30 +54,29 @@ function initialDataTable() {
         .clear()
 
     // $('body').busyLoad("show", busyBoxOptions);
+
+    var DOC_TYPE = "inv"
     $.ajax({
         type: 'GET',
-        url: "api/product",
+        url: "api/document?type=" + DOC_TYPE,
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
         }
-    }).done(function (response) {
-
+    }).done(function (response){
+        console.log(response);
         var data = response;
+
         for (var i = 0; i < data.length; i++) {
             $('#invoice_view_table').DataTable().row.add({
-                "prodID": data[i].code,
-                "prodName": data[i].name,
-                "prodSalePrice": data[i].inventory.salePrice,
-                "prodAmount": data[i].inventory.quantity,
-                "prodUnit": data[i].unitName,
-                "btn": data[i].product_id
+                "invID": data[i].number,
+                "invDate": data[i].date,
+                "prodSalePrice": data[i].id,
+                "btn": data[i].id
                   
             }).draw();
         }
-        // $('body').busyLoad("hide", busyBoxOptions);
-        // createChangeQty_event();
-    });
+    })
 }
 
 
@@ -117,14 +117,3 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
     }
 });
 
-var DOC_TYPE = "inv"
-$.ajax({
-    type: 'GET',
-    url: "api/document?type=" + DOC_TYPE,
-    headers: {
-        "Accept": "application/json",
-        "Authorization": Authorization
-    }
-}).done(function (res){
-    console.log(res);
-})

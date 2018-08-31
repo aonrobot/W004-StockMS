@@ -1,44 +1,22 @@
+
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 var ROW_INDEX = 1;
 
 
 $(document).ready(function () {
 
-    $("#invoice_date").datepicker("setDate", new Date());
-    $("#invoice_date").datepicker({
+    $("#purchase_date").datepicker("setDate", new Date());
+    $("#purchase_date").datepicker({
         todayHighlight: true,
         format: 'dd/mm/yyyy',
         endDate: '+1d',
         orientation: "right",
     });
 
-    get.invoice_id().done(function (res) {
-        $("#invoice_id").val(res);
+    get.purchase_id().done(function (res) {
+        $("#purchase_id").val(res);
     });
 });
-
-
-
-// AutoCOMPLETE
-
-// var autocompleteOptions = {
-//     minLength: 1,
-//     source: function (request, response) {
-//         $.ajax({
-//             type: "GET",
-//             url: "/api/product/service/autoComplete?searchType=&q=",
-//             data: {
-//                 json: '["ActionScript", "AppleScript", "Asp", "BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion", "Erlang", "Fortran", "Groovy", "Haskell", "Java", "JavaScript", "Lisp", "Perl", "PHP", "Python", "Ruby", "Scala", "Scheme"]',
-//                 delay: 1
-//             },
-//             success: function (data) {
-//                 response(data);
-//             }
-//         });
-//     }
-// };
-
-// $("input[type=search]").autocomplete(autocompleteOptions);
 
 
 function addRow() {
@@ -96,11 +74,6 @@ function addRow() {
                 </td>
             </tr>
         `);
-    // Bind Auto Complete
-    // var getSearchType = $("#row_" + ROW_INDEX + " td input[type=search]");
-    // getSearchType.map(function (obj, elem) {
-    //     $(elem).focus().autocomplete(autocompleteOptions);
-    // })
 }
 
 function removeRow(idx) {
@@ -168,7 +141,7 @@ function removeRow(idx) {
         }
     });
     ROW_INDEX -= 1;
-    // Sum Invoice Total
+    // Sum purchase Total
     sumTotal();
 }
 
@@ -317,7 +290,7 @@ var row_value = {
 
         $($total).html((Number($amount) * Number($unitValue_val)).toFixed(2));
 
-        // Sum Invoice Total
+        // Sum purchase Total
         sumTotal();
     }
 }
@@ -333,18 +306,18 @@ function sumTotal() {
         sum += Number($(elem).html());
     });
 
-    $(".INVOICE_TOTAL").map(function (obj, elem) {
+    $(".PURCHASE_TOTAL").map(function (obj, elem) {
 
         $(elem).html(sum);
     });
 }
 
 
-function createInvoice() {
+function createPurchase() {
 
-    var id = $("#invoice_id").val();
-    var date = $("#invoice_date").val();
-    var reference = $("#invoice_ref").val();
+    var id = $("#purchase_id").val();
+    var date = $("#purchase_date").val();
+    var reference = $("#purchase_ref").val();
     var table_body = $("#table_body");
     var arr = [];
 
@@ -402,11 +375,11 @@ function createInvoice() {
 }
 
 var get = {
-    invoice_id: function () {
+    purchase_id: function () {
         return (
             $.ajax({
                 type: 'GET',
-                url: "api/document/service/gennumber/inv",
+                url: "api/document/service/gennumber/po",
                 headers: {
                     "Accept": "application/json",
                     "Authorization": Authorization

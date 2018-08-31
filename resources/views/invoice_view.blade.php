@@ -24,11 +24,10 @@
             <table id="invoice_view_table" class="table-style" style="WIDTH:100%;">
                 <thead>
                     <tr>
-                        <th>รหัสสินค้า</th>
-                        <th>ชื่อสินค้า</th>
-                        <th>ราคาขาย</th>
-                        <th>จำนวนคงเหลือ</th>
-                        <th>หน่วย</th>
+                        <th>#</th>
+                        <th>รายการ</th>
+                        <th>วันทำรายการ</th>
+                        <th>มูลค่า</th>
                         <th></th>
                     </tr>
                 </thead>
