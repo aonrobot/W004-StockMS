@@ -22,11 +22,22 @@ class DocumentController extends Controller
      */
     public function index(Request $request)
     {
-        if(!empty($request->input('type'))) {
+        if (!empty($request->input('type'))) {
             $type = $request->input('type');
 
             $docs = DocumentDetail::where('type', $type)->get();
 
+            foreach ($docs as $index => $doc) {
+                $doc_id = $doc['id'];
+                $docs[$index]['date'] = Carbon::createFromFormat('Y-m-d', $doc['date'])->format('d/m/Y');
+                $lineitems = DocumentLineItems::where('document_id', $doc_id)->get()->toArray();
+                $sum = 0.0;
+                foreach($lineitems as $item){
+                    $sum += floatval($item['total']);
+                }
+                $docs[$index]['total'] = number_format((float) $sum, 2, '.', '');
+            }
+            
             return response()->json($docs);
         }
 

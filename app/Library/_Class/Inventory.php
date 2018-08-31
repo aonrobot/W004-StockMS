@@ -5,7 +5,8 @@ namespace App\Library\_Class {
 
 	class Inventory {
 
-        static public function increase($product_id, $wh_id, $amount){
+        static public function increase($product_id, $wh_id, $amount)
+        {
             $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
             $quantity = $inventory->first()->quantity;
             $total = $quantity + $amount;
@@ -15,7 +16,8 @@ namespace App\Library\_Class {
             return $total;
         }
     
-        static public function decrease($product_id, $wh_id, $amount){
+        static public function decrease($product_id, $wh_id, $amount)
+        {
             $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
             $quantity = $inventory->first()->quantity;
             if($quantity - $amount < 0) {
