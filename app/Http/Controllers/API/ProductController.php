@@ -12,6 +12,7 @@ use App\ProductHasWH;
 use App\Warehouse;
 use App\Inventory;
 use App\Library\Log\Inventory as LogInventory;
+use App\Library\_Class\ProductUtil;
 
 
 class ProductController extends Controller
@@ -219,16 +220,32 @@ class ProductController extends Controller
     public function autoComplete(Request $request){
         $q = $request->input('q');
 
-        if($request->input('searchType') == '0') {
+        if ($request->input('searchType') == '0') {
             $products = Product::where('code', 'like', $q)
             ->orWhere('code', 'like', '%' . $q)
             ->orWhere('code', 'like', $q . '%')
             ->orWhere('code', 'like', '%' . $q . '%')->get();
-        } else {
+        } elseif ($request->input('searchType') == '0') {
             $products = Product::where('name', 'like', $q)
             ->orWhere('name', 'like', '%' . $q)
             ->orWhere('name', 'like', $q . '%')
             ->orWhere('name', 'like', '%' . $q . '%')->get();
+        } else {
+            $products = Product::where('name', 'like', $q)
+            ->orWhere('name', 'like', '%' . $q)
+            ->orWhere('name', 'like', $q . '%')
+            ->orWhere('name', 'like', '%' . $q . '%')
+            ->orWhere('code', 'like', $q)
+            ->orWhere('code', 'like', '%' . $q)
+            ->orWhere('code', 'like', $q . '%')
+            ->orWhere('code', 'like', '%' . $q . '%')->get();
+        }
+
+        foreach($products as $index => $product){
+            $products[$index]['sumQuantity'] = ProductUtil::sumQuantity($product['product_id']);
+            $products[$index]['costPrice'] = $product->inventory[0]['costPrice'];
+            $products[$index]['salePrice'] = $product->inventory[0]['salePrice'];
+            //$products[$index]['inventory'] = $product->inventory;
         }
 
         return response()->json($products);
