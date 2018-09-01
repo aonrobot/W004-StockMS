@@ -184,7 +184,7 @@ var modal_table = $('#modal_prod_table').DataTable({
             render: function (data, type, full, meta) {
 
                 return `<div>   
-                            <button onclick="addProdInRow(${full.btn.id} ,${full.btn.target} )" 
+                            <button onclick="addProdInRow(${meta.row} ,${full.btn.target} )" 
                                     class="btn btn-primary edit-btn pointer" >
                                 เลือก
                             </button>
@@ -233,7 +233,7 @@ function initialDataTable(btn_id) {
 
 function addProdInRow(rowIdx, target) {
 
-    var row_data = modal_table.row(rowIdx - 1).data();  /// json object
+    var row_data = modal_table.row( rowIdx ).data();  /// json object
     var targetID = target.id.split('_')[1]; /// number ex.1,2,3,  
 
     var $row_elem = $("#row_" + targetID);

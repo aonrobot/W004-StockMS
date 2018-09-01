@@ -406,10 +406,11 @@ function createInvoice() {
         },
         data: json_data
     }).done(function(res) {
+        console.log(res);
         if (res.created) {
             window.location = '/invoice_view';
         }else {
-            alert('มีบางอย่างขัดข้องโปรดลองใหม่อีกครั้ง');
+            // alert('มีบางอย่างขัดข้องโปรดลองใหม่อีกครั้ง');
         }
     });
 }
