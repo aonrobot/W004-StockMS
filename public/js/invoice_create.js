@@ -17,29 +17,20 @@ $(document).ready(function () {
     });
 });
 
+// Initial // Bind Auto Complete
+var columnCode = $("#row_1 .td__prodCode input[type=search]");
+var columnName = $("#row_1 .td__prodName input[type=search]");
 
-
-// AutoCOMPLETE
-
-// var autocompleteOptions = {
-//     minLength: 1,
-//     source: function (request, response) {
-//         $.ajax({
-//             type: "GET",
-//             url: "/api/product/service/autoComplete?searchType=&q=",
-//             data: {
-//                 json: '["ActionScript", "AppleScript", "Asp", "BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion", "Erlang", "Fortran", "Groovy", "Haskell", "Java", "JavaScript", "Lisp", "Perl", "PHP", "Python", "Ruby", "Scala", "Scheme"]',
-//                 delay: 1
-//             },
-//             success: function (data) {
-//                 response(data);
-//             }
-//         });
-//     }
-// };
-
-// $("input[type=search]").autocomplete(autocompleteOptions);
-
+    columnCode.map(function (obj, elem) {
+        $(elem).attr( {
+            'onkeyup': `search(this, 0, 1)`
+        });
+    })
+    columnName.map(function (obj, elem) {
+        $(elem).attr( {
+            'onkeyup': `search(this, 1, 1)`
+        });
+    })
 
 function addRow() {
     ROW_INDEX += 1;
@@ -81,6 +72,7 @@ function addRow() {
                             </span>
                         </div>
                     </div>
+                    <small class="float-right"></small>
                 </td>
                 <td class="td__amount">
                     <input type="number" class="form-control text-right" onchange="row_value.total(${ ROW_INDEX})" />
@@ -97,10 +89,73 @@ function addRow() {
             </tr>
         `);
     // Bind Auto Complete
-    // var getSearchType = $("#row_" + ROW_INDEX + " td input[type=search]");
-    // getSearchType.map(function (obj, elem) {
-    //     $(elem).focus().autocomplete(autocompleteOptions);
-    // })
+    var columnCode = $("#row_" + ROW_INDEX + " .td__prodCode input[type=search]");
+    var columnName = $("#row_" + ROW_INDEX + " .td__prodName input[type=search]");
+    
+    columnCode.map(function (obj, elem) {
+        $(elem).attr( {
+            'onkeyup': `search(this, 0, ${ ROW_INDEX })`
+        });
+    })
+    columnName.map(function (obj, elem) {
+        $(elem).attr( {
+            'onkeyup': `search(this, 1, ${ ROW_INDEX })`
+        });
+    })
+}
+
+function search (elem , searchType ,idx) {
+    // TODO: Combined 2 searchType
+    var TEXT_SEARCH = $(elem).val();
+    var autocompleteOptions = {
+        minLength: 1,
+        source: function (request, response) {
+            $.ajax({
+                type: "GET",
+                url: "/api/product/service/autoComplete?searchType=" + searchType + "&q=" + TEXT_SEARCH,
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": Authorization
+                },
+                success: function (data) {
+
+                    var arr = data.map(function (obj) {
+
+                        if (searchType){
+                            return { 
+                                data: obj, 
+                                label: obj.name 
+                            };
+                        }
+                        else {
+                            return { 
+                                data: obj, 
+                                label: obj.code 
+                            };
+                        } 
+                    });
+                    response(arr);
+                }
+            });
+        },
+        select: function(e, ui) {
+            e.preventDefault() 
+            var $row_elem = $("#row_" + idx);
+                $($row_elem).find(".td__prodCode input").val(ui.item.data.code);
+                $($row_elem).find(".td__prodName input").val(ui.item.data.name);
+                $($row_elem).find(".td__amount input").val(ui.item.prodSalePrice);
+                $($row_elem).find(".td__unitValue small").html(
+                    `<span>จำนวนคงเหลือ <strong>${ ui.item.prodAmount }</strong></span>`
+                );
+                $($row_elem).find(".td__unit").html(`
+                        <span class="badge badge-light">${ ui.item.prodUnit}</span>
+                    `);
+            // Count Total 
+            row_value.total(idx);
+        }
+    };
+
+    $(elem).focus().autocomplete(autocompleteOptions);
 }
 
 function removeRow(idx) {
@@ -138,6 +193,7 @@ function removeRow(idx) {
             // Re-render Plus & Minus Button
             var oldValue_elem = $("#" + elem.id + " td.td__unitValue input");
             var oldValue = oldValue_elem.val();
+            var oldAmount = $("#" + elem.id + " td.td__unitValue small").html();
 
             $("#" + elem.id + " td.td__unitValue").html(`
                 <div class="input-group">
@@ -158,6 +214,7 @@ function removeRow(idx) {
                         </span>
                     </div>
                 </div>
+                <small class="float-right">${oldAmount}</small>
             `);
 
             // Re-render UnitValue 
@@ -165,6 +222,21 @@ function removeRow(idx) {
             var oldAmount = $(oldAmount_elem).find("input").val();
             $(oldAmount_elem).html(`
                 <input type="number" class="form-control text-right" onchange="row_value.total(${ reduce_index})" value="${oldAmount}" />`);
+
+            // Bind Auto Complete
+            var columnCode = $("#row_" + reduce_index + " .td__prodCode input[type=search]");
+            var columnName = $("#row_" + reduce_index + " .td__prodName input[type=search]");
+                columnCode.map(function (obj, elem) {
+                    $(elem).attr( {
+                        'onkeyup': `search(this, 0, ${ reduce_index })`
+                    });
+                })
+                columnName.map(function (obj, elem) {
+                    $(elem).attr( {
+                        'onkeyup': `search(this, 1, ${ reduce_index })`
+                    });
+                })
+            
         }
     });
     ROW_INDEX -= 1;
@@ -267,6 +339,11 @@ function addProdInRow(rowIdx, target) {
         $($row_elem).find(".td__prodCode input").val(row_data.prodID);
         $($row_elem).find(".td__prodName input").val(row_data.prodName);
         $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
+
+        $($row_elem).find(".td__unitValue small").html(
+            `<span>จำนวนคงเหลือ <strong>${ row_data.prodAmount }</strong></span>`
+        );
+
         $($row_elem).find(".td__unit").html(`
                 <span class="badge badge-light">${ row_data.prodUnit}</span>
             `);
@@ -350,7 +427,8 @@ function createInvoice() {
 
     if (id === '' ||
         date === '') {
-        $('#warning_modal').modal('show');
+
+        errorDialog(1);
         return;
     }
 
@@ -365,7 +443,7 @@ function createInvoice() {
         if(prodCode === '' ||
            prodName === '' || 
            prodAmount === '' ) {
-            $('#warning_modal').modal('show');
+            errorDialog(1);
             checkNullValue = false;
         }
 
@@ -428,4 +506,26 @@ var get = {
             })
         );
     }
+}
+
+function errorDialog( err ) {
+ 
+    var text;
+
+    switch ( err ) {
+        // Case 1 กรอกข้อมูลไม่ครบ; 
+        case 1 : 
+            text = `กรุณากรอกข้อมูลให้ครบถ้วน`;
+            break;
+        // Case 2 ขายสินค้าจำนวนมากกว่าที่มีอยู่;
+        case 2 :
+            text = `ขายสินค้ามากกว่าจำนวนคงเหลือ`;
+            break;
+        default :
+            text = `มีบางอย่างขัดข้องโปรดลงใหม่อีกครั้ง`;
+            break;
+
+    }
+    $("#warning_text").html(text);
+    $('#warning_modal').modal('show');
 }

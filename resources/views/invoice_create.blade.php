@@ -8,6 +8,8 @@
     </div>
 @endif
 <link rel="stylesheet" href="{{ asset('./css/invoice-style.css') }} "/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
 <div class="container main" >
     <h3> สร้างรายการขาย </h3>
@@ -98,7 +100,7 @@
                             <input type="search" class="form-control"/>
                         </td>
                         
-                        <td class="td__unitValue">
+                        <td class="td__unitValue" >
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text pointer" onclick="row_value.minus(1)">
@@ -115,6 +117,7 @@
                                     </span>
                                 </div>
                             </div>
+                            <small class="float-right"></small>
                         </td>
                         
                         <td class="td__amount">
@@ -211,7 +214,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <p> กรุณากรอกข้อมูลให้ครบถ้วน </p>
+            <p id="warning_text"> กรุณากรอกข้อมูลให้ครบถ้วน </p>
         </div>
     </div>
   </div>
@@ -224,5 +227,7 @@
 
 
 @section('page_script')
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="{{ asset('js/invoice_create.js') }}"></script>
+
 @endsection
