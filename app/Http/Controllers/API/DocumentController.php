@@ -188,4 +188,38 @@ class DocumentController extends Controller
 
         return response()->json(DocumentUtil::genDocNumber($type));
     }
+
+    public function revenue($type){
+
+        $revenue = 0;
+        switch ($type) {
+            case 'today':
+
+                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->toDateString() . '%')->get();
+                foreach ($docs as $doc) {
+                    $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
+                }
+
+            break;
+
+            case 'thisMonth':
+
+                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->format('Y-m') . '%')->get();
+                foreach ($docs as $doc) {
+                    $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
+                }
+
+            break;
+
+            case 'thisYear':
+
+                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->format('Y') . '%')->get();
+                foreach ($docs as $doc) {
+                    $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
+                }
+
+            break;
+        }
+        return response()->json($revenue);
+    }
 }
