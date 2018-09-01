@@ -58,9 +58,16 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::prefix('document')->group(function () {
         Route::prefix('service')->group(function () {
             Route::get('gennumber/{type}', 'DocumentController@genDocNumber');
+            Route::get('revenue/{type}', 'DocumentController@revenue');
         });
     });
 });
+
+// //API: Service
+// Route::middleware('auth:api')->namespace('API')->group(function () {
+//     Route::prefix('document')->group(function () {
+//     });
+// });
 
 //API: Inventory Log
 // Route::middleware('auth:api')->namespace('API')->group(function () {
