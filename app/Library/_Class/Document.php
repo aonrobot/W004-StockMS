@@ -350,15 +350,17 @@ namespace App\Library\_Class {
                             // Adjust Inventory
                             // expand amount
                             if ($oldAmount < $amount) {
-                                $currentQuantity = InventoryClass::decrease($oldProductId, $doc_source_wh_id, $diff);
-                                if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->decrement('quantity', $diff);
-                                }
+                                // $currentQuantity = InventoryClass::decrease($oldProductId, $doc_source_wh_id, $diff);
+                                // if ($currentQuantity != false) {
+                                //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->decrement('quantity', $diff);
+                                // }
+                                self::quickTransfer($doc_source_wh_id, null, [['product_id' => $oldProductId, 'amount' => $diff]]);
                             } elseif ($oldAmount > $amount) {
-                                $currentQuantity = InventoryClass::increase($oldProductId, $doc_source_wh_id, $diff);
-                                if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->increment('quantity', $diff);
-                                }
+                                // $currentQuantity = InventoryClass::increase($oldProductId, $doc_source_wh_id, $diff);
+                                // if ($currentQuantity != false) {
+                                //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->increment('quantity', $diff);
+                                // }
+                                self::quickTransfer(null, $doc_source_wh_id, [['product_id' => $oldProductId, 'amount' => $diff]]);
                             }
                         }
                         
@@ -431,15 +433,17 @@ namespace App\Library\_Class {
 
                             // expand amount
                             if ($oldAmount > $amount) {
-                                $currentQuantity = InventoryClass::decrease($oldProductId, $doc_target_wh_id, $diff);
-                                if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->decrement('quantity', $diff);
-                                }
+                                // $currentQuantity = InventoryClass::decrease($oldProductId, $doc_target_wh_id, $diff);
+                                // if ($currentQuantity != false) {
+                                //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->decrement('quantity', $diff);
+                                // }
+                                self::quickTransfer($doc_target_wh_id, null, [['product_id' => $oldProductId, 'amount' => $diff]]);
                             } elseif ($oldAmount < $amount) {
-                                $currentQuantity = InventoryClass::increase($oldProductId, $doc_target_wh_id, $diff);
-                                if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->increment('quantity', $diff);
-                                }
+                                // $currentQuantity = InventoryClass::increase($oldProductId, $doc_target_wh_id, $diff);
+                                // if ($currentQuantity != false) {
+                                //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->increment('quantity', $diff);
+                                // }
+                                self::quickTransfer(null, $doc_target_wh_id, [['product_id' => $oldProductId, 'amount' => $diff]]);
                             }
                         }
                         

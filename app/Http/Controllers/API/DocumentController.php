@@ -86,7 +86,7 @@ class DocumentController extends Controller
         // Find and add product_id because ui send product_code but backend use product_id
         foreach ($lineitems as $index => $item) {
             $product_id = \App\Product::where('code', $item['product_code'])->first()->product_id;
-            $lineitems[$index]['product_id'] = $product_id; 
+            $lineitems[$index]['product_id'] = $product_id;
         }
 
         /**

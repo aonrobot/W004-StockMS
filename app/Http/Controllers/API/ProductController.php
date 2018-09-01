@@ -245,7 +245,6 @@ class ProductController extends Controller
             $products[$index]['sumQuantity'] = ProductUtil::sumQuantity($product['product_id']);
             $products[$index]['costPrice'] = $product->inventory[0]['costPrice'];
             $products[$index]['salePrice'] = $product->inventory[0]['salePrice'];
-            //$products[$index]['inventory'] = $product->inventory;
         }
 
         return response()->json($products);
