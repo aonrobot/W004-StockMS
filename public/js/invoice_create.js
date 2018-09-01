@@ -211,7 +211,7 @@ var modal_table = $('#modal_prod_table').DataTable({
             render: function (data, type, full, meta) {
 
                 return `<div>   
-                            <button onclick="addProdInRow(${full.btn.id} ,${full.btn.target} )" 
+                            <button onclick="addProdInRow(${meta.row} ,${full.btn.target} )" 
                                     class="btn btn-primary edit-btn pointer" >
                                 เลือก
                             </button>
@@ -260,24 +260,23 @@ function initialDataTable(btn_id) {
 
 function addProdInRow(rowIdx, target) {
 
-    var row_data = modal_table.row(rowIdx - 1).data();  /// json object
-    var targetID = target.id.split('_')[1]; /// number ex.1,2,3,  
+        var row_data = modal_table.row( rowIdx ).data();  /// json object
+        var targetID = target.id.split('_')[1]; /// number ex.1,2,3,  
+        var $row_elem = $("#row_" + targetID);
 
-    var $row_elem = $("#row_" + targetID);
+        $($row_elem).find(".td__prodCode input").val(row_data.prodID);
+        $($row_elem).find(".td__prodName input").val(row_data.prodName);
+        $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
+        $($row_elem).find(".td__unit").html(`
+                <span class="badge badge-light">${ row_data.prodUnit}</span>
+            `);
 
-    $($row_elem).find(".td__prodCode input").val(row_data.prodID);
-    $($row_elem).find(".td__prodName input").val(row_data.prodName);
-    $($row_elem).find(".td__amount input").val(row_data.prodSalePrice);
-    $($row_elem).find(".td__unit").html(`
-            <span class="badge badge-light">${ row_data.prodUnit}</span>
-        `);
+        // Count Total 
+        row_value.total(targetID);
 
-    // Count Total 
-    row_value.total(targetID);
-
-    // Close Modal
-    $('#product_modal').modal('hide');
-}
+        // Close Modal
+        $('#product_modal').modal('hide');
+    }
 
 var row_value = {
 
