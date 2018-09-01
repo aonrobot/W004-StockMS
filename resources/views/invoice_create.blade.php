@@ -8,7 +8,7 @@
     </div>
 @endif
 <link rel="stylesheet" href="{{ asset('./css/invoice-style.css') }} "/>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{{ asset('./css/jquery-ui.css') }}">
 
 
 <div class="container main" >
@@ -227,7 +227,8 @@
 
 
 @section('page_script')
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ asset('js/jquery-ui.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('js/invoice_create.js') }}"></script>
 
 @endsection

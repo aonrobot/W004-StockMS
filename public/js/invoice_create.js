@@ -139,16 +139,17 @@ function search (elem , searchType ,idx) {
             });
         },
         select: function(e, ui) {
-            e.preventDefault() 
+            e.preventDefault();
+
             var $row_elem = $("#row_" + idx);
                 $($row_elem).find(".td__prodCode input").val(ui.item.data.code);
                 $($row_elem).find(".td__prodName input").val(ui.item.data.name);
-                $($row_elem).find(".td__amount input").val(ui.item.prodSalePrice);
+                $($row_elem).find(".td__amount input").val(ui.item.data.salePrice);
                 $($row_elem).find(".td__unitValue small").html(
-                    `<span>จำนวนคงเหลือ <strong>${ ui.item.prodAmount }</strong></span>`
+                    `<span>จำนวนคงเหลือ <strong>${ ui.item.data.sumQuantity }</strong></span>`
                 );
                 $($row_elem).find(".td__unit").html(`
-                        <span class="badge badge-light">${ ui.item.prodUnit}</span>
+                        <span class="badge badge-light">${ ui.item.data.unitName }</span>
                     `);
             // Count Total 
             row_value.total(idx);
@@ -488,7 +489,7 @@ function createInvoice() {
         if (res.created) {
             window.location = '/invoice_view';
         }else {
-            // alert('มีบางอย่างขัดข้องโปรดลองใหม่อีกครั้ง');
+            errorDialog(2)
         }
     });
 }

@@ -176,8 +176,8 @@
 <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.26.9/dist/sweetalert2.all.min.js"></script>
 <!-- <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script> -->
-<!-- Date Picker -->
-<script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+<!-- Date Picker
+<script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script> -->
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
