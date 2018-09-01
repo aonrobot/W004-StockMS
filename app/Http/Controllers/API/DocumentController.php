@@ -26,6 +26,7 @@ class DocumentController extends Controller
             $type = $request->input('type');
 
             $docs = DocumentDetail::where('type', $type)->get();
+            if($docs == null) return response()->json([]);
 
             foreach ($docs as $index => $doc) {
                 $doc_id = $doc['id'];
@@ -45,11 +46,16 @@ class DocumentController extends Controller
             $id = $request->input('id');
 
             $doc = DocumentDetail::where('id', $id)->first();
+            if($doc == null) return response()->json([]);
+
             $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
-            foreach ($lineitems as $item) {
+            $docProduct = [];
+            foreach ($lineitems as $index => $item) {
                 $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
-                $doc['lineitems'] = $item;
+                array_push($docProduct, $item);
             }
+
+            $doc['lineItems'] = $docProduct;
 
             return response()->json($doc);
         }
@@ -105,6 +111,8 @@ class DocumentController extends Controller
         $number = $id;
 
         $doc = DocumentDetail::where('number', $number)->first();
+        if($doc == null) return response()->json([]);
+
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
         foreach ($lineitems as $item) {
             $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();

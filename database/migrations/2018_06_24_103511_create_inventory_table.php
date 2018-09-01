@@ -89,6 +89,8 @@ class CreateInventoryTable extends Migration
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2)->default(0.00);
 
+            $table->integer('quantity')->default(0);
+
             $table->timestamps();
 
             $table->foreign('document_id')
@@ -96,13 +98,13 @@ class CreateInventoryTable extends Migration
             ->onDelete('cascade');
         });
 
-        Schema::create('transaction', function(Blueprint $table) {
-            $table->increments('id');
-            $table->integer('document_id')->unsigned();
-            $table->integer('balance')->default(0);
+        // Schema::create('transaction', function(Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('document_id')->unsigned();
+        //     $table->integer('product_id')->unsigned();
 
-            $table->timestamps();
-        });
+        //     $table->timestamps();
+        // });
 
         // Schema::create('inventoryLog', function(Blueprint $table){
         //     $table->increments('id');

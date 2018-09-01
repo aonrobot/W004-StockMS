@@ -59,13 +59,13 @@ namespace App\Library\_Class {
                             $product_id = $item['product_id'];
                             $amount = $item['amount'];
 
-                            if ($amount <= 0) continue;
+                            if ($amount < 0) continue;
 
-                            \App\DocumentLineItems::create([
+                            $lineItemId = \App\DocumentLineItems::create([
                                 "document_id" => $doc_id,
                                 "product_id" => $product_id,
                                 "amount" => $amount
-                            ]);
+                            ])->id;
 
                             if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                                 $currentQuantity = InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
@@ -75,6 +75,8 @@ namespace App\Library\_Class {
                                 InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
                                 $currentQuantity = InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
                             }
+
+                            \App\DocumentLineItems::find($lineItemId)->update(['quantity' => $currentQuantity]);
                         }
 
                     break;
@@ -113,7 +115,7 @@ namespace App\Library\_Class {
 
                             $item['document_id'] = $doc_id;
                             $item['total'] = ($price * $amount) - $discount;
-                            \App\DocumentLineItems::create($item);
+                            $lineItemId = \App\DocumentLineItems::create($item)->id;
 
                             if ($doc_source_wh_id == null) {
                                 if ($doc_target_wh_id !== null) {
@@ -124,6 +126,8 @@ namespace App\Library\_Class {
                             }
 
                             $currentQuantity = InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
+                            \App\DocumentLineItems::find($lineItemId)->update(['quantity' => $currentQuantity]);
+
                         }
                         
                     break;
@@ -154,7 +158,7 @@ namespace App\Library\_Class {
 
                             $item['document_id'] = $doc_id;
                             $item['total'] = 0;
-                            \App\DocumentLineItems::create($item);
+                            $lineItemId = \App\DocumentLineItems::create($item)->id;
 
                             if ($doc_target_wh_id == null) {
                                 if ($doc_source_wh_id !== null) {
@@ -165,17 +169,13 @@ namespace App\Library\_Class {
                             }
 
                             $currentQuantity = InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
+                            \App\DocumentLineItems::find($lineItemId)->update(['quantity' => $currentQuantity]);
                         }
                         
                     break;
                     
                     return ['created' => false, 'message' => 'Document type not support'];
                 }
-
-                \App\Transaction::create([
-                    'document_id' => $doc_id,
-                    'balance' => $currentQuantity
-                ]);
 
                 return [
                     'created' => true,
