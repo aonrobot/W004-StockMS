@@ -26,3 +26,25 @@
 .btn-remove-row:hover {
     color : #dc3545;
 }
+
+
+@media (min-width: 576px) {
+    .modal-xlarge {
+        max-width: 540px;
+    }
+}
+@media (min-width: 768px) {
+    .modal-xlarge {
+        max-width: 720px;
+    }
+}
+@media (min-width: 992px) {
+    .modal-xlarge {
+        max-width: 960px;
+    }
+}
+@media (min-width: 1200px) { 
+    .modal-xlarge {
+        max-width: 1140px;
+    }
+}

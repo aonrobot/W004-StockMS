@@ -7,7 +7,6 @@
         {{ session('status') }}
     </div>
 @endif
-
 <link rel="stylesheet" href="{{ asset('./css/invoice-style.css') }} "/>
 
 <div class="container main" >
@@ -26,7 +25,7 @@
             <p>รายการ<sup class="text-danger">*</sup> : </p>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" />
+            <input class="form-control" type="text" id="invoice_id" />
         </div>
     </div>
     <div class="row form-group">
@@ -35,7 +34,7 @@
         </div>
         <div class="col-md-4">
             <div class="input-group date">
-                <input class="datepicker form-control" data-date-format="dd/mm/yyyy" id="datePicker"  />
+                <input class="datepicker form-control" data-date-format="dd/mm/yyyy" id="invoice_date" />
                 <div class="input-group-append">
                     <span class="input-group-text">
                         <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -46,20 +45,20 @@
     </div>
     <div class="row form-group">
         <div class="col-md-3 text-right">
-            <p>อ้างอิง<sup class="text-danger">*</sup> : </p>
+            <p>อ้างอิง : </p>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" />
+            <input class="form-control" type="text" id="invoice_ref" />
         </div>
     </div>
-    <div class="row form-group">
+    <!-- <div class="row form-group">
         <div class="col-md-3 text-right">
             <p>ช่องทางการขาย<sup class="text-danger">*</sup> : </p>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" />
+            <input class="form-control" type="text" id="invoice_" />
         </div>
-    </div>
+    </div> -->
 
 
     <div class="row card m-t-30">
@@ -96,7 +95,7 @@
                             <input type="search" class="form-control"/>
                         </td>
                         <td class="td__prodName">
-                            <input type="text" class="form-control"/>
+                            <input type="search" class="form-control"/>
                         </td>
                         
                         <td class="td__unitValue">
@@ -163,7 +162,7 @@
     <hr class=" m-t-30" />
     <div class="row m-t-30">
         <div class="col-md-12 text-center">
-            <button class="btn btn-lg btn-primary">
+            <button class="btn btn-lg btn-primary" onclick="createInvoice()">
                 บันทึก
                 <i class="fa fa-save" aria-hidden="true"></i>
             </button>
@@ -196,6 +195,23 @@
                     <tbody></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="warning_modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white">เพิ่มสินค้า</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p> กรุณากรอกข้อมูลให้ครบถ้วน </p>
         </div>
     </div>
   </div>

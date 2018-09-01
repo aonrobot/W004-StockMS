@@ -160,7 +160,7 @@ header .dropdown-menu {
 .form-control::placeholder {
     color: #ccc;
 }
-
+.m-10 { margin: 10px; }
 .m-t-0 { margin-top: 0 !important }    
 .m-t-5 { margin-top: 5px !important }
 .m-t-20 { margin-top: 20px !important }

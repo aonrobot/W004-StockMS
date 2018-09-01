@@ -78,7 +78,6 @@
                                 <a class="dropdown-item flex flex-v-center" 
                                 href="{{ route('invoice_create') }}" >
                                     <div>
-                                        <i class="fa fa-power-off"></i>
                                         <span> สร้างรายการขาย</span>
                                     </div>
                                 </a>
@@ -86,7 +85,6 @@
                                 <a class="dropdown-item flex flex-v-center" 
                                 href="{{ route('invoice_view') }}">
                                     <div>
-                                        <i class="fa fa-power-off"></i>
                                         <span> ดูรายการขาย</span>
                                     </div>
                                 </a>
@@ -104,17 +102,15 @@
                                 <div class="dropdown-menu dropdown-menu__wrap" aria-labelledby="navbarPurchase">
 
                                     <a class="dropdown-item flex flex-v-center" 
-                                       href="{{ route('invoice_create') }}" >
+                                       href="{{ route('purchase_create') }}" >
                                         <div>
-                                            <i class="fa fa-power-off"></i>
                                             <span> เพิ่มรายการซื้อ</span>
                                         </div>
                                     </a>
 
                                     <a class="dropdown-item flex flex-v-center" 
-                                       href="{{ route('invoice_view') }}">
+                                       href="{{ route('purchase_view') }}">
                                         <div>
-                                            <i class="fa fa-power-off"></i>
                                             <span> ดูรายการซื้อ</span>
                                         </div>
                                     </a>
