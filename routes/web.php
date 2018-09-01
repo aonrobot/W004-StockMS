@@ -27,4 +27,5 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/invoice_view', function () { return view('invoice_view'); })->name('invoice_view');
     Route::get('/purchase_create', function () { return view('purchase_create'); })->name('purchase_create');
     Route::get('/purchase_view', function () { return view('purchase_view'); })->name('purchase_view');
+    Route::get('/print', function () { return view('print'); })->name('print');
 });

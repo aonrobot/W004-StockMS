@@ -121,6 +121,7 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
 
 function viewDetail(id) {
 
+    var table_body = ``;
     $.ajax({
         method: 'GET',
         url: "api/document?id=" + id,
@@ -128,13 +129,50 @@ function viewDetail(id) {
             "Accept": "application/json",
             "Authorization": Authorization
         }
-    }).done(function (response) {
+    }).done(function (doc_list) {
+        
+        if ( Object.keys(doc_list).length ) {
 
-        if ( Object.keys(response).length ) {
+            $("#doc_id").html(doc_list.number);
+            $("#doc_date").html(doc_list.date);
+            $("#doc_refer").html(doc_list.ref_id ? doc_list.ref_id : '-');
+            $("#doc_print").html(
+                `<a class="btn btn-info m-r-10" href="./print?did=${ id }">
+                    Print    
+                    <i class="fa fa-print" aria-hidden="true"></i>
+                </a>`
+            );
+            
+            var idx, 
+                total = 0;
+            
+            for (var i = 0 ; i < doc_list.lineItems.length ; i++) {
+                
+                idx = i + 1;
+                total =  total + Number(doc_list.lineItems[i].total);
 
-            $("#doc_id").html(response.number);
-            $("#doc_date").html(response.date);
-            $("#doc_refer").html(response.ref_id ? response.ref_id : '-');
+                table_body += `
+                    <tr> 
+                        <td></td>
+                        <td class="text-right"> ${ idx } </td>
+                        <td> ${ doc_list.lineItems[i].product.code } </td>
+                        <td> ${ doc_list.lineItems[i].product.name } </td>
+                        <td class="text-right"> ${ doc_list.lineItems[i].amount } </td>
+                        <td class="text-right"> ${ doc_list.lineItems[i].price } </td>
+                        <td class="text-right">
+                            <span class="badge badge-light"> 
+                                ${ doc_list.lineItems[i].product.unitName } 
+                            </span>
+                        </td>
+                        <td class="text-right"> ${ doc_list.lineItems[i].total } </td>
+                    </tr>
+                `;
+            }   
+
+            $("#doc_detail").html(table_body);
+            $("#doc_detail_count").html(idx);
+            $("#doc_detail_total").html(total.toFixed(2));
+
             $("#detail_modal").modal('show');
         }
     });

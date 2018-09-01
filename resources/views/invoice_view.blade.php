@@ -50,29 +50,36 @@
             </button>
         </div>
         <div class="modal-body">
-        <div class="row">
-            <div class="col-md-3 text-right">
-                <p>ประเภท : </p>
+
+            <div class="row">
+                <div class="col-12 text-right" id="doc_print">
+                    
+                </div>
             </div>
-            <div class="col-md-4">
-                <p><strong>ขายสินค้าออก</strong></p>
-            </div>
+
+            <div class="row">
+                <div class="col-6 col-sm-6 col-md-3 text-right">
+                    <p>ประเภท : </p>
+                </div>
+                <div class="col-6 col-sm-6 col-md-4">
+                    <p><strong>ขายสินค้าออก</strong></p>
+                </div>
             </div>
             <div class="row">
-                <div class="col-md-3 text-right">
+                <div class="col-6 col-sm-6 col-md-3 text-right">
                     <p>รายการ : </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-6 col-sm-6 col-md-4">
                     <p id="doc_id">
                         INV201808312333001
                     </p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 text-right">
+                <div class="col-6 col-sm-6 col-md-3 text-right">
                     <p>วันที่ทำรายการ : </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-6 col-sm-6 col-md-4">
                     <div class="input-group">
                         <p id="doc_date">
                             12/231/12312
@@ -81,11 +88,42 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 text-right">
+                <div class="col-6 col-sm-6 col-md-3 text-right">
                     <p>อ้างอิง : </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-6 col-sm-6 col-md-4">
                     <p id="doc_refer"> - </p>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive m-t-30">
+                <table class="table table-striped table-create-IV">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-right">#</th>
+                            <th>รหัสสินค้า</th>
+                            <th>ชื่อสินค้า</th>
+                            <th class="text-right">จำนวน</th>
+                            <th class="text-right">มูลค่าต่อหน่วย</th>
+                            <th class="text-right">หน่วย</th>
+                            <th class="text-right">รวม</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doc_detail">
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <p class="m-b-0">
+                            จำนวนทั้งหมด : <span id="doc_detail_count"> </span> 
+                        </p>
+                        <p>
+                            <strong>มูลค่ารวม : <span id="doc_detail_total"> </span> </strong>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
