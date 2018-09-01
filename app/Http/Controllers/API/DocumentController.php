@@ -32,7 +32,7 @@ class DocumentController extends Controller
                 $docs[$index]['date'] = Carbon::createFromFormat('Y-m-d', $doc['date'])->format('d/m/Y');
                 $lineitems = DocumentLineItems::where('document_id', $doc_id)->get()->toArray();
                 $sum = 0.0;
-                foreach($lineitems as $item){
+                foreach ($lineitems as $item) {
                     $sum += floatval($item['total']);
                 }
                 $docs[$index]['total'] = number_format((float) $sum, 2, '.', '');
@@ -41,15 +41,20 @@ class DocumentController extends Controller
             return response()->json($docs);
         }
 
-        if(!empty($request->input('id'))) {
+        if (!empty($request->input('id'))) {
             $id = $request->input('id');
 
             $doc = DocumentDetail::where('id', $id)->first();
+            $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
+            foreach ($lineitems as $item) {
+                $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
+                $doc['lineitems'] = $item;
+            }
 
             return response()->json($doc);
         }
 
-        if(!empty($request->input('number'))) {
+        if (!empty($request->input('number'))) {
             $number = $request->input('number');
 
             return $this->show($number);
@@ -101,7 +106,7 @@ class DocumentController extends Controller
 
         $doc = DocumentDetail::where('number', $number)->first();
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
-        foreach($lineitems as $item){
+        foreach ($lineitems as $item) {
             $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
             $doc['lineitems'] = $item;
         }
@@ -118,7 +123,23 @@ class DocumentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // {
+        //     "detail" : {
+        //       "date": "29/08/2018"
+        //     },
+        //     "lineitems" : [
+        //         {
+        //          "amount": 50,
+        //          "price": 100,
+        //          "discount": 200
+        //         }
+        //     ]
+        // }
         
+        $detail = $request->input('detail');
+        $lineitems = $request->input('lineitems');     
+        
+
     }
 
     /**

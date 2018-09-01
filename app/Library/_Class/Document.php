@@ -196,6 +196,98 @@ namespace App\Library\_Class {
             }
         }
 
+        static public function update($id, $type, $detail, $lineitems)
+        {
+            try
+            {
+                $doc_number = $detail['number'];
+                $doc_source_wh_id = $detail['source_wh_id'];
+                $doc_target_wh_id = $detail['target_wh_id'];
+
+                $documentDetail = \App\DocumentDetail::where('id', $id);
+
+                switch($type)
+                {
+                    /*
+                        Update
+                        ████████╗██████╗  █████╗ ███╗   ██╗███████╗███████╗███████╗██████╗ 
+                        ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔════╝██╔════╝██╔══██╗
+                           ██║   ██████╔╝███████║██╔██╗ ██║███████╗█████╗  █████╗  ██████╔╝
+                           ██║   ██╔══██╗██╔══██║██║╚██╗██║╚════██║██╔══╝  ██╔══╝  ██╔══██╗
+                           ██║   ██║  ██║██║  ██║██║ ╚████║███████║██║     ███████╗██║  ██║
+                           ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝
+
+                    */
+                    case 'tf' :
+
+                        $documentDetail->update($detail);
+
+                        foreach($lineitems as $item){
+                            \App\DocumentLineItems::where('id', $item['id'])->update($item);
+                            \App\DocumentLineItems::where('id', $item['id'])->first(['amount', 'price']);
+                        }
+
+                    break;
+
+                    /*
+                        Update
+                        ██╗ ███╗   ██╗ ██╗   ██╗  ██████╗  ██╗  ██████╗ ███████╗
+                        ██║ ████╗  ██║ ██║   ██║ ██╔═══██╗ ██║ ██╔════╝ ██╔════╝
+                        ██║ ██╔██╗ ██║ ██║   ██║ ██║   ██║ ██║ ██║      █████╗  
+                        ██║ ██║╚██╗██║ ╚██╗ ██╔╝ ██║   ██║ ██║ ██║      ██╔══╝  
+                        ██║ ██║ ╚████║  ╚████╔╝  ╚██████╔╝ ██║ ╚██████╗ ███████╗
+                        ╚═╝ ╚═╝  ╚═══╝   ╚═══╝    ╚═════╝  ╚═╝  ╚═════╝ ╚══════╝
+
+                    */
+                    case 'inv':
+
+                        
+                        
+                    break;
+
+                    /*
+                        Update
+                        ██████╗ ██╗   ██╗██████╗  ██████╗██╗  ██╗ █████╗ ███████╗███████╗     ██████╗ ██████╗ ██████╗ ███████╗██████╗ 
+                        ██╔══██╗██║   ██║██╔══██╗██╔════╝██║  ██║██╔══██╗██╔════╝██╔════╝    ██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
+                        ██████╔╝██║   ██║██████╔╝██║     ███████║███████║███████╗█████╗      ██║   ██║██████╔╝██║  ██║█████╗  ██████╔╝
+                        ██╔═══╝ ██║   ██║██╔══██╗██║     ██╔══██║██╔══██║╚════██║██╔══╝      ██║   ██║██╔══██╗██║  ██║██╔══╝  ██╔══██╗
+                        ██║     ╚██████╔╝██║  ██║╚██████╗██║  ██║██║  ██║███████║███████╗    ╚██████╔╝██║  ██║██████╔╝███████╗██║  ██║
+                        ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+
+                    */
+                    case 'po':
+
+
+                        
+                    break;
+                    
+                    return ['updated' => false, 'message' => 'Document type not support'];
+                }
+
+                \App\Transaction::create([
+                    'document_id' => $doc_id,
+                    'balance' => $currentQuantity
+                ]);
+
+                return [
+                    'created' => true,
+                    'message' => 'create transfer',
+                    'document_id' => $doc_id,
+                    'document_number' => \App\DocumentDetail::find($doc_id)->number
+                ];
+
+            } catch (\Exception $e) {
+
+                if (isset($doc_id)) {
+                    \App\DocumentDetail::find($doc_id)->delete();
+                }
+
+                Log::error($e);
+
+                return ['created' => false, 'message' => 'Error to create document please contact engineer.'];
+            }
+        }
+
         static public function quickTransfer($source_wh_id, $target_wh_id, $lineitems, $comment = "")
         {
             $detail = [
