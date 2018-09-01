@@ -83,7 +83,7 @@ class DocumentController extends Controller
          */
 
         $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
-        // Find and add product_id
+        // Find and add product_id because ui send product_code but backend use product_id
         foreach ($lineitems as $index => $item) {
             $product_id = \App\Product::where('code', $item['product_code'])->first()->product_id;
             $lineitems[$index]['product_id'] = $product_id; 
@@ -131,22 +131,33 @@ class DocumentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // {
-        //     "detail" : {
-        //       "date": "29/08/2018"
-        //     },
-        //     "lineitems" : [
-        //         {
-        //          "amount": 50,
-        //          "price": 100,
-        //          "discount": 200
-        //         }
-        //     ]
-        // }
-        
+        // $id = document number !!!!!!!
+
         $detail = $request->input('detail');
-        $lineitems = $request->input('lineitems');     
+        $lineitems = $request->input('lineitems');
+
+        if(!isset($detail)) $detail = [];
+        if(!isset($lineitems)) $lineitems = [];
+
+        /**
+         *  Clean data before sent to create document
+         */
+
+        $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
+
+        $id = DocumentDetail::where('number', $id)->first(['id']);
+        if (empty($id)) {
+            return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
+        }
+        $id = $id->id;
         
+        /**
+         *  Create document
+         */
+
+        $result = Document::update($id, $detail, $lineitems);
+
+        return response()->json($result);
 
     }
 
@@ -158,7 +169,19 @@ class DocumentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $id = DocumentDetail::where('number', $id)->first(['id']);
+        if (empty($id)) {
+            return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
+        }
+        $id = $id->id;
+
+        /**
+         *  Create document
+         */
+
+        $result = Document::delete($id);
+
+        return response()->json($result);
     }
 
     public function genDocNumber($type){

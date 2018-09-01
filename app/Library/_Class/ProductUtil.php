@@ -25,5 +25,9 @@ namespace App\Library\_Class {
 
             return $result;
         }
+
+        static public function sumQuantity($product_id){
+            return \App\Inventory::where('product_id', $product_id)->sum('quantity');
+        }
     }
 }
