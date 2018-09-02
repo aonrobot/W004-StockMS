@@ -11,14 +11,21 @@ var table = $('#prod_table').DataTable({
         "targets": 6
     }],
     columns: [{
-        "data": "prodID",
+        "data": "prodCode",
         "width": "10%",
         "render": function (data) {
             return `<span id ="${data}">${data}</span>`;
         }
     },
     {
-        "data": "prodName"
+        "data": "prodName",
+        "render": function (data, type, full, meta) {
+            return `
+                <a href="#" class="edit-btn" data-toggle="modal" data-target="#transModal" data-prodID="${full.prodID}">
+                    ${data}
+                </a>
+            `;
+        }
     },
     {
         "data": "prodBuyPrice",
@@ -42,7 +49,7 @@ var table = $('#prod_table').DataTable({
                     <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
                     <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
                     <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
-                `;
+            `;
         },
     },
     {
@@ -53,13 +60,13 @@ var table = $('#prod_table').DataTable({
     {
         render: function (data, type, full, meta) {
             return `<div>   
-                            <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
-                                Edit
-                            </a> |
-                            <a href="#" class="delete-btn" >
-                                Delete
-                            </a>
-                        </div>`;
+                        <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
+                            Edit
+                        </a> |
+                        <a href="#" class="delete-btn" >
+                            Delete
+                        </a>
+                    </div>`;
         },
         className: "table-btn",
         width: "20%"
@@ -83,8 +90,7 @@ function defaultValue (elem, decimal){
     }
 }
 function initialDataTable() {
-    table
-        .clear()
+    table.clear()
 
     $('body').busyLoad("show", busyBoxOptions);
 
@@ -101,7 +107,8 @@ function initialDataTable() {
 
         for (var i = 0; i < data.length; i++) {
             $('#prod_table').DataTable().row.add({
-                "prodID": data[i].code,
+                "prodID": data[i].product_id,
+                "prodCode": data[i].code,
                 "prodName": data[i].name,
                 "prodBuyPrice": data[i].inventory.costPrice,
                 "prodSalePrice": data[i].inventory.salePrice,
@@ -129,7 +136,7 @@ $("#form_prod").submit(function (e) {
     if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
     else { unit = $("#prod_unit").val() }
 
-    if ($("#prod_code").val().length === 0) { prod_code = prodID }
+    if ($("#prod_code").val().length === 0) { prod_code = prodCode }
     else { prod_code = $("#prod_code").val() }
 
     var param = {
@@ -632,3 +639,11 @@ var branch = {
 $('#edit_prod_branch_modal').on('show.bs.modal', function (event) {
     clear('edit_text_warning_branch', 'edit_branch_code');
 });
+
+
+/**
+ * 
+ * Transaction Modal
+ * 
+ */
+

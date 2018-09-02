@@ -48,21 +48,13 @@ class DocumentController extends Controller
             $doc = DocumentDetail::where('id', $id)->first();
             if($doc == null) return response()->json([]);
 
-            $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
-            $docProduct = [];
-            foreach ($lineitems as $index => $item) {
-                $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
-                array_push($docProduct, $item);
-            }
+            $number = $doc->number;
 
-            $doc['lineItems'] = $docProduct;
-
-            return response()->json($doc);
+            return $this->show($number);
         }
 
         if (!empty($request->input('number'))) {
             $number = $request->input('number');
-
             return $this->show($number);
         }
     }
@@ -108,16 +100,17 @@ class DocumentController extends Controller
      */
     public function show($id)
     {
-        $number = $id;
-
-        $doc = DocumentDetail::where('number', $number)->first();
+        $doc = DocumentDetail::where('number', $id)->first();
         if($doc == null) return response()->json([]);
 
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
-        foreach ($lineitems as $item) {
+        $docProduct = [];
+        foreach ($lineitems as $index => $item) {
             $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
-            $doc['lineitems'] = $item;
+            array_push($docProduct, $item);
         }
+
+        $doc['lineItems'] = $docProduct;
 
         return response()->json($doc);
     }

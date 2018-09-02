@@ -136,7 +136,6 @@
                         
                         <hr />
 
-
                         <div class="row m-t-20">
                             <div class="col-md-4">
                                 <h4 style="margin-bottom: 0;">จำนวน</h4>
@@ -459,6 +458,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Product Transaction Modal -->
+    <div class="modal fade" id="transModal" tabindex="-1" role="dialog" aria-labelledby="transModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transModalLabel">Transaction</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive m-t-30">
+                    <table class="table table-striped table-create-IV" id="productTransTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-right">รหัสเอกสาร</th>
+                                <th>ประเภทเอกสาร</th>
+                                <th>ต้นทาง</th>
+                                <th class="text-right">ปลายทาง</th>
+                                <th class="text-right">จำนวนคงเหลือ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doc_detail"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
 <script>
@@ -497,7 +531,7 @@
                     "Authorization":Authorization
                 },
                 success: function(data) {
-                  
+                
                     var select = $("<select>");
                     if (state === 'open') {
                         var firtsIdx = 0; 
@@ -512,7 +546,7 @@
                                 );
                             }       
                         });
-                    }else {
+                    } else {
                         var lastIdx = data.length - 1; 
                         $.each(data, function(key,value) {
                             
