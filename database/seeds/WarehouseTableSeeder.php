@@ -37,26 +37,27 @@ class WarehouseTableSeeder extends Seeder
             "updated_at" => \Carbon\Carbon::now()
         ));
 
-        // $doc_id = DB::table('documentDetail')->insert(array(
-        //     'number' => 1,
-        //     'customer_id' => 0,
-        //     'ref_id' => 0, 
-        //     'source_wh_id' => 1,
-        //     'target_wh_id' => null,
-        //     'type' => 'inv',
-        //     'tax_type' => 'with_no_tax',
-        //     'comment' => 'no comment',
-        //     'status' => 'create',
-        //     'date' => \Carbon\Carbon::now()->toDateString()
-        // ));
+        $doc_id = DB::table('documentDetail')->insert(array(
+            'number' => \App\Library\_Class\DocumentUtil::genDocNumber('tf'),
+            'customer_id' => null,
+            'ref_id' => null, 
+            'source_wh_id' => null,
+            'target_wh_id' => 1,
+            'type' => 'tf',
+            'tax_type' => 'withoutTax',
+            'comment' => 'no comment',
+            'status' => 'complete',
+            'date' => \Carbon\Carbon::now()->toDateString()
+        ));
 
-        // DB::table('documentLineItems')->insert(array(
-        //     'document_id' => $doc_id,
-        //     'product_id' => 1,
-        //     'amount' => 100,
-        //     'price' => 12.3,
-        //     'discount' => 0,
-        //     'total' => 1230
-        // ));
+        DB::table('documentLineItems')->insert(array(
+            'document_id' => $doc_id,
+            'product_id' => 1,
+            'amount' => 12,
+            'price' => 100.54,
+            'discount' => 0,
+            'total' => 1206.48
+        ));
+
     }
 }
