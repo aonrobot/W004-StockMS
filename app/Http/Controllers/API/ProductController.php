@@ -13,6 +13,7 @@ use App\Warehouse;
 use App\Inventory;
 use App\Library\Log\Inventory as LogInventory;
 use App\Library\_Class\ProductUtil;
+use \App\Library\_Class\Document;
 
 
 class ProductController extends Controller
@@ -79,7 +80,7 @@ class ProductController extends Controller
                         'salePrice' => empty($sPrice) ? 0.0 : floatval($sPrice)
                     ])->id;
 
-                    $result = \App\Library\_Class\Document::quickTransfer(null, $warehouseId, [['product_id' => $productId, 'amount' => $quantity]]);
+                    $result = Document::quickTransfer(null, $warehouseId, [['product_id' => $productId, 'amount' => $quantity]]);
                     if($result['created'] == false) return response()->json(['created' => false, 'message' => 'cant create document']);
 
                     return response()->json(['created' => true, 'product_id' => $productId, 'inventory_id' => $invenId]);
@@ -124,6 +125,9 @@ class ProductController extends Controller
         $product = $request->input('product');
         $productDetail = $request->input('product.detail');
 
+        // TODO ทาง ui ต้องส่ง warehouse id มาด้วยเพื่อค้นหา inventory แต่ตอนนี้ไม่เป็นไรเพราะเรามี warehouse เดียว
+        $warehouseId = 1; // TODO ลบ fix warehouse ออกด้วย
+
         try {
             $quantity = $productDetail['quantity'];
             $cPrice = $productDetail['costPrice'];
@@ -136,8 +140,16 @@ class ProductController extends Controller
                 'unitName' => $product['unitName'],
                 'description' => $product['description']
             ]);
+            
             //Update Inventory
-            Inventory::where('product_id', $id)->update([
+            $inventory = Inventory::where('product_id', $id)->where('warehouse_id', $warehouseId);
+            $oldQuantity = $inventory->first()->quantity;
+            $diff = abs($oldQuantity - $quantity);
+            $lineItem = [['product_id' => $id, 'amount' => $diff]];
+            if($oldQuantity < $quantity) Document::quickTransfer(null, $warehouseId, $lineItem);
+            if($oldQuantity > $quantity) Document::quickTransfer($warehouseId, null, $lineItem);
+
+            $inventory->update([
                 'warehouse_id' => $productDetail['warehouse_id'],
                 'quantity' => empty($quantity) ? 0 : intval($quantity),
                 'minLevel' => 0,
