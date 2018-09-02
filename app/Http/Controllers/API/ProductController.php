@@ -198,7 +198,8 @@ class ProductController extends Controller
      *
      * @return JSON
      */
-    public function genProductCode(){
+    public function genProductCode()
+    {
         //System code is a string like -> P0001, P0010
         $codes = Product::where('code', 'like', 'P%')->get(['code']);
 
@@ -220,7 +221,8 @@ class ProductController extends Controller
      *
      * @return JSON
      */
-    public function getProductPrice($id){
+    public function getProductPrice($id)
+    {
 
         $price = Product::where('product_id', $id)->first()->inventory;
         return response()->json([
@@ -229,7 +231,24 @@ class ProductController extends Controller
         ]);
     }
 
-    public function autoComplete(Request $request){
+    /**
+     * Get Product Transaction
+     *
+     * @return JSON
+     */
+    public function getTransaction($id)
+    {
+        $lineItems = \App\DocumentLineItems::where('product_id', $id)->get();
+
+        $allDocuments = [];
+        foreach($lineItems as $item)
+        {
+            
+        }
+    }
+
+    public function autoComplete(Request $request)
+    {
         $q = $request->input('q');
 
         if ($request->input('searchType') == '0') {

@@ -70,11 +70,13 @@ namespace App\Library\_Class {
 
                                 $warehouseId = $doc_source_wh_id;
 
-                            } else {
+                            } elseif ($doc_source_wh_id != null && $doc_target_wh_id != null) {
                                 InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
                                 InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
 
                                 $warehouseId = $doc_target_wh_id;
+                            } else {
+                                return ['created' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];
                             }
 
                             $product_price = \App\Inventory::where('product_id', $product_id)
@@ -532,9 +534,11 @@ namespace App\Library\_Class {
                                 if ($currentQuantity != false) {
                                     \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
                                 }
-                            } else {
+                            } elseif ($doc_source_wh_id == null && $doc_target_wh_id == null) {
                                 InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                                 InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                            } else {
+                                return ['deleted' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];                                
                             }
                         }
 
@@ -664,9 +668,11 @@ namespace App\Library\_Class {
                             if ($currentQuantity != false) {
                                 \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
                             }
-                        } else {
+                        } elseif ($doc_source_wh_id == null && $doc_target_wh_id == null) {
                             InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                             InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                        } else {
+                            return ['deleted' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];                                
                         }
                         
                         $documentLineItems->delete();

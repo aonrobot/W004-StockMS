@@ -101,12 +101,23 @@ class DocumentController extends Controller
     public function show($id)
     {
         $doc = DocumentDetail::where('number', $id)->first();
-        if($doc == null) return response()->json([]);
+        if ($doc == null) return response()->json([]);
 
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
+        
+
+        if ($doc->source_wh_id != null && $doc->target_wh_id == null) {
+            $warehouse_id = $doc->source_wh_id;
+        } else {
+            $warehouse_id = $doc->target_wh_id;
+        }
+
+        if($warehouse_id == null) return response()->json(['updated' => false, 'message' => 'warehouse id is dont set in this document']);
+
         $docProduct = [];
         foreach ($lineitems as $index => $item) {
             $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
+            $item['product']['inventory'] = \App\Inventory::where('product_id', $item['product_id'])->where('warehouse_id', $warehouse_id)->first();
             array_push($docProduct, $item);
         }
 
