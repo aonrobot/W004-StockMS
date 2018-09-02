@@ -59,20 +59,35 @@ namespace App\Library\_Class {
 
                             if ($amount < 0) continue;
 
-                            $lineItemId = \App\DocumentLineItems::create([
-                                "document_id" => $doc_id,
-                                "product_id" => $product_id,
-                                "amount" => $amount
-                            ])->id;
-
+                            $warehouseId = 0;
                             if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                                 InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
+
+                                $warehouseId = $doc_target_wh_id;
+
                             } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
                                 InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
+
+                                $warehouseId = $doc_source_wh_id;
+
                             } else {
                                 InventoryClass::decrease($product_id, $doc_source_wh_id, $amount);
                                 InventoryClass::increase($product_id, $doc_target_wh_id, $amount);
+
+                                $warehouseId = $doc_target_wh_id;
                             }
+
+                            $product_price = \App\Inventory::where('product_id', $product_id)
+                                ->where('warehouse_id', $warehouseId)->first(['costPrice'])->costPrice;
+
+                            $lineItemId = \App\DocumentLineItems::create([
+                                "document_id" => $doc_id,
+                                "product_id" => $product_id,
+                                "amount" => $amount,
+                                "price" => $product_price,
+                                "discount" => 0,
+                                "total" => $amount * $product_price
+                            ])->id;
 
                             $currentQuantity = ProductUtil::sumQuantity($product_id);
                             \App\DocumentLineItems::where('id', $lineItemId)->update(['quantity' => $currentQuantity]);
@@ -510,12 +525,12 @@ namespace App\Library\_Class {
                             if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                                 $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
                                 if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                                    \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
                                 }
                             } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
                                 $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                                 if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                                    \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
                                 }
                             } else {
                                 InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
@@ -584,12 +599,12 @@ namespace App\Library\_Class {
                     break;
 
                     default:
-                        return ['updated' => false, 'message' => 'Document type not support'];
+                        return ['deleted' => false, 'message' => 'Document type not support'];
                 }
 
                 return [
                     'updated' => true,
-                    'message' => 'updated ' . $type,
+                    'message' => 'deleted ' . $type,
                     'document_id' => $id
                 ];
 
@@ -597,7 +612,125 @@ namespace App\Library\_Class {
 
                 Log::error($e);
 
-                return ['updated' => false, 'message' => 'Error to update document please contact admin.'];
+                return ['deleted' => false, 'message' => 'Error to delete document please contact admin.'];
+            }
+        }
+
+        static public function deleteLineItem($lineItemId){
+            try
+            {
+                //Document Line Item
+                $documentLineItems  = \App\DocumentLineItems::where('id', $lineItemId);
+                $document_id        = $documentLineItems->first()->document_id;
+                $product_id         = $documentLineItems->first()->product_id;
+                $amount             = $documentLineItems->first()->amount;
+                $createAt           = $documentLineItems->first()->created_at;
+
+                //Docuemnt Detail
+                $documentDetail     = \App\DocumentDetail::where('id', $document_id)->first();
+                $type               = $documentDetail->type;
+                $doc_source_wh_id   = $documentDetail->source_wh_id;
+                $doc_target_wh_id   = $documentDetail->target_wh_id;
+
+                switch($type)
+                {
+                    /*
+                        Delete line item
+                        ████████╗ ██████╗   █████╗  ███╗   ██╗ ███████╗ ███████╗ ███████╗ ██████╗ 
+                        ╚══██╔══╝ ██╔══██╗ ██╔══██╗ ████╗  ██║ ██╔════╝ ██╔════╝ ██╔════╝ ██╔══██╗
+                           ██║    ██████╔╝ ███████║ ██╔██╗ ██║ ███████╗ █████╗   █████╗   ██████╔╝
+                           ██║    ██╔══██╗ ██╔══██║ ██║╚██╗██║ ╚════██║ ██╔══╝   ██╔══╝   ██╔══██╗
+                           ██║    ██║  ██║ ██║  ██║ ██║ ╚████║ ███████║ ██║      ███████╗ ██║  ██║
+                           ╚═╝    ╚═╝  ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═══╝ ╚══════╝ ╚═╝      ╚══════╝ ╚═╝  ╚═╝
+
+                            typeName                     source          target      inventory
+                            ___________________________________________________________________________________________________
+                            transferIn           ->      null            *           increase target
+                            transferOut          ->      *               null        decrease source
+                            transferBetween      ->      *               *           decrease from source and increase target
+                    */
+                    case 'tf':
+
+                        $amount = $item['amount'];
+                        $createAt = $item['created_at'];
+
+                        if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
+                            $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                            if ($currentQuantity != false) {
+                                \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                            }
+                        } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
+                            $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
+                            if ($currentQuantity != false) {
+                                \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                            }
+                        } else {
+                            InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
+                            InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                        }
+                        
+                        $documentLineItems->delete();
+                        
+                    break;
+
+                    /*
+                        Delete line item
+                        ██╗ ███╗   ██╗ ██╗   ██╗  ██████╗  ██╗  ██████╗ ███████╗
+                        ██║ ████╗  ██║ ██║   ██║ ██╔═══██╗ ██║ ██╔════╝ ██╔════╝
+                        ██║ ██╔██╗ ██║ ██║   ██║ ██║   ██║ ██║ ██║      █████╗  
+                        ██║ ██║╚██╗██║ ╚██╗ ██╔╝ ██║   ██║ ██║ ██║      ██╔══╝  
+                        ██║ ██║ ╚████║  ╚████╔╝  ╚██████╔╝ ██║ ╚██████╗ ███████╗
+                        ╚═╝ ╚═╝  ╚═══╝   ╚═══╝    ╚═════╝  ╚═╝  ╚═════╝ ╚══════╝
+
+                    */
+                    case 'inv':
+
+                        $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
+                        if ($currentQuantity != false) {
+                            \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                        }
+
+                        $documentLineItems->delete();
+                        
+                    break;
+
+                    /*
+                        Delete line item
+                        ██████╗ ██╗   ██╗██████╗  ██████╗██╗  ██╗ █████╗ ███████╗███████╗     ██████╗ ██████╗ ██████╗ ███████╗██████╗ 
+                        ██╔══██╗██║   ██║██╔══██╗██╔════╝██║  ██║██╔══██╗██╔════╝██╔════╝    ██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
+                        ██████╔╝██║   ██║██████╔╝██║     ███████║███████║███████╗█████╗      ██║   ██║██████╔╝██║  ██║█████╗  ██████╔╝
+                        ██╔═══╝ ██║   ██║██╔══██╗██║     ██╔══██║██╔══██║╚════██║██╔══╝      ██║   ██║██╔══██╗██║  ██║██╔══╝  ██╔══██╗
+                        ██║     ╚██████╔╝██║  ██║╚██████╗██║  ██║██║  ██║███████║███████╗    ╚██████╔╝██║  ██║██████╔╝███████╗██║  ██║
+                        ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+
+                    */
+                    case 'po':
+
+                        $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                        if ($currentQuantity != false) {
+                            \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                        }
+
+                        $documentLineItems->delete();
+                        
+                    break;
+
+                    default:
+                        return ['deleted' => false, 'message' => 'Document type not support'];
+                }
+
+                return [
+                    'updated' => true,
+                    'message' => 'deleted line item ' . $type,
+                    'document_id' => $document_id,
+                    'lineItem_id' => $lineItemId
+                ];
+
+            } catch (\Exception $e) {
+
+                Log::error($e);
+
+                return ['deleted' => false, 'message' => 'Error to delete document please contact admin.'];
             }
         }
 
@@ -615,6 +748,8 @@ namespace App\Library\_Class {
                 "status" => "complete",
                 "date" => Carbon::now()->toDateString()
             ];
+
+            // lineItem -> [['product_id' => $productId, 'amount' => $quantity]]
 
             $result = self::create('tf', $detail, $lineitems);
 

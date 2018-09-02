@@ -55,6 +55,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
 //API: Document
 Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::apiResource('document', 'DocumentController');
+    Route::delete('lineitem/{id}', 'DocumentController@destroyLineItem');
     Route::prefix('document')->group(function () {
         Route::prefix('service')->group(function () {
             Route::get('gennumber/{type}', 'DocumentController@genDocNumber');

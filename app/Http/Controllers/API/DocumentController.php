@@ -184,6 +184,13 @@ class DocumentController extends Controller
         return response()->json($result);
     }
 
+    public function destroyLineItem($id)
+    {
+        $result = Document::deleteLineItem($id);
+        
+        return response()->json($result);
+    }
+
     public function genDocNumber($type){
 
         return response()->json(DocumentUtil::genDocNumber($type));
