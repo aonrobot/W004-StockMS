@@ -17,9 +17,9 @@
 					<i class="fa fa-shopping-cart"></i>
 				</div>
 				<div class="dash-box-body">
-					<span class="dash-box-count">8,252</span>
+					<span class="dash-box-count" id="today_rev">8,252</span>
 					<span class="dash-box-title">ยอดขายวันนี้</span> <br/>
-                    <span class="badge badge-light">02/02/1020</span>
+                    <span class="badge badge-light" id="today">02/02/1020</span>
 				</div>
 			</div>
 		</div>
@@ -29,9 +29,9 @@
 					<i class="fa fa-calendar"></i>
 				</div>
 				<div class="dash-box-body">
-					<span class="dash-box-count">100</span>
+					<span class="dash-box-count" id="month_rev">100</span>
 					<span class="dash-box-title">ยอดขายของเดือนนี้</span> <br/>
-                    <span class="badge badge-light">กุมภาพันธ์</span>
+                    <span class="badge badge-light" id="month" > กุมภาพันธ์</span>
 				</div>
 			</div>
 		</div>
@@ -41,20 +41,64 @@
                     <i class="fa fa-inbox"></i>
 				</div>
 				<div class="dash-box-body">
-					<span class="dash-box-count">2502</span>
+					<span class="dash-box-count" id="year_rev">2502</span>
 					<span class="dash-box-title">ยอดขายของปีนี้</span> </br>
-                    <span class="badge badge-light">2018</span>
+                    <span class="badge badge-light" id="year">2018</span>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<script>
-</script>
-
 @endsection
 
 @section('page_script')
+
+<script>
+
+	var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+	var d = new Date();
+	var months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+	
+	var get = {
+		revenue : function(type) {
+			return (
+				$.ajax({
+					type: 'GET',
+					url: "api/document/service/revenue/" + type,
+					headers: {
+						"Accept": "application/json",
+						"Authorization": Authorization
+					}
+				})
+			);
+		}
+	}	
+
+	get.revenue('today').done(function (res) {
+		$("#today_rev").html(res);
+	});
+	
+	get.revenue('thisMonth').done(function (res) {
+		$("#month_rev").html(res);
+	});
+
+	get.revenue('thisYear').done(function (res) {
+		$("#year_rev").html(res);
+	});
+
+	$("#today").html(
+		d.getDate() + ' ' +
+        months[d.getMonth()] + ' ' +
+        d.getFullYear() 
+	);
+	$("#month").html(
+		months[d.getMonth()]
+	);
+	$("#year").html(
+		d.getFullYear()
+	);
+	
+</script>
 
 @endsection
