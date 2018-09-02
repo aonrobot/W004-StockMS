@@ -53,8 +53,8 @@
 
         <div class="a4-header" style="overflow: auto;">
             <div class="float-right p-20">
-                <p id="print_date">adfsdfasdfsdfsd</p>
-                <p id="print_id" class="m-b-0">adfsdfasdfsdfsd</p>
+                <p id="print_date">ไม่พบข้อมูล</p>
+                <p id="print_id" class="m-b-0">ไม่พบข้อมูล</p>
             </div> 
         </div>
         <div class="a4-body m-t-30">
