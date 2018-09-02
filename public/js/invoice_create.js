@@ -63,7 +63,8 @@ function addRow() {
                         </div>
 
                         <input type="number" id="unitValue_${ ROW_INDEX}" value="0" 
-                                    class="text-center form-control form__number" />
+                                class="text-center form-control form__number"
+                                onchange="row_value.total(${ ROW_INDEX })"  />
 
                         <div class="input-group-append">
                             <span class="input-group-text pointer"
@@ -206,7 +207,8 @@ function removeRow(idx) {
                     </div>
 
                     <input type="number" id="unitValue_${ reduce_index}" value="${oldValue}" 
-                                class="text-center form-control form__number" />
+                                class="text-center form-control form__number" 
+                                onchange="row_value.total(${ reduce_index})" />
 
                     <div class="input-group-append">
                         <span class="input-group-text pointer"

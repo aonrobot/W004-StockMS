@@ -109,7 +109,8 @@
                                 </div>
 
                                 <input type="number" id="unitValue_1" value="0" 
-                                    class="text-center form-control form__number" />
+                                    class="text-center form-control form__number"
+                                    onchange="row_value.total(1)" />
 
                                 <div class="input-group-append">
                                     <span class="input-group-text pointer" onclick="row_value.plus(1)">
