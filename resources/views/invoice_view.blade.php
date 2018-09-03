@@ -87,14 +87,14 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-6 col-sm-6 col-md-3 text-right">
                     <p>อ้างอิง : </p>
                 </div>
                 <div class="col-6 col-sm-6 col-md-4">
                     <p id="doc_refer"> - </p>
                 </div>
-            </div>
+            </div> -->
 
             <!-- TABLE -->
             <div class="table-responsive m-t-30">

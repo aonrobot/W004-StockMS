@@ -31,19 +31,27 @@ var invoice_view_table = $('#invoice_view_table').DataTable({
         {   
             "ordering": false,
             render: function (data, type, full, meta) {
-                return `<div>   
-                                <a href="#" onclick="editProd(${full.id})" class="edit-btn" >
-                                    Edit
-                                </a> |
-                                <a href="#" class="delete-btn" >
-                                    Delete
-                                </a>
-                            </div>`;
+                return `<div>
+                            <a href="#" class="edit-btn" >
+                                Edit
+                            </a> |
+                            <a href="#" class="delete-btn" >
+                                Delete
+                            </a>
+                        </div>`;
             },
             className: "table-btn",
             width: "20%"
         }
     ],
+    // This for re render index number when delete row
+    drawCallback: function(settings){
+        var api = new $.fn.dataTable.Api( settings );
+        api.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i + 1;
+            api.cell(cell).invalidate('dom');             
+        } );            
+    },
     "scrollX": true
 });
 
@@ -65,9 +73,9 @@ function initialDataTable() {
             "Authorization": Authorization
         }
     }).done(function (response){
-
+        console.log(response);
         var data = response;
-        console.log(data);
+
         for (var i = 0; i < data.length; i++) {
             $('#invoice_view_table').DataTable().row.add({
                 "invID": data[i].number,
@@ -86,38 +94,37 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
 
     if (confirm("คุณยืนยันที่จะลบข้อมูล?")) {
         
-        $('body').busyLoad("show", busyBoxOptions);
-
-        var id = table.row($(this).parents('tr')).data()
-
+        var id = invoice_view_table.row($(this).parents('tr')).data()
         $.ajax({
             method: 'DELETE',
-            url: "api/product/" + id.btn,
+            url: "api/document/" + id.invID,
             headers: {
                 "Accept": "application/json",
                 "Authorization": Authorization
             }
         }).done(function (response) {
-
-            if(!response.destroyed) {
-
+            if(!response.updated) {
                 console.log('Error');
                 return false;
             }
-
-            $('body').busyLoad("hide", busyBoxOptions);
-
         });
-        table
+        
+        invoice_view_table
             .row($(this).parents('tr'))
             .remove()
-            .draw();
+            .draw(true);
 
+            
     } else {
         return;
     }
 });
 
+$('#invoice_view_table tbody').on('click', '.edit-btn', function (mm) {
+    
+    var id = invoice_view_table.row($(this).parents('tr')).data()
+    window.location = "/invoice_edit/" + id.invID;
+});
 
 function viewDetail(id) {
 
@@ -135,7 +142,7 @@ function viewDetail(id) {
 
             $("#doc_id").html(doc_list.number);
             $("#doc_date").html(doc_list.date);
-            $("#doc_refer").html(doc_list.ref_id ? doc_list.ref_id : '-');
+            // $("#doc_refer").html(doc_list.ref_id ? doc_list.ref_id : '-');
             $("#doc_print").html(
                 `<a class="btn btn-info m-r-10" href="./print?did=${ id }">
                     Print    

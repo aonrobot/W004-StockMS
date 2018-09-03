@@ -1,36 +1,119 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 var ROW_INDEX = 1;
 
-
 $(document).ready(function () {
 
-    $("#invoice_date").datepicker("setDate", new Date());
     $("#invoice_date").datepicker({
         todayHighlight: true,
         format: 'dd/mm/yyyy',
         endDate: '+1d',
         orientation: "right",
     });
-
-    get.invoice_id().done(function (res) {
-        $("#invoice_id").val(res);
+    
+    get.doc_detail().done(function (res) {
+        console.log(res);
+        $("#invoice_id").html(res.number);
+        $("#invoice_date").datepicker("setDate", convertFormatDate(res.date));
+        
+        initCreateRow(res);
     });
 });
 
-// Initial // Bind Auto Complete
-var columnCode = $("#row_1 .td__prodCode input[type=search]");
-var columnName = $("#row_1 .td__prodName input[type=search]");
+function convertFormatDate(str){
+    return str.split('-').reverse().join('/');
+ }
 
-    columnCode.map(function (obj, elem) {
-        $(elem).attr( {
-            'onkeyup': `search(this, 0, 1)`
-        });
-    })
-    columnName.map(function (obj, elem) {
-        $(elem).attr( {
-            'onkeyup': `search(this, 1, 1)`
-        });
-    })
+ function initCreateRow (data) {
+
+    var $table_body = $("#table_body");
+        // Clear Table
+        $($table_body).empty();
+
+    var elem ;
+    for (var i = 0 ; i < data.lineItems.length ; i++) {
+        elem = `
+            <tr id="row_${ ROW_INDEX}" class="${  data.lineItems[i].id }">
+                <td class="td__btn-add">
+                    <button id="btn_${ ROW_INDEX}" class="btn-default btn-circle" 
+                            data-toggle="modal" data-target=".bd-example-modal-lg">
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td class="text-right td__index">
+                    ${ ROW_INDEX}
+                </td>
+                <td class="td__prodCode">
+                    <input type="search" class="form-control" 
+                        value="${ data.lineItems[i].product.code }" />
+                </td>
+                <td class="td__prodName">
+                    <input type="search" class="form-control"
+                        value="${ data.lineItems[i].product.name }" />
+                </td>
+                <td class="td__unitValue">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text pointer" 
+                                onclick="row_value.minus(${ ROW_INDEX})">
+                                -
+                            </span>
+                        </div>
+
+                        <input type="number" id="unitValue_${ ROW_INDEX}" 
+                                value="${ data.lineItems[i].amount }" 
+                                class="text-center form-control form__number"
+                                onchange="row_value.total(${ ROW_INDEX })"  />
+
+                        <div class="input-group-append">
+                            <span class="input-group-text pointer"
+                                onclick="row_value.plus(${ ROW_INDEX})">
+                                +
+                            </span>
+                        </div>
+                    </div>
+                   
+                    <small class="float-right">
+                        <span>จำนวนคงเหลือ <strong>${ data.lineItems[i].product.inventory.quantity }</strong></span>
+                    </small>
+
+                </td>
+                <td class="td__amount">
+                    <input type="number" class="form-control text-right" 
+                        onchange="row_value.total(${ ROW_INDEX})" 
+                        value="${ data.lineItems[i].price }" />
+                </td>
+                <td class="text-right td__unit">
+                    <span class="badge badge-light">${ data.lineItems[i].product.unitName }</span>
+                </td>
+                <td class="text-right td__total">
+                    0.00
+                </td>
+                <td class="td__btn-remove"> 
+                    <i class="fa fa-minus-circle pointer btn-remove-row" aria-hidden="true" onclick="removeRow(${ ROW_INDEX})"></i>
+                </td>
+            </tr>
+        `
+        // Bind Auto Complete
+        var columnCode = $("#row_" + ROW_INDEX + " .td__prodCode input[type=search]");
+        var columnName = $("#row_" + ROW_INDEX + " .td__prodName input[type=search]");
+        
+        columnCode.map(function (obj, elem) {
+            $(elem).attr( {
+                'onkeyup': `search(this, 0, ${ ROW_INDEX })`
+            });
+        })
+        columnName.map(function (obj, elem) {
+            $(elem).attr( {
+                'onkeyup': `search(this, 1, ${ ROW_INDEX })`
+            });
+        })
+        
+        $($table_body).append(elem);
+        row_value.total(ROW_INDEX);
+        if ( i !== data.lineItems.length - 1 )  ROW_INDEX += 1;
+    }
+ }
+
 
 function addRow() {
     ROW_INDEX += 1;
@@ -307,7 +390,7 @@ function initialDataTable(btn_id) {
     // $('body').busyLoad("show", busyBoxOptions);
     $.ajax({
         type: 'GET',
-        url: "api/product",
+        url: "/api/product",
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
@@ -419,17 +502,16 @@ function sumTotal() {
 }
 
 
-function createInvoice() {
+function updateInvoice() {
 
-    var id = $("#invoice_id").val();
+
+
     var date = $("#invoice_date").val();
-    // var reference = $("#invoice_ref").val();
     var table_body = $("#table_body");
     var checkNullValue = true;
     var arr = [];
 
-    if (id === '' ||
-        date === '') {
+    if (date === '') {
 
         errorDialog(1);
         return;
@@ -437,6 +519,7 @@ function createInvoice() {
 
     $(table_body).find('tr').map(function (obj, elem) {
 
+        var rowID = $(elem).attr('class') ? $(elem).attr('class') : null;
         var prodCode = $(elem).find('td:eq(2) input').val();
         var prodName = $(elem).find('td:eq(3) input').val();
         var prodUnitValue = $(elem).find('td:eq(4) input').val();
@@ -451,7 +534,7 @@ function createInvoice() {
         }
 
         obj = {
-            "product_code": prodCode,
+            "id": rowID,
             "amount": prodUnitValue,
             "price": prodAmount,
             "discount": 0
@@ -464,23 +547,15 @@ function createInvoice() {
 
     var json_data = {
         "detail": {
-            "number": id,
-            "customer_id": null,
-            "ref_id": null,
-            "source_wh_id": 1,
-            "target_wh_id": null,
-            "type": "inv",
-            "tax_type": "without_tax",
             "comment": "",
-            "status": "create",
             "date": date
         },
         "lineitems": arr
     }
 
     $.ajax({
-        type: 'POST',
-        url: "api/document",
+        type: 'PUT',
+        url: "/api/document/" + DOC_NUMBER,
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
@@ -488,8 +563,9 @@ function createInvoice() {
         data: json_data
     }).done(function(res) {
         console.log(res);
-        if (res.created) {
-            window.location = '/invoice_view';
+        if (res.updated) {
+            
+            // window.location = '/invoice_view';
         }else {
             errorDialog(2)
         }
@@ -497,11 +573,11 @@ function createInvoice() {
 }
 
 var get = {
-    invoice_id: function () {
+    doc_detail: function () {
         return (
             $.ajax({
                 type: 'GET',
-                url: "api/document/service/gennumber/inv",
+                url: "/api/document/" + DOC_NUMBER,
                 headers: {
                     "Accept": "application/json",
                     "Authorization": Authorization
