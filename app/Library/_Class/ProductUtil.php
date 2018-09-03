@@ -3,22 +3,24 @@ namespace App\Library\_Class {
 
     use Carbon\Carbon;
     use App\Product;
+    use App\Inventory;
     use Log;
 
 	class ProductUtil {
 
-        static public function checkQuantity($products)
+        static public function checkQuantity($products, $wh_id)
         {
             $result = [];
             foreach($products as $p) {
                 $product = Product::find($p['product_id']);
-                $over = $product->inventory->where('quantity', '<', $p['amount'])->count();
+                $inventory = Inventory::where('product_id', $p['product_id'])->where('warehouse_id', $wh_id);
+                $over = $inventory->where('quantity', '<', $p['amount'])->count();
                 if($over) {
                     array_push($result, [
                         'product' => $product->first(),
                         'input' => $p['amount'],
-                        'quantity' => $product->inventory->first()->quantity,
-                        'over' => $p['amount'] - $product->inventory->first()->quantity,
+                        'quantity' => $inventory->first()->quantity,
+                        'over' => $p['amount'] - $inventory->first()->quantity,
                     ]);
                 }
             }

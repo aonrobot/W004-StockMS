@@ -147,7 +147,8 @@ class DocumentController extends Controller
          *  Clean data before sent to create document
          */
 
-        $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
+        if(isset($detail['date']))
+            $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
 
         $id = DocumentDetail::where('number', $id)->first(['id']);
         if (empty($id)) {

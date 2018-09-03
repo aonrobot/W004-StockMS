@@ -10,7 +10,7 @@ namespace App\Library\_Class {
         {
             $upperTypeName = strtoupper($type);
             $dateStr = Carbon::now()->format('YmdHi');
-            $prefixNumber = $upperTypeName . $dateStr;
+            $prefixNumber = $upperTypeName . '-' . $dateStr;
     
             $countSameType = \App\DocumentDetail::where('number', 'like', $prefixNumber . '%')->count();
     
