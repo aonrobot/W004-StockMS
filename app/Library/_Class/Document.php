@@ -782,7 +782,10 @@ namespace App\Library\_Class {
                     'balance' => $balance,
                 ]);
 
+                return true;
+
             } catch (\Exception $e) {
+
                 Log::error($e);
                 return false;
             }
