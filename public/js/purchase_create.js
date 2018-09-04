@@ -319,7 +319,7 @@ function initialDataTable(btn_id) {
             $('#modal_prod_table').DataTable().row.add({
                 "prodID": data[i].code,
                 "prodName": data[i].name,
-                "prodSalePrice": data[i].inventory.salePrice,
+                "prodSalePrice": data[i].inventory.costPrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
                 "btn": {
