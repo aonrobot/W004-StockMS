@@ -15,7 +15,9 @@ class ProductCategoryTableSeeder extends Seeder
         DB::table('product_category')->insert(
             array(
                 'name' => 'Uncategory',
-                'description' => 'Product ที่ยังไม่ได้จัดหมวดหมู่'
+                'description' => 'Product ที่ยังไม่ได้จัดหมวดหมู่',
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now()
             )
         );
 
@@ -24,7 +26,9 @@ class ProductCategoryTableSeeder extends Seeder
                 'code' => 'P0001',
                 'name' => 'Product ที่ฉันรักที่สุด',
                 'unitName' => 'ชิ้น',
-                'description' => 'รายละเอียด Product'
+                'description' => 'รายละเอียด Product',
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now()
             )
         );
 
@@ -33,7 +37,9 @@ class ProductCategoryTableSeeder extends Seeder
                 'product_id' => 1,
                 'label' => 'Color',
                 'key' => 'color',
-                'value' => 'red oak'
+                'value' => 'red oak',
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now()
             )
         );
     }

@@ -2,10 +2,15 @@
 
 namespace App;
 
+// use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+// use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Product extends Model
 {
+    // use SearchableTrait;
+    // use Searchable;
+
     /**
      * The table associated with the model.
      *
@@ -14,6 +19,34 @@ class Product extends Model
     protected $table = 'products';
     protected $primaryKey = 'product_id';
     protected $fillable = ['category_id', 'code', 'name', 'unitName'];
+
+    // /**
+    //  * Searchable rules.
+    //  *
+    //  * @var array
+    //  */
+    // protected $searchable = [
+    //     'columns' => [
+    //         'products.code' => 100
+    //     ],
+    //     'joins' => [
+    //         'inventory' => ['products.product_id','inventory.product_id'],
+    //     ],
+    // ];
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    // public function toSearchableArray()
+    // {
+    //     $array = $this->toArray();
+
+    //     // Customize array...
+
+    //     return array_merge($array);
+    // }
 
     /**
      * Get the inventory record associated with the product.

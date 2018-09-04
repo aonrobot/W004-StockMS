@@ -11,14 +11,21 @@ var table = $('#prod_table').DataTable({
         "targets": 6
     }],
     columns: [{
-        "data": "prodID",
+        "data": "prodCode",
         "width": "10%",
         "render": function (data) {
             return `<span id ="${data}">${data}</span>`;
         }
     },
     {
-        "data": "prodName"
+        "data": "prodName",
+        "render": function (data, type, full, meta) {
+            return `
+                <span class="edit-btn" data-prodID="${full.prodID}">
+                    ${data}
+                </span>
+            `;
+        }
     },
     {
         "data": "prodBuyPrice",
@@ -35,16 +42,16 @@ var table = $('#prod_table').DataTable({
         "className": "text-right",
         "width": "12%"
     },
-    {
-        "ordering": false,
-        render: function (data, type, full, meta) {
-            return `
-                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.btn}"/>
-                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
-                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.btn}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
-                `;
-        },
-    },
+    // {
+    //     "ordering": false,
+    //     render: function (data, type, full, meta) {
+    //         // return `
+    //         //         <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
+    //         //         <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+    //         //         <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+    //         // `;
+    //     },
+    // },
     {
         "data": "prodUnit",
         "className": "text-right",
@@ -53,13 +60,13 @@ var table = $('#prod_table').DataTable({
     {
         render: function (data, type, full, meta) {
             return `<div>   
-                            <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
-                                Edit
-                            </a> |
-                            <a href="#" class="delete-btn" >
-                                Delete
-                            </a>
-                        </div>`;
+                        <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
+                            Edit
+                        </a> |
+                        <a href="#" class="delete-btn" >
+                            Delete
+                        </a>
+                    </div>`;
         },
         className: "table-btn",
         width: "20%"
@@ -69,9 +76,21 @@ var table = $('#prod_table').DataTable({
 });
 initialDataTable();
 
+function defaultValue (elem, decimal){
+
+    var elem = $('#'+elem);
+    var value = elem.val()
+
+    if (elem.val().length === 0) {
+
+        elem.val((0).toFixed(decimal));
+        return (0).toFixed(decimal) ;
+    }else {
+        return value;
+    }
+}
 function initialDataTable() {
-    table
-        .clear()
+    table.clear()
 
     $('body').busyLoad("show", busyBoxOptions);
 
@@ -88,12 +107,14 @@ function initialDataTable() {
 
         for (var i = 0; i < data.length; i++) {
             $('#prod_table').DataTable().row.add({
-                "prodID": data[i].code,
+                "prodID": data[i].product_id,
+                "prodCode": data[i].code,
                 "prodName": data[i].name,
                 "prodBuyPrice": data[i].inventory.costPrice,
                 "prodSalePrice": data[i].inventory.salePrice,
                 "prodAmount": data[i].inventory.quantity,
                 "prodUnit": data[i].unitName,
+                "invenID": data[i].inventory.id,
                 "btn": data[i].product_id
             }).draw();
         }
@@ -115,7 +136,7 @@ $("#form_prod").submit(function (e) {
     if ($("#prod_unit").val().length === 0) { unit = 'N/A' }
     else { unit = $("#prod_unit").val() }
 
-    if ($("#prod_code").val().length === 0) { prod_code = prodID }
+    if ($("#prod_code").val().length === 0) { prod_code = prodCode }
     else { prod_code = $("#prod_code").val() }
 
     var param = {
@@ -124,9 +145,9 @@ $("#form_prod").submit(function (e) {
         prodName: $("#prod_name").val(),
         prodDetail: $("#prod_detail").val(),
         prodBranch: $("#prod_branch").val(),
-        quantity: $("#prod_amount").val(),
-        costPrice: $("#prod_price_buy").val(),
-        salePrice: $("#prod_price_sale").val(),
+        quantity: defaultValue('prod_amount', 0),
+        costPrice: defaultValue('prod_price_buy', 2),
+        salePrice:  defaultValue('prod_price_sale', 2),
         unit: unit
     }
 
@@ -164,6 +185,7 @@ $("#form_prod").submit(function (e) {
                 "prodSalePrice": param.salePrice,
                 "prodAmount": param.quantity,
                 "prodUnit": param.unit,
+                "invenID": response.inventory_id,
                 "btn": response.product_id
             }).draw();
 
@@ -617,3 +639,11 @@ var branch = {
 $('#edit_prod_branch_modal').on('show.bs.modal', function (event) {
     clear('edit_text_warning_branch', 'edit_branch_code');
 });
+
+
+/**
+ * 
+ * Transaction Modal
+ * 
+ */
+

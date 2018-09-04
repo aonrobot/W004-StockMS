@@ -15,7 +15,7 @@ class Inventory extends Model
     protected $fillable = ['product_id', 'warehouse_id', 'quantity', 'minLevel', 'maxLevel', 'costPrice', 'salePrice'];
 
     /**
-     * Get the phone record associated with the user.
+     * 
      */
     public function product()
     {

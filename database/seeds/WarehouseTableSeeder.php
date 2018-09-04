@@ -15,21 +15,14 @@ class WarehouseTableSeeder extends Seeder
         DB::table('warehouse')->insert(
             array(
                 'name' => 'สาขาหลัก (Main warehouse)',
-                'address' => '1004/142 Nirun Residence 9, floor 6, building C,  Sukhumwit Road, Bang Na, Bang Na, Bangkok 10260'
-            )
-        );
-
-        // Insert ​warehouse 2
-        DB::table('warehouse')->insert(
-            array(
-                'name' => 'สาขาย่อย 1',
-                'address' => '522/123 หมู่ 10 ต.สันทราน อ.เมือง จ.เชียงราย 57000'
+                'address' => 'ที่อยู่ สาขาหลัก',
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now()
             )
         );
 
         // Insert ​product to warehouse
         DB::table('product_has_warehouse')->insert(array('product_id' => 1, 'warehouse_id' => 1));
-        DB::table('product_has_warehouse')->insert(array('product_id' => 1, 'warehouse_id' => 2));
 
         // Insert Inventory
         DB::table('inventory')->insert(array(
@@ -40,15 +33,33 @@ class WarehouseTableSeeder extends Seeder
             'maxLevel' => 0,
             'costPrice' => 100.54,
             'salePrice' => 123.54,
+            "created_at" =>  \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
         ));
-        DB::table('inventory')->insert(array(
+
+        $doc_id = DB::table('documentDetail')->insert(array(
+            'number' => \App\Library\_Class\DocumentUtil::genDocNumber('tf'),
+            'customer_id' => null,
+            'ref_id' => null, 
+            'source_wh_id' => null,
+            'target_wh_id' => 1,
+            'type' => 'tf',
+            'tax_type' => 'withoutTax',
+            'comment' => 'no comment',
+            'status' => 'complete',
+            'date' => \Carbon\Carbon::now()->toDateString()
+        ));
+
+        $line_id = DB::table('documentLineItems')->insert(array(
+            'document_id' => $doc_id,
             'product_id' => 1,
-            'warehouse_id' => 2,
-            'quantity' => 3,
-            'minLevel' => 0,
-            'maxLevel' => 0,
-            'costPrice' => 100.54,
-            'salePrice' => 123.54,
+            'amount' => 12,
+            'price' => 100.54,
+            'discount' => 0,
+            'total' => 1206.48
         ));
+
+        \App\Library\_Class\Document::createTransaction($line_id, 12, 12);
+
     }
 }

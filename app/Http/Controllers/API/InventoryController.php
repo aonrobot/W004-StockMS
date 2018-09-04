@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
 use App\Inventory;
+use App\Library\Log\Inventory as LogInventory;
+use App\Library\_Class\Inventory as ClassInventory;
 
 class InventoryController extends Controller
 {
@@ -49,7 +52,26 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $invenId = $id;
+        //$warehouse_id = $request->input('warehouse_id');
+
+        $type = $request->input('type');
+        $amount = $request->input('amount');
+        $date = $request->input('date');
+        $date = isset($date) ? $date : null;
+        //Format Date
+        if($date !== null) $date = \Carbon\Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        $remark = $request->input('remark');
+        $remark = isset($remark) ? $remark : null;
+        
+        $result = ClassInventory::ajust($invenId, $type, $amount, null);
+        if($result['updated'] == true){
+            LogInventory::write($invenId, $type, $amount, $date, $remark);
+            return response()->json($result);
+        } else {
+            return response()->json($result);
+        }
+
     }
 
     /**
@@ -61,35 +83,6 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function addQuantity(Request $request){
-        $product_id = $request->input('product_id');
-        $amount = $request->input('amount');
-        $inventory = Inventory::where('product_id', $product_id);
-        $quantity = $inventory->get(['quantity'])[0]->quantity;
-
-        $inventory->update([
-            'quantity' => $quantity + $amount
-        ]);
-        return response()->json(['updated' => true]);
-
-    }
-
-    public function removeQuantity(Request $request){
-        $product_id = $request->input('product_id');
-        $amount = $request->input('amount');
-        $inventory = Inventory::where('product_id', $product_id);
-        $quantity = $inventory->get(['quantity'])[0]->quantity;
-
-        if($quantity - $amount < 0){
-            return response()->json(['updated' => false, 'message' => 'Not enought item']);
-        } else {
-            $inventory->update([
-                'quantity' => $quantity - $amount
-            ]);
-            return response()->json(['updated' => true]);
-        }
     }
 
     public function getSumQuantity(){

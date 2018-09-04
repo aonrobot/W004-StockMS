@@ -1,0 +1,51 @@
+.table-create-IV .form-control{
+
+    height: 25px;
+    padding: 0;
+}
+
+.table-create-IV .input-group-text{
+
+    height: 25px;
+}
+
+.table-create-IV .form__number {
+
+    padding-right: 10px; 
+    padding-left: 10px;
+}
+
+.table-create-IV .td__unitValue{
+
+    max-width: 180px;
+    padding-bottom: 0;
+}
+
+.btn-remove-row {
+    color : #ccc;
+}
+.btn-remove-row:hover {
+    color : #dc3545;
+}
+
+
+@media (min-width: 576px) {
+    .modal-xlarge {
+        max-width: 540px;
+    }
+}
+@media (min-width: 768px) {
+    .modal-xlarge {
+        max-width: 720px;
+    }
+}
+@media (min-width: 992px) {
+    .modal-xlarge {
+        max-width: 960px;
+    }
+}
+@media (min-width: 1200px) { 
+    .modal-xlarge {
+        max-width: 1140px;
+    }
+}
