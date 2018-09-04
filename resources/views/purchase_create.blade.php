@@ -8,16 +8,18 @@
     </div>
 @endif
 <link rel="stylesheet" href="{{ asset('./css/invoice-style.css') }} "/>
+<link rel="stylesheet" href="{{ asset('./css/jquery-ui.css') }}">
+
 
 <div class="container main" >
-    <h3> สร้างรายการซื้อ </h3>
+    <h3> สร้างรายการขาย </h3>
     <hr />
     <div class="row">
         <div class="col-md-3 text-right">
             <p>ประเภท : </p>
         </div>
         <div class="col-md-4">
-            <p>ซื้อสินค้าเข้า</p>
+            <p>ขายสินค้าออก</p>
         </div>
     </div>
     <div class="row form-group">
@@ -43,14 +45,14 @@
             </div>
         </div>
     </div>
-    <div class="row form-group">
+    <!-- <div class="row form-group">
         <div class="col-md-3 text-right">
             <p>อ้างอิง : </p>
         </div>
         <div class="col-md-4">
             <input class="form-control" type="text" id="purchase_ref" />
         </div>
-    </div>
+    </div> -->
     <!-- <div class="row form-group">
         <div class="col-md-3 text-right">
             <p>ช่องทางการขาย<sup class="text-danger">*</sup> : </p>
@@ -98,7 +100,7 @@
                             <input type="search" class="form-control"/>
                         </td>
                         
-                        <td class="td__unitValue">
+                        <td class="td__unitValue" >
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text pointer" onclick="row_value.minus(1)">
@@ -107,7 +109,8 @@
                                 </div>
 
                                 <input type="number" id="unitValue_1" value="0" 
-                                    class="text-center form-control form__number" />
+                                    class="text-center form-control form__number"
+                                    onchange="row_value.total(1)" />
 
                                 <div class="input-group-append">
                                     <span class="input-group-text pointer" onclick="row_value.plus(1)">
@@ -115,6 +118,7 @@
                                     </span>
                                 </div>
                             </div>
+                            <small class="float-right"></small>
                         </td>
                         
                         <td class="td__amount">
@@ -211,7 +215,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <p> กรุณากรอกข้อมูลให้ครบถ้วน </p>
+            <p id="warning_text"> กรุณากรอกข้อมูลให้ครบถ้วน </p>
         </div>
     </div>
   </div>
@@ -224,5 +228,8 @@
 
 
 @section('page_script')
+<script src="{{ asset('js/jquery-ui.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('js/purchase_create.js') }}"></script>
+
 @endsection
