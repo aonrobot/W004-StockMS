@@ -137,7 +137,7 @@ function viewDetail(id) {
             "Authorization": Authorization
         }
     }).done(function (doc_list) {
-        
+        console.log(doc_list);
         if ( Object.keys(doc_list).length ) {
 
             $("#doc_id").html(doc_list.number);

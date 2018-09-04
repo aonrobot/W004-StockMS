@@ -533,11 +533,21 @@ function updateInvoice() {
             checkNullValue = false;
         }
 
-        obj = {
-            "id": rowID,
-            "amount": prodUnitValue,
-            "price": prodAmount,
-            "discount": 0
+        if ( rowID === null ) {
+            obj = {
+                "id": rowID,
+                "product_code" : prodCode,
+                "amount": prodUnitValue,
+                "price": prodAmount,
+                "discount": 0
+            }
+        }else {
+            obj = {
+                "id": rowID,
+                "amount": prodUnitValue,
+                "price": prodAmount,
+                "discount": 0
+            }
         }
 
         arr.push(obj);
@@ -552,7 +562,6 @@ function updateInvoice() {
         },
         "lineitems": arr
     }
-
     $.ajax({
         type: 'PUT',
         url: "/api/document/" + DOC_NUMBER,
@@ -565,7 +574,7 @@ function updateInvoice() {
         console.log(res);
         if (res.updated) {
             
-            // window.location = '/invoice_view';
+            window.location = '/invoice_view';
         }else {
             errorDialog(2)
         }
