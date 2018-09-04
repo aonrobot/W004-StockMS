@@ -48,11 +48,28 @@
 			</div>
 		</div>
 	</div>
+	<hr>
 
-	<div class="row">
-		<h2><i class="fa fa-chart-line"></i> ยอดขายปี <span class="labelYear">2018</span></h2>
-		<canvas id="monthRevenueChart" width="400" height="150"></canvas>
+	<div class="row mt-5">
+		<div class="col-sm-4">
+			<h2><i class="fa fa-cart-arrow-down"></i> สินค้าขายดี </h2><br>
+			<canvas id="bestSellerChart" width="300" height="250"></canvas>			
+		</div>
+		<div class="col-sm-8">
+			<h2><i class="fa fa-chart-line"></i> ยอดขายปี <span class="labelYear"></span></h2><br>
+			<canvas id="monthRevenueChart" width="400" height="150"></canvas>
+		</div>
+		
 	</div>
+
+	<div class="row mt-5">
+
+		<div class="col-sm-6">
+			<h2><i class="fa fa-chart-bar"></i> ยอดขายสินค้า เดือน<span class="labelMonth"></span></h2><br>
+			<canvas id="bestSellerChart" width="300" height="250"></canvas>			
+		</div>
+	</div>
+
 </div>
 
 @endsection
@@ -90,6 +107,19 @@
 					async: false
 				})
 			)
+		},
+		bestSellerChart : function() {
+			return (
+				$.ajax({
+					type: 'GET',
+					url: "api/document/service/bestSeller",
+					headers: {
+						"Accept": "application/json",
+						"Authorization": Authorization
+					},
+					async: false
+				})
+			)
 		}
 	}	
 
@@ -110,15 +140,12 @@
         months[d.getMonth()] + ' ' +
         d.getFullYear() 
 	);
-	$("#month").html(
+	$("#month, .labelMonth").html(
 		months[d.getMonth()]
 	);
-	$("#year").html(
+	$("#year, .labelYear").html(
 		d.getFullYear()
 	);
-	$(".labelYear").html(
-		d.getFullYear()
-	)
 
 	var ctx 		= document.getElementById("monthRevenueChart");
 	var revenueData = [];
@@ -149,23 +176,33 @@
 		},
 		options: {
 			legend: {
-				display: false,
+				display: false
 			},
-			showTooltips: false,
-			onAnimationComplete: function () {
+		}
+	});
 
-				var ctx = this.chart.ctx;
-				ctx.font = this.scale.font;
-				ctx.fillStyle = this.scale.textColor
-				ctx.textAlign = "center";
-				ctx.textBaseline = "bottom";
+	ctx 				= document.getElementById("bestSellerChart");
+	var bestSellerData 	= [];
 
-				this.datasets.forEach(function (dataset) {
-					dataset.points.forEach(function (points) {
-						ctx.fillText(points.value, points.x, points.y - 10);
-					});
-				})
-			}
+	get.bestSellerChart().done(function (res) {
+		window.bestSellerData = res;
+	});
+
+	var bestSellerChart = new Chart(ctx, {
+		type: 'pie',
+		data: {
+			datasets: [{
+				data: bestSellerData.data,
+				backgroundColor: [
+					'rgb(248, 206, 107)',
+					'rgb(82, 162, 229)',
+					'rgb(238, 110, 133)'
+				]
+			}],
+			labels: bestSellerData.label
+		},
+		options: {
+			cutoutPercentage: 20
 		}
 	});
 </script>

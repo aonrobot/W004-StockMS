@@ -443,7 +443,7 @@ namespace App\Library\_Class {
                             
                             // New Item
                             if($oldItem == null) continue;
-                            
+
                             $oldId = $oldItem->id;
                             $oldProductId= $oldItem->product_id;
                             $oldAmount = $oldItem->amount;
@@ -919,25 +919,49 @@ namespace App\Library\_Class {
             $stackDiff = 0;
             foreach($transactions as $transac){
                 $transacAmount = $transac['amount'];
+                $transacType = $transac['type'];
                 if($stackDiff > 0) $calDiff = $stackDiff;
                 $diffAmount = $transacAmount - $calDiff;
                 if ($diffAmount > 0) {
+
                     \App\Transaction::where('id', $transac['id'])->decrement('amount', $calDiff);
                     //\App\Transaction::where('id', $transac['id'])->update(['balance' => $currentQuantity]);
-                    \App\Transaction::where('id', '>=', $transac['id'])
-                    ->where('product_id', $product_id)->increment('balance', $calDiff);
+                    if($transacType == 'inv'){
+                        \App\Transaction::where('id', '>=', $transac['id'])
+                        ->where('product_id', $product_id)->increment('balance', $calDiff);
+                    } elseif ($transacType == 'po') {
+                        \App\Transaction::where('id', '>=', $transac['id'])
+                        ->where('product_id', $product_id)->decrement('balance', $calDiff);
+                    }
+                    
                     break;
 
                 } elseif ($diffAmount < 0) {
+
                     $stackDiff = abs($transacAmount - $calDiff);
-                    \App\Transaction::where('id', '>', $transac['id'])
-                    ->where('product_id', $product_id)->increment('balance', $transacAmount);
+
+                    if($transacType == 'inv'){
+                        \App\Transaction::where('id', '>', $transac['id'])
+                        ->where('product_id', $product_id)->increment('balance', $transacAmount);
+                    } elseif ($transacType == 'po') {
+                        \App\Transaction::where('id', '>', $transac['id'])
+                        ->where('product_id', $product_id)->decrement('balance', $transacAmount);
+                    }
+                    
                     \App\Transaction::where('id', $transac['id'])->delete();
                     
                 } else {
-                    \App\Transaction::where('id', '>', $transac['id'])
-                    ->where('product_id', $product_id)->increment('balance', $transacAmount);
+
+                    if($transacType == 'inv'){
+                        \App\Transaction::where('id', '>', $transac['id'])
+                        ->where('product_id', $product_id)->increment('balance', $transacAmount);
+                    } elseif ($transacType == 'po') {
+                        \App\Transaction::where('id', '>', $transac['id'])
+                        ->where('product_id', $product_id)->decrement('balance', $transacAmount);
+                    }
+                    
                     \App\Transaction::where('id', $transac['id'])->delete();
+                    
                     break;
                 }
             }

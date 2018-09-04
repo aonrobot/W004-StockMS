@@ -145,7 +145,7 @@ function search (elem , searchType ,idx) {
             var $row_elem = $("#row_" + idx);
                 $($row_elem).find(".td__prodCode input").val(ui.item.data.code);
                 $($row_elem).find(".td__prodName input").val(ui.item.data.name);
-                $($row_elem).find(".td__amount input").val(ui.item.data.salePrice);
+                $($row_elem).find(".td__amount input").val(ui.item.data.costPrice);
                 $($row_elem).find(".td__unitValue small").html(
                     `<span>จำนวนคงเหลือ <strong>${ ui.item.data.sumQuantity }</strong></span>`
                 );

@@ -259,15 +259,28 @@ class DocumentController extends Controller
         $products = \App\Product::get(['product_id']);
         $documentDetail = DocumentDetail::where('type', 'inv')->get();
         
-        $seller = [];
+        $countSell = [];
         foreach($products as $p){
-            $seller[$p['product_id']] = 0;
+            $countSell[$p['product_id']] = 0;
         }
         foreach($documentDetail as $doc)
         {
-
+            $items = DocumentLineItems::where('document_id', $doc['id'])->get(['product_id'])->toArray();
+            foreach($items as $item){
+                $countSell[$item['product_id']]++;
+            }
         }
+        ksort($countSell);
 
+        $seller = [
+            'data' => [],
+            'label' => []
+        ];
+        foreach($countSell as $key => $value){
+            array_push($seller['data'], $value);
+            $product_name = \App\Product::where('product_id', $key)->first(['name'])->name;
+            array_push($seller['label'], $product_name);
+        }
         return response()->json($seller);
     }
 }
