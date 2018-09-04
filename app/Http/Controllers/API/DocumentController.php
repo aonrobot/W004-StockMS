@@ -265,9 +265,9 @@ class DocumentController extends Controller
         }
         foreach($documentDetail as $doc)
         {
-            $items = DocumentLineItems::where('document_id', $doc['id'])->get(['product_id'])->toArray();
+            $items = DocumentLineItems::where('document_id', $doc['id'])->get(['product_id', 'amount'])->toArray();
             foreach($items as $item){
-                $countSell[$item['product_id']]++;
+                $countSell[$item['product_id']]+=$item['amount'];
             }
         }
         ksort($countSell);
