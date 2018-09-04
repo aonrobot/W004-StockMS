@@ -1,9 +1,4 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
-var busyBoxOptions = {
-    background: "rgba(0, 0, 0, 0.6)",
-    spinner: "cube",
-    animation: "fade"
-}
 
 var table = $('#prod_table').DataTable({
     "columnDefs": [{

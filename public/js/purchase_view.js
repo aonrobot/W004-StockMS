@@ -62,7 +62,7 @@ function initialDataTable() {
     purchase_view_table
         .clear()
 
-    // $('body').busyLoad("show", busyBoxOptions);
+    $('body').busyLoad("show", busyBoxOptions);
 
     var DOC_TYPE = "po"
     $.ajax({
@@ -85,6 +85,8 @@ function initialDataTable() {
                   
             }).draw();
         }
+
+        $('body').busyLoad("hide", busyBoxOptions);
     })
 }
 

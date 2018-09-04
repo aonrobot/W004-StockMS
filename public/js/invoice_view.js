@@ -62,7 +62,7 @@ function initialDataTable() {
     invoice_view_table
         .clear()
 
-    // $('body').busyLoad("show", busyBoxOptions);
+    $('body').busyLoad("show", busyBoxOptions);
 
     var DOC_TYPE = "inv"
     $.ajax({
@@ -85,6 +85,8 @@ function initialDataTable() {
                   
             }).draw();
         }
+
+        $('body').busyLoad("hide", busyBoxOptions);
     })
 }
 
