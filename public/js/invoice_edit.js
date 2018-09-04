@@ -387,7 +387,7 @@ function initialDataTable(btn_id) {
     modal_table
         .clear()
 
-    // $('body').busyLoad("show", busyBoxOptions);
+    $('body').busyLoad("show", busyBoxOptions);
     $.ajax({
         type: 'GET',
         url: "/api/product",
@@ -411,7 +411,7 @@ function initialDataTable(btn_id) {
                 }
             }).draw();
         }
-        // $('body').busyLoad("hide", busyBoxOptions);
+        $('body').busyLoad("hide", busyBoxOptions);
         // createChangeQty_event();
     });
 }
@@ -575,7 +575,7 @@ function updateInvoice() {
         console.log(res);
         if (res.updated) {
             
-            //window.location = '/invoice_view';
+            window.location = '/invoice_view';
         }else {
             errorDialog(2)
         }
