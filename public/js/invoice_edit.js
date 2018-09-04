@@ -554,7 +554,7 @@ function updateInvoice() {
     });
     // Return if input value is null
     if (!checkNullValue) return;
-
+    
     var json_data = {
         "detail": {
             "comment": "",
@@ -562,6 +562,7 @@ function updateInvoice() {
         },
         "lineitems": arr
     }
+    console.log(json_data);
     $.ajax({
         type: 'PUT',
         url: "/api/document/" + DOC_NUMBER,
