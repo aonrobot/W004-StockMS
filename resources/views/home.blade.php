@@ -53,20 +53,25 @@
 	<div class="row mt-5">
 		<div class="col-sm-4">
 			<h2><i class="fa fa-cart-arrow-down"></i> สินค้าขายดี </h2><br>
-			<canvas id="bestSellerChart" width="300" height="250"></canvas>			
+			<div class="bsChartDIV">
+				<canvas id="bestSellerChart" width="300" height="250"></canvas>	
+			</div>		
 		</div>
 		<div class="col-sm-8">
 			<h2><i class="fa fa-chart-line"></i> ยอดขายปี <span class="labelYear"></span></h2><br>
-			<canvas id="monthRevenueChart" width="400" height="150"></canvas>
+			<div class="mrChartDIV">
+				<canvas id="monthRevenueChart" width="400" height="150"></canvas>
+			</div>
 		</div>
 		
 	</div>
 
 	<div class="row mt-5">
-
 		<div class="col-sm-6">
 			<h2><i class="fa fa-chart-bar"></i> ยอดขายสินค้า เดือน<span class="labelMonth"></span></h2><br>
-			<canvas id="bestSellerChart" width="300" height="250"></canvas>			
+			<div class="alert alert-info" role="alert">
+				<h6><i class="fa fa-fire"></i> กราฟจะเปิดให้ใช้งานเร็วๆ นี้ครับ</h6>
+			</div>
 		</div>
 	</div>
 
@@ -205,6 +210,31 @@
 			cutoutPercentage: 20
 		}
 	});
+
+	
+	
+	$(document).ready(function(){
+
+		$warningStr = 	`
+							<div class="alert alert-warning" role="alert">
+								<h5><i class="fa fa-exclamation-triangle"></i> ข้อมูลยังไม่เพียงพอสำหรับสร้างกราฟในขณะนี้<br></h5>
+								<i>คุณอาจจะต้องทำการสร้างรายการขายอย่างน้อย 1 รายการก่อน</i>
+							</div>
+						`;
+
+		if(bestSellerData.data.length == 1){
+			if(bestSellerData.data[0] == 0){
+				$('.bsChartDIV').html($warningStr);
+			}
+		}
+
+		if(revenueData.reduce(function(total, num){
+			return total + num
+		}) == 0){
+			$('.mrChartDIV').html($warningStr);
+		}
+		
+	})
 </script>
 
 @endsection
