@@ -50,7 +50,7 @@ class WarehouseTableSeeder extends Seeder
             'date' => \Carbon\Carbon::now()->toDateString()
         ));
 
-        DB::table('documentLineItems')->insert(array(
+        $line_id = DB::table('documentLineItems')->insert(array(
             'document_id' => $doc_id,
             'product_id' => 1,
             'amount' => 12,
@@ -58,6 +58,8 @@ class WarehouseTableSeeder extends Seeder
             'discount' => 0,
             'total' => 1206.48
         ));
+
+        \App\Library\_Class\Document::createTransaction($line_id, 12, 12);
 
     }
 }

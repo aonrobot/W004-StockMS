@@ -102,10 +102,12 @@ class CreateInventoryTable extends Migration
             $table->increments('id');
             $table->integer('document_id')->unsigned();
             $table->integer('lineitem_id')->unsigned();
+            $table->integer('product_id')->unsigned();
             $table->string('type', 32);
             $table->string('status', 32);
             $table->integer('source_wh_id')->unsigned()->nullable(true);
             $table->integer('target_wh_id')->unsigned()->nullable(true);
+            $table->integer('amount')->default(0);
             $table->integer('balance')->default(0);
             $table->timestamps();
         });

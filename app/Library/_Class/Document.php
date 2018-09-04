@@ -79,8 +79,8 @@ namespace App\Library\_Class {
                                 return ['created' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];
                             }
 
-                            $product_price = \App\Inventory::where('product_id', $product_id)
-                                ->where('warehouse_id', $warehouseId)->first(['costPrice'])->costPrice;
+                            // $product_price = \App\Inventory::where('product_id', $product_id)
+                            //     ->where('warehouse_id', $warehouseId)->first(['costPrice'])->costPrice;
 
                             $lineItemId = \App\DocumentLineItems::create([
                                 "document_id" => $doc_id,
@@ -93,7 +93,7 @@ namespace App\Library\_Class {
 
                             $currentQuantity = ProductUtil::sumQuantity($product_id);
                             //\App\DocumentLineItems::where('id', $lineItemId)->update(['quantity' => $currentQuantity]);
-                            $transacResult = self::transaction($lineItemId, $currentQuantity);
+                            $transacResult = self::createTransaction($lineItemId, $amount, $currentQuantity);
                             if ($transacResult  == false) {
                                 return ['created' => false, 'message' => 'canot create transaction!!'];
                             }
@@ -154,7 +154,7 @@ namespace App\Library\_Class {
 
                             $currentQuantity = ProductUtil::sumQuantity($product_id);
                             //\App\DocumentLineItems::where('id', $lineItemId)->update(['quantity' => $currentQuantity]);
-                            $transacResult = self::transaction($lineItemId, $currentQuantity);
+                            $transacResult = self::createTransaction($lineItemId, $amount, $currentQuantity);
                             if ($transacResult == false) {
                                 return ['created' => false, 'message' => 'canot create transaction!!'];
                             }
@@ -209,7 +209,7 @@ namespace App\Library\_Class {
 
                             $currentQuantity = ProductUtil::sumQuantity($product_id);
                             //\App\DocumentLineItems::where('id', $lineItemId)->update(['quantity' => $currentQuantity]);
-                            $transacResult = self::transaction($lineItemId, $currentQuantity);
+                            $transacResult = self::createTransaction($lineItemId, $amount, $currentQuantity);
                             if ($transacResult == false) {
                                 return ['created' => false, 'message' => 'canot create transaction!!'];
                             }
@@ -272,10 +272,27 @@ namespace App\Library\_Class {
                     case 'inv':
 
                         $documentDetail->update($detail);
-
+                        
+                        $UILineItemId = [];
                         $itemsExpandAmount = [];
+
                         foreach($lineitems as $item)
                         {
+                            // ******** Check and create new item
+                            if(empty($item['id'])){
+                                $addResult = self::addLineItem($id, $item);
+                                if($addResult == false){
+                                    return [
+                                        'updated' => false,
+                                        'message' => $checkResult
+                                    ];
+                                }
+                                //unset($item);
+                                continue;
+                            }
+
+                            array_push($UILineItemId, $item['id']);
+
                             // $item['id'] == DocumentLineItems id
                             $oldAmount = \App\DocumentLineItems::where('id', $item['id'])->first(['amount'])->amount;
                             //function checkQuantity use product_id
@@ -292,6 +309,13 @@ namespace App\Library\_Class {
 
                             // TODO if $oldAmount == $amount unset $item to reduce time
                         }
+                        
+                        // Find delete item
+                        foreach($documentLineItems->get() as $docItem){
+                            if(!in_array($docItem['id'], $UILineItemId)){
+                                self::deleteLineItem($docItem['id']);
+                            }
+                        }
 
                         $checkResult = ProductUtil::checkQuantity($itemsExpandAmount, $doc_source_wh_id);
                         if (count($checkResult) > 0) return [
@@ -303,10 +327,11 @@ namespace App\Library\_Class {
                         {
                             $oldItem = \App\DocumentLineItems::where('id', $item['id'])->where('document_id', $id)->first(['id', 'product_id', 'amount', 'price', 'discount', 'created_at']);
                             
-                            if($oldItem == null) return ['updated' => false, 'message' => 'Error this lineitems isnt exist'];
+                            // New Item
+                            if($oldItem == null) continue;
 
                             $oldId = $oldItem->id;
-                            $oldProductId= $oldItem->product_id;
+                            $oldProductId = $oldItem->product_id;
                             $oldAmount = $oldItem->amount;
                             $oldPrice = $oldItem->price;
                             $oldDiscount = $oldItem->discount;
@@ -342,12 +367,18 @@ namespace App\Library\_Class {
                                 // Method 2
                                 // self::quickTransfer($doc_source_wh_id, null, [['product_id' => $oldProductId, 'amount' => $diff]], "", $id);
                                 // \App\DocumentLineItems::where('id', $oldId)->where('document_id', $id)->decrement('quantity', $diff);
-
-                                $transacResult = self::transaction($oldId, $currentQuantity);
+                                // Method 4
+                                // $transacResult = self::createTransaction($oldId, $diff, $currentQuantity);
+                                // if ($transacResult == false) {
+                                //     return ['created' => false, 'message' => 'canot create transaction!!'];
+                                // }
+                                
+                                $transacResult = self::createTransaction($oldId, $diff, $currentQuantity);
                                 if ($transacResult == false) {
                                     return ['created' => false, 'message' => 'canot create transaction!!'];
                                 }
 
+                                
                             } elseif ($oldAmount > $amount) {
 
                                 $currentQuantity = InventoryClass::increase($oldProductId, $doc_source_wh_id, $diff);
@@ -360,10 +391,7 @@ namespace App\Library\_Class {
                                 // self::quickTransfer(null, $doc_source_wh_id, [['product_id' => $oldProductId, 'amount' => $diff]], "", $id);
                                 // \App\DocumentLineItems::where('id', $oldId)->where('document_id', $id)->increment('quantity', $diff);
 
-                                $transacResult = self::transaction($oldId, $currentQuantity);
-                                if ($transacResult == false) {
-                                    return ['created' => false, 'message' => 'canot create transaction!!'];
-                                }
+                                self::adjustTransaction($oldId, $oldProductId, $diff);
                             }
                         }
                         
@@ -383,6 +411,7 @@ namespace App\Library\_Class {
 
                         $documentDetail->update($detail);
 
+                        $UILineItemId = [];
                         $itemsExpandAmount = [];
                         foreach($lineitems as $item){
                             // $item['id'] == DocumentLineItems id
@@ -441,17 +470,20 @@ namespace App\Library\_Class {
                                 //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->decrement('quantity', $diff);
                                 // }
                                 //self::quickTransfer($doc_target_wh_id, null, [['product_id' => $oldProductId, 'amount' => $diff]]);
-                                $transacResult = self::transaction($oldId, $currentQuantity);
-                                if ($transacResult == false) {
-                                    return ['created' => false, 'message' => 'canot create transaction!!'];
-                                }
+                                // $transacResult = self::createTransaction($oldId, $diff, $currentQuantity);
+                                // if ($transacResult == false) {
+                                //     return ['created' => false, 'message' => 'canot create transaction!!'];
+                                // }
+
+                                self::adjustTransaction($oldId, $oldProductId, $diff);
+
                             } elseif ($oldAmount < $amount) {
                                 $currentQuantity = InventoryClass::increase($oldProductId, $doc_target_wh_id, $diff);
                                 // if ($currentQuantity != false) {
                                 //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $oldCreateAt)->increment('quantity', $diff);
                                 // }
                                 //self::quickTransfer(null, $doc_target_wh_id, [['product_id' => $oldProductId, 'amount' => $diff]]);
-                                $transacResult = self::transaction($oldId, $currentQuantity);
+                                $transacResult = self::createTransaction($oldId, $diff, $currentQuantity);
                                 if ($transacResult == false) {
                                     return ['created' => false, 'message' => 'canot create transaction!!'];
                                 }
@@ -512,30 +544,46 @@ namespace App\Library\_Class {
                     */
                     case 'tf':
 
-                        foreach ($documentLineItems as $item) {
+                        
+
+                        foreach ($documentLineItems as $item)
+                        {
                             $lineitem_id = $item['id'];
                             $product_id = $item['product_id'];
                             $amount = $item['amount'];
                             $createAt = $item['created_at'];
 
-                            \App\Transaction::where('lineitem_id')->delete();
+                            // $transac = App\Transaction::where('lineitem_id');
+                            // $transacId = $transac->first()->id;
+                            // $transac->delete();
 
                             if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                                 $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
                                 if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                                    //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                                    \App\Transaction::where('lineitem_id', '>', $lineitem_id)
+                                    ->where('product_id', $product_id)->decrement('balance', $amount);
                                 }
                             } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
                                 $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                                 if ($currentQuantity != false) {
-                                    \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                                    //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                                    \App\Transaction::where('lineitem_id', '>', $lineitem_id)
+                                    ->where('product_id', $product_id)->increment('balance', $amount);                                   
                                 }
                             } elseif ($doc_source_wh_id == null && $doc_target_wh_id == null) {
                                 InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
+                                \App\Transaction::where('lineitem_id', '>', $lineitem_id)
+                                    ->where('product_id', $product_id)->increment('balance', $amount); 
+
                                 InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
+                                \App\Transaction::where('lineitem_id', '>', $lineitem_id)
+                                    ->where('product_id', $product_id)->decrement('balance', $amount);
                             } else {
                                 return ['deleted' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];                                
                             }
+
+                            \App\Transaction::where('lineitem_id', $lineitem_id)->delete();
                         }
 
                         $documentDetail->delete();
@@ -555,14 +603,22 @@ namespace App\Library\_Class {
                     case 'inv':
 
                         foreach ($documentLineItems as $item) {
-                            
+                            $lineitem_id = $item['id'];
                             $product_id = $item['product_id'];
                             $amount = $item['amount'];
                             $createAt = $item['created_at'];
 
                             $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                             if ($currentQuantity != false) {
-                                \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                                //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                                //\App\Transaction::where('id', '>=', $transacId)->increment('balance', $amount);
+                                $transactions = \App\Transaction::where('lineitem_id', $lineitem_id)->get();
+                                foreach ($transactions as $transac)
+                                { 
+                                    \App\Transaction::where('id', '>', $transac['id'])
+                                    ->where('product_id', $product_id)->increment('balance', $transac['amount']);
+                                    \App\Transaction::where('id', $transac['id'])->delete();
+                                }
                             }
                         }
 
@@ -590,7 +646,15 @@ namespace App\Library\_Class {
 
                             $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
                             if ($currentQuantity != false) {
-                                \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                                //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                                //\App\Transaction::where('id', '>=', $transacId)->decrement('balance', $amount);
+                                $transactions = \App\Transaction::where('lineitem_id', $lineitem_id)->get();
+                                foreach ($transactions as $transac)
+                                { 
+                                    \App\Transaction::where('id', '>', $transac['id'])
+                                    ->where('product_id', $product_id)->decrement('balance', $transac['amount']);
+                                    \App\Transaction::where('id', $transac['id'])->delete();
+                                }                                                             
                             }
                         }
 
@@ -613,6 +677,92 @@ namespace App\Library\_Class {
                 Log::error($e);
 
                 return ['deleted' => false, 'message' => 'Error to delete document please contact admin.'];
+            }
+        }
+
+        static public function quickTransfer($source_wh_id, $target_wh_id, $lineitems, $comment = "", $ref_id = null)
+        {
+            $detail = [
+                "number" => DocumentUtil::genDocNumber('tf'),
+                "customer_id" => null,
+                "ref_id" => $ref_id,
+                "source_wh_id" => $source_wh_id,
+                "target_wh_id" => $target_wh_id,
+                "type" => "tf",
+                "tax_type" => "",
+                "comment" => $comment,
+                "status" => "complete",
+                "date" => Carbon::now()->toDateString()
+            ];
+
+            // lineItem -> [['product_id' => $productId, 'amount' => $quantity]]
+
+            $result = self::create('tf', $detail, $lineitems);
+
+            return $result;
+        }
+
+        static public function addLineItem($document_id, $lineitem)
+        {
+            try
+            {
+                $product_id = \App\Product::where('code', $lineitem['product_code'])->first()->product_id;
+
+                Log::info('product id : ' . $product_id);
+
+                if($product_id == null) return false;
+
+                $document = \App\DocumentDetail::where('id', $document_id)->first();
+                $document_type = $document->type;
+                $source_wh_id = $document->source_wh_id;
+                $target_wh_id = $document->target_wh_id;
+
+                Log::info('source_wh_id : ' . $source_wh_id);
+
+                $lineitem_id = \App\DocumentLineItems::create([
+                    'document_id' => $document_id,
+                    'product_id' => $product_id,
+                    'amount' => $lineitem['amount'],
+                    'price' => $lineitem['price'],
+                    'discount' => $lineitem['discount'],
+                    'total' => ($lineitem['amount'] * $lineitem['price']) - $lineitem['discount']
+                ])->id;
+                
+                switch ($document_type)
+                {
+                    case 'inv' :
+                        \App\Inventory::where('product_id', $product_id)
+                        ->where('warehouse_id', $source_wh_id)->decrement('quantity', $lineitem['amount']);
+
+                        $currentQuantity = \App\Inventory::where('product_id', $product_id)
+                        ->where('warehouse_id', $source_wh_id)->first(['quantity'])->quantity;
+
+                    break;
+
+                    case 'po' :
+                        \App\Inventory::where('product_id', $product_id)
+                        ->where('warehouse_id', $target_wh_id)->increment('quantity', $lineitem['amount']);
+
+                        $currentQuantity = \App\Inventory::where('product_id', $product_id)
+                        ->where('warehouse_id', $target_wh_id)->first(['quantity'])->quantity;
+
+                    break;
+
+                    default:
+                        return false;
+                    break;
+                }
+
+                self::createTransaction($lineitem_id, $lineitem['amount'], $currentQuantity);
+                Log::info($lineitem_id);
+                Log::info($lineitem['amount']);
+                Log::info($currentQuantity);
+
+                return true;
+
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
             }
         }
 
@@ -657,14 +807,20 @@ namespace App\Library\_Class {
 
                         if ($doc_source_wh_id == null && $doc_target_wh_id != null) {
                             $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
-                            if ($currentQuantity != false) {
-                                \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
-                            }
+                            // if ($currentQuantity != false) {
+                            //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                            // }
+                            \App\Transaction::where('lineitem_id', '>', $lineItemId)
+                            ->where('product_id', $product_id)->decrement('balance', $amount);
+
                         } elseif ($doc_source_wh_id != null && $doc_target_wh_id == null) {
                             $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
-                            if ($currentQuantity != false) {
-                                \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
-                            }
+                            // if ($currentQuantity != false) {
+                            //     \App\DocumentLineItems::where('product_id', $oldProductId)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                            // }
+                            \App\Transaction::where('lineitem_id', '>', $lineItemId)
+                            ->where('product_id', $product_id)->increment('balance', $amount);
+
                         } elseif ($doc_source_wh_id == null && $doc_target_wh_id == null) {
                             InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                             InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
@@ -672,6 +828,7 @@ namespace App\Library\_Class {
                             return ['deleted' => false, 'message' => 'source warehouse or target warehouse id could not [null]'];                                
                         }
                         
+                        \App\Transaction::where('lineitem_id', $lineItemId)->delete();
                         $documentLineItems->delete();
                         
                     break;
@@ -690,7 +847,14 @@ namespace App\Library\_Class {
 
                         $currentQuantity = InventoryClass::increase($product_id, $doc_source_wh_id, $amount);
                         if ($currentQuantity != false) {
-                            \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                            //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->increment('quantity', $amount);
+                            $transactions = \App\Transaction::where('lineitem_id', $lineItemId)->get();
+                            foreach ($transactions as $transac)
+                            { 
+                                \App\Transaction::where('id', '>', $transac['id'])
+                                ->where('product_id', $product_id)->increment('balance', $transac['amount']);
+                                \App\Transaction::where('id', $transac['id'])->delete();
+                            }
                         }
 
                         $documentLineItems->delete();
@@ -711,7 +875,14 @@ namespace App\Library\_Class {
 
                         $currentQuantity = InventoryClass::decrease($product_id, $doc_target_wh_id, $amount);
                         if ($currentQuantity != false) {
-                            \App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                            //\App\DocumentLineItems::where('product_id', $product_id)->where('created_at', '>=', $createAt)->decrement('quantity', $amount);
+                            $transactions = \App\Transaction::where('lineitem_id', $lineItemId)->get();
+                            foreach ($transactions as $transac)
+                            { 
+                                \App\Transaction::where('id', '>', $transac['id'])
+                                ->where('product_id', $product_id)->decrement('balance', $transac['amount']);
+                                \App\Transaction::where('id', $transac['id'])->delete();
+                            }    
                         }
 
                         $documentLineItems->delete();
@@ -737,34 +908,45 @@ namespace App\Library\_Class {
             }
         }
 
-        static public function quickTransfer($source_wh_id, $target_wh_id, $lineitems, $comment = "", $ref_id = null)
+        static public function adjustTransaction($lineitem_id, $product_id, $diff)
         {
-            $detail = [
-                "number" => DocumentUtil::genDocNumber('tf'),
-                "customer_id" => null,
-                "ref_id" => $ref_id,
-                "source_wh_id" => $source_wh_id,
-                "target_wh_id" => $target_wh_id,
-                "type" => "tf",
-                "tax_type" => "",
-                "comment" => $comment,
-                "status" => "complete",
-                "date" => Carbon::now()->toDateString()
-            ];
+            $transactions = \App\Transaction::where('lineitem_id', $lineitem_id)->orderBy('id', 'desc')->get();
+            $calDiff = $diff;
+            $stackDiff = 0;
+            foreach($transactions as $transac){
+                $transacAmount = $transac['amount'];
+                if($stackDiff > 0) $calDiff = $stackDiff;
+                $diffAmount = $transacAmount - $calDiff;
+                if ($diffAmount > 0) {
+                    \App\Transaction::where('id', $transac['id'])->decrement('amount', $calDiff);
+                    //\App\Transaction::where('id', $transac['id'])->update(['balance' => $currentQuantity]);
+                    \App\Transaction::where('id', '>=', $transac['id'])
+                    ->where('product_id', $product_id)->increment('balance', $calDiff);
+                    break;
 
-            // lineItem -> [['product_id' => $productId, 'amount' => $quantity]]
-
-            $result = self::create('tf', $detail, $lineitems);
-
-            return $result;
+                } elseif ($diffAmount < 0) {
+                    $stackDiff = abs($transacAmount - $calDiff);
+                    \App\Transaction::where('id', '>', $transac['id'])
+                    ->where('product_id', $product_id)->increment('balance', $transacAmount);
+                    \App\Transaction::where('id', $transac['id'])->delete();
+                    
+                } else {
+                    \App\Transaction::where('id', '>', $transac['id'])
+                    ->where('product_id', $product_id)->increment('balance', $transacAmount);
+                    \App\Transaction::where('id', $transac['id'])->delete();
+                    break;
+                }
+            }
         }
 
-        static public function transaction($lineitem_id, $balance)
+        static public function createTransaction($lineitem_id, $amount, $balance)
         {
             try 
             {
                 $docLineitem = \App\DocumentLineItems::where('id', $lineitem_id)->first();
                 $document_id = $docLineitem->document_id;
+                $product_id = $docLineitem->product_id;
+                //$amount = $docLineitem->amount;
 
                 $docDetail = \App\DocumentDetail::where('id', $document_id)->first();
                 $type = $docDetail->type;
@@ -775,17 +957,18 @@ namespace App\Library\_Class {
                 \App\Transaction::create([
                     'document_id' => $document_id,
                     'lineitem_id' => $lineitem_id,
+                    'product_id' => $product_id,
                     'type' => $type,
                     'status' => $status,
                     'source_wh_id' => $source_wh_id,
                     'target_wh_id' => $target_wh_id,
-                    'balance' => $balance,
+                    'amount' => $amount,
+                    'balance' => $balance
                 ]);
 
                 return true;
 
             } catch (\Exception $e) {
-
                 Log::error($e);
                 return false;
             }

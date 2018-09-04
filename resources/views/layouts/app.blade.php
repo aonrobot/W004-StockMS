@@ -50,8 +50,8 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel nav-style">
             <div class="container">
                 <a class="navbar-brand nav-style__logo" href="{{ url('/') }}">
-                    <i class="fa fa-dog"></i><p> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}</p>
-                    <span>Stock Management System</span>
+                    <!-- <i class="fa fa-dog"></i><p> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}</p> -->
+                    <sub>Document Management System</sub>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
