@@ -28,5 +28,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/invoice_edit/{id}', function () { return view('invoice_edit'); })->name('invoice_edit');
     Route::get('/purchase_create', function () { return view('purchase_create'); })->name('purchase_create');
     Route::get('/purchase_view', function () { return view('purchase_view'); })->name('purchase_view');
+    Route::get('/purchase_edit/{id}', function () { return view('purchase_edit'); })->name('purchase_edit');
     Route::get('/print', function () { return view('print'); })->name('print');
 });

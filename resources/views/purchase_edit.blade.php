@@ -12,7 +12,7 @@
 
 
 <div class="container main" >
-    <h3> สร้างรายการขาย </h3>
+    <h3> แก้ไขรายการขายเลขที่ {{Request::segment(2)}} </h3>
     <hr />
     <div class="row">
         <div class="col-md-3 text-right">
@@ -27,7 +27,8 @@
             <p>รายการ<sup class="text-danger">*</sup> : </p>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" id="purchase_id" />
+            <!-- <input class="form-control" type="text" id="purchase_id" /> -->
+            <p id="purchase_id"></p>
         </div>
     </div>
     <div class="row form-group">
@@ -50,18 +51,9 @@
             <p>อ้างอิง : </p>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" id="purchase_ref" />
+            <p id="purchase_ref"></p>
         </div>
     </div> -->
-    <!-- <div class="row form-group">
-        <div class="col-md-3 text-right">
-            <p>ช่องทางการขาย<sup class="text-danger">*</sup> : </p>
-        </div>
-        <div class="col-md-4">
-            <input class="form-control" type="text" id="purchase_" />
-        </div>
-    </div> -->
-
 
     <div class="row card m-t-30">
         <div class="table-responsive">
@@ -80,7 +72,7 @@
                 </tr>
                 </thead>
                 <tbody id="table_body">
-                    <tr id="row_1">
+                    <!-- <tr id="row_1">
                         <td class="td__btn-add">
                             <button class="btn-default btn-circle" 
                                 id="btn_1"
@@ -134,7 +126,7 @@
                         <td class="td__btn-remove"> 
                             <i class="fa fa-minus-circle pointer btn-remove-row" aria-hidden="true" onclick="removeRow(1)"></i>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
 
@@ -166,7 +158,7 @@
     <hr class=" m-t-30" />
     <div class="row m-t-30">
         <div class="col-md-12 text-center">
-            <button class="btn btn-lg btn-primary" onclick="createPurchase()">
+            <button class="btn btn-lg btn-primary" onclick="updatePurchase()">
                 บันทึก
                 <i class="fa fa-save" aria-hidden="true"></i>
             </button>
@@ -228,8 +220,12 @@
 
 
 @section('page_script')
+<script>
+    var DOC_NUMBER = "{{Request::segment(2)}}" ;
+
+</script>
 <script src="{{ asset('js/jquery-ui.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ asset('js/purchase_create.js') }}"></script>
+<script src="{{ asset('js/purchase_edit.js') }}"></script>
 
 @endsection

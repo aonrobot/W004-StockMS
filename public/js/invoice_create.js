@@ -414,7 +414,7 @@ function sumTotal() {
 
     $(".INVOICE_TOTAL").map(function (obj, elem) {
 
-        $(elem).html(sum);
+        $(elem).html(sum.toFixed(2));
     });
 }
 
