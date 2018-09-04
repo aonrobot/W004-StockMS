@@ -60,6 +60,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
         Route::prefix('service')->group(function () {
             Route::get('gennumber/{type}', 'DocumentController@genDocNumber');
             Route::get('revenue/{type}', 'DocumentController@revenue');
+            Route::get('yearRevenueChart', 'DocumentController@yearRevenueChart');
+            Route::get('bestSeller', 'DocumentController@bestSeller');
         });
     });
 });

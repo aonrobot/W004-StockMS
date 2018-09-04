@@ -48,6 +48,11 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="row">
+		<h2><i class="fa fa-chart-line"></i> ยอดขายปี <span class="labelYear">2018</span></h2>
+		<canvas id="monthRevenueChart" width="400" height="150"></canvas>
+	</div>
 </div>
 
 @endsection
@@ -72,6 +77,19 @@
 					}
 				})
 			);
+		},
+		revenueChart : function() {
+			return (
+				$.ajax({
+					type: 'GET',
+					url: "api/document/service/yearRevenueChart",
+					headers: {
+						"Accept": "application/json",
+						"Authorization": Authorization
+					},
+					async: false
+				})
+			)
 		}
 	}	
 
@@ -98,7 +116,58 @@
 	$("#year").html(
 		d.getFullYear()
 	);
-	
+	$(".labelYear").html(
+		d.getFullYear()
+	)
+
+	var ctx 		= document.getElementById("monthRevenueChart");
+	var revenueData = [];
+
+	get.revenueChart().done(function (res) {
+		window.revenueData = res;
+	});
+
+	var monthRevenueChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: months,
+			pointRadius: 10,
+			pointHoverRadius: 10,
+			datasets: [
+				{
+					label: null,
+					data: revenueData,
+					backgroundColor: [
+						'rgba(54, 162, 235, 0.2)',
+					],
+					borderColor: [
+						'rgba(54, 162, 235, 1)',
+					],
+					borderWidth: 1
+				}
+			]
+		},
+		options: {
+			legend: {
+				display: false,
+			},
+			showTooltips: false,
+			onAnimationComplete: function () {
+
+				var ctx = this.chart.ctx;
+				ctx.font = this.scale.font;
+				ctx.fillStyle = this.scale.textColor
+				ctx.textAlign = "center";
+				ctx.textBaseline = "bottom";
+
+				this.datasets.forEach(function (dataset) {
+					dataset.points.forEach(function (points) {
+						ctx.fillText(points.value, points.x, points.y - 10);
+					});
+				})
+			}
+		}
+	});
 </script>
 
 @endsection

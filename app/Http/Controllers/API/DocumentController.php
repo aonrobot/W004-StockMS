@@ -207,7 +207,7 @@ class DocumentController extends Controller
         switch ($type) {
             case 'today':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->toDateString() . '%')->get();
+                $docs = DocumentDetail::where('type', 'inv')->where('date', Carbon::now()->format('Y-m-d') )->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -216,7 +216,7 @@ class DocumentController extends Controller
 
             case 'thisMonth':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->format('Y-m') . '%')->get();
+                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y-m') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -225,7 +225,7 @@ class DocumentController extends Controller
 
             case 'thisYear':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('created_at', 'like', Carbon::now()->format('Y') . '%')->get();
+                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -233,5 +233,41 @@ class DocumentController extends Controller
             break;
         }
         return response()->json($revenue);
+    }
+
+    public function yearRevenueChart()
+    {
+        $result = [];
+        $year = Carbon::now()->year;
+        for ($i = 1; $i <= 12; $i++)
+        {  
+            $likeStr            = $year .'-' . str_pad($i, 2, 0, STR_PAD_LEFT) . '-%';
+            $documentDetail     = DocumentDetail::where('type', 'inv')->where('date', 'like', $likeStr)->get();
+            $total = 0;
+            foreach($documentDetail as $doc){
+                $doc_id = $doc['id'];
+                $total += DocumentLineItems::where('document_id', $doc_id)->sum('total');
+            }
+            array_push($result, $total);
+        }
+
+        return response()->json($result);
+    }
+
+    public function bestSeller()
+    {
+        $products = \App\Product::get(['product_id']);
+        $documentDetail = DocumentDetail::where('type', 'inv')->get();
+        
+        $seller = [];
+        foreach($products as $p){
+            $seller[$p['product_id']] = 0;
+        }
+        foreach($documentDetail as $doc)
+        {
+
+        }
+
+        return response()->json($seller);
     }
 }

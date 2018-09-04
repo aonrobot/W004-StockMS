@@ -439,7 +439,11 @@ namespace App\Library\_Class {
                         ];
 
                         foreach($lineitems as $item){
-                            $oldItem = \App\DocumentLineItems::where('id', $item['id'])->first(['id', 'product_id', 'amount', 'price', 'discount', 'created_at']);
+                            $oldItem = \App\DocumentLineItems::where('id', $item['id'])->where('document_id', $id)->first(['id', 'product_id', 'amount', 'price', 'discount', 'created_at']);
+                            
+                            // New Item
+                            if($oldItem == null) continue;
+                            
                             $oldId = $oldItem->id;
                             $oldProductId= $oldItem->product_id;
                             $oldAmount = $oldItem->amount;

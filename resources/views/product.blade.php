@@ -32,7 +32,7 @@
                                     <th>ราคาซื้อ</th>
                                     <th>ราคาขาย</th>
                                     <th>จำนวนคงเหลือ</th>
-                                    <th></th>
+                                    <!-- <th></th> this is quick increase and decrease-->
                                     <th>หน่วย</th>
                                     <th></th>
                                 </tr>

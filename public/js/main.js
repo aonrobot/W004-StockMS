@@ -21,9 +21,9 @@ var table = $('#prod_table').DataTable({
         "data": "prodName",
         "render": function (data, type, full, meta) {
             return `
-                <a href="#" class="edit-btn" data-toggle="modal" data-target="#transModal" data-prodID="${full.prodID}">
+                <span class="edit-btn" data-prodID="${full.prodID}">
                     ${data}
-                </a>
+                </span>
             `;
         }
     },
@@ -42,16 +42,16 @@ var table = $('#prod_table').DataTable({
         "className": "text-right",
         "width": "12%"
     },
-    {
-        "ordering": false,
-        render: function (data, type, full, meta) {
-            return `
-                    <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
-                    <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
-                    <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
-            `;
-        },
-    },
+    // {
+    //     "ordering": false,
+    //     render: function (data, type, full, meta) {
+    //         // return `
+    //         //         <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
+    //         //         <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+    //         //         <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+    //         // `;
+    //     },
+    // },
     {
         "data": "prodUnit",
         "className": "text-right",

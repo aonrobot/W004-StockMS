@@ -50,8 +50,8 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel nav-style">
             <div class="container">
                 <a class="navbar-brand nav-style__logo" href="{{ url('/') }}">
-                    <!-- <i class="fa fa-dog"></i><p> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}</p> -->
-                    <sub>Document Management System</sub>
+                    <i class="fa fa-dog"></i><p> {{ 'สว่างแดนดินเจริญดีเซรามิค' }}</p>
+                    <sub>Stock Management System</sub>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -171,6 +171,7 @@
 @guest
 @else
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="{{ asset('vendor/odometer/js/odometer.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
@@ -180,6 +181,8 @@
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script> -->
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 
 @yield('page_script')
 
