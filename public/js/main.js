@@ -54,6 +54,11 @@ var table = $('#prod_table').DataTable({
     },
     {
         render: function (data, type, full, meta) {
+            return `<span>${full.prodBuyPrice * full.prodAmount}</span>`;
+        },
+    },
+    {
+        render: function (data, type, full, meta) {
             return `<div>   
                         <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
                             Edit
@@ -174,7 +179,7 @@ $("#form_prod").submit(function (e) {
         if (response.created) {
 
             table.row.add({
-                "prodID": param.prodCode,
+                "prodCode": param.prodCode,
                 "prodName": param.prodName,
                 "prodBuyPrice": param.costPrice,
                 "prodSalePrice": param.salePrice,
