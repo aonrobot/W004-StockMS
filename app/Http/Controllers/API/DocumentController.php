@@ -270,7 +270,8 @@ class DocumentController extends Controller
                 $countSell[$item['product_id']]+=$item['amount'];
             }
         }
-        ksort($countSell);
+
+        arsort($countSell);
 
         $seller = [
             'data' => [],

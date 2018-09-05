@@ -129,15 +129,15 @@
 	}	
 
 	get.revenue('today').done(function (res) {
-		$("#today_rev").html(res);
+		$("#today_rev").html(res.toFixed(2));
 	});
 	
 	get.revenue('thisMonth').done(function (res) {
-		$("#month_rev").html(res);
+		$("#month_rev").html(res.toFixed(2));
 	});
 
 	get.revenue('thisYear').done(function (res) {
-		$("#year_rev").html(res);
+		$("#year_rev").html(res.toFixed(2));
 	});
 
 	$("#today").html(
@@ -200,10 +200,10 @@
 				data: bestSellerData.data,
 				backgroundColor: [
 					'rgb(255, 118, 117)',
-					'rgb(250, 177, 160)',
-					'rgb(255, 234, 167)',
+					'rgba(85, 239, 196,1.0)',
 					'rgb(116, 185, 255)',
-					'rgb(162, 155, 254)'
+					'rgb(162, 155, 254)',
+					'rgb(255, 234, 167)'
 				]
 			}],
 			labels: bestSellerData.label
