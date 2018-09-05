@@ -52,7 +52,7 @@
 
 	<div class="row mt-5">
 		<div class="col-sm-4">
-			<h2><i class="fa fa-cart-arrow-down"></i> สินค้าขายดี </h2><br>
+			<h2><i class="fa fa-cart-arrow-down"></i> สินค้าขายดี 5 อันดับ </h2><br>
 			<div class="bsChartDIV">
 				<canvas id="bestSellerChart" width="300" height="250"></canvas>	
 			</div>		
@@ -199,15 +199,17 @@
 			datasets: [{
 				data: bestSellerData.data,
 				backgroundColor: [
-					'rgb(248, 206, 107)',
-					'rgb(82, 162, 229)',
-					'rgb(238, 110, 133)'
+					'rgb(255, 118, 117)',
+					'rgb(250, 177, 160)',
+					'rgb(255, 234, 167)',
+					'rgb(116, 185, 255)',
+					'rgb(162, 155, 254)'
 				]
 			}],
 			labels: bestSellerData.label
 		},
 		options: {
-			cutoutPercentage: 20
+			cutoutPercentage: 0
 		}
 	});
 
