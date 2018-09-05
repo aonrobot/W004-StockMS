@@ -34,6 +34,7 @@
                                     <th>จำนวนคงเหลือ</th>
                                     <!-- <th></th> this is quick increase and decrease-->
                                     <th>หน่วย</th>
+                                    <th>มูลค่ารวมสุทธิ</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -46,7 +47,7 @@
         </div>
 
         <footer class="cm-footer">
-            <span class="pull-left">This is Footer</span>
+            <span class="pull-left">ตารางสินค้าทั้งหมด และ จำนวนคงเหลือ</span>
         </footer>
     </div>
 
