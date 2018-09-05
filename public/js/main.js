@@ -54,7 +54,7 @@ var table = $('#prod_table').DataTable({
     },
     {
         render: function (data, type, full, meta) {
-            return `<span>${full.prodBuyPrice * full.prodAmount}</span>`;
+            return `<span>${full.prodBuyPrice * full.prodAmount} บาท</span>`;
         },
     },
     {
