@@ -276,11 +276,18 @@ class DocumentController extends Controller
             'data' => [],
             'label' => []
         ];
+        $i = 1;
         foreach($countSell as $key => $value){
+            if($value <= 0) continue;
             array_push($seller['data'], $value);
             $product_name = \App\Product::where('product_id', $key)->first(['name'])->name;
-            array_push($seller['label'], $product_name);
+            array_push($seller['label'], 'อันดับ ' . $i . ' - ' . $product_name);
+            $i++;
         }
+
+        $seller['data'] = array_slice($seller['data'], 0 , 5);
+        $seller['label'] = array_slice($seller['label'], 0 , 5);
+
         return response()->json($seller);
     }
 }
