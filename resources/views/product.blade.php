@@ -34,7 +34,7 @@
                                     <th>จำนวนคงเหลือ</th>
                                     <!-- <th></th> this is quick increase and decrease-->
                                     <th>หน่วย</th>
-                                    <th>มูลค่ารวมสุทธิ</th>
+                                    <th>มูลค่า</th>
                                     <th></th>
                                 </tr>
                             </thead>
