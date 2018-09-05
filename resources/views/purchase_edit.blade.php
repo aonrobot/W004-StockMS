@@ -12,14 +12,14 @@
 
 
 <div class="container main" >
-    <h3> แก้ไขรายการขายเลขที่ {{Request::segment(2)}} </h3>
+    <h3> แก้ไขรายการซื้อเลขที่ {{Request::segment(2)}} </h3>
     <hr />
     <div class="row">
         <div class="col-md-3 text-right">
             <p>ประเภท : </p>
         </div>
         <div class="col-md-4">
-            <p>ขายสินค้าออก</p>
+            <p>ซื้อสินค้าเข้า</p>
         </div>
     </div>
     <div class="row form-group">

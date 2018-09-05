@@ -13,7 +13,7 @@
 
 <div class="container main" >
     <h3> 
-        รายการขาย 
+        รายการซื้อ 
         <a class="btn btn-primary float-right" href="{{ url('purchase_create') }}">
             สร้างใหม่ <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </a>   
@@ -44,7 +44,7 @@
   <div class="modal-dialog modal-xlarge">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">รายละเอียดรายการขาย</h5>
+            <h5 class="modal-title">รายละเอียดรายการซื้อ</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -62,7 +62,7 @@
                     <p>ประเภท : </p>
                 </div>
                 <div class="col-6 col-sm-6 col-md-4">
-                    <p><strong>ขายสินค้าออก</strong></p>
+                    <p><strong>ซื้อสินค้าเข้า</strong></p>
                 </div>
             </div>
             <div class="row">
