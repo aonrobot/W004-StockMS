@@ -158,8 +158,7 @@
         </div>
         <div class="col-md-4">  
             <p><strong><span class="INVOICE_TOTAL"> 0.00 </span></strong></p>
-            <select name="" id="" class="form-control">
-                <option value="" disabled selected>คลังสินค้าหลัก</option>
+            <select name=""  class="form-control" id="warehouse_select">
                 <!-- TODO: fetch data from api -->
             </select>
         </div>

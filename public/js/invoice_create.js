@@ -424,6 +424,8 @@ function createInvoice() {
     var id = $("#invoice_id").val();
     var date = $("#invoice_date").val();
     // var reference = $("#invoice_ref").val();
+    var warehouse_id = Number($("#warehouse_select").val()) ? Number($("#warehouse_select").val()) : null;
+
     var table_body = $("#table_body");
     var checkNullValue = true;
     var arr = [];
@@ -441,6 +443,7 @@ function createInvoice() {
         var prodName = $(elem).find('td:eq(3) input').val();
         var prodUnitValue = $(elem).find('td:eq(4) input').val();
         var prodAmount = $(elem).find('td:eq(5) input').val();
+        
         var obj = {};
 
         if(prodCode === '' ||
@@ -467,7 +470,7 @@ function createInvoice() {
             "number": id,
             "customer_id": null,
             "ref_id": null,
-            "source_wh_id": 1,
+            "source_wh_id": warehouse_id,
             "target_wh_id": null,
             "type": "inv",
             "tax_type": "without_tax",
@@ -477,7 +480,6 @@ function createInvoice() {
         },
         "lineitems": arr
     }
-
     $.ajax({
         type: 'POST',
         url: "api/document",
@@ -532,3 +534,32 @@ function errorDialog( err ) {
     $("#warning_text").html(text);
     $('#warning_modal').modal('show');
 }
+
+var inventory = {
+    get: function () {
+        return $.ajax({
+            method: 'GET',
+            url: "api/warehouse",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        })
+    },
+    set: function () {
+
+        var warehouse  = $("#warehouse_select");
+        var option = '';
+        inventory.get().done(function (res) {
+            
+            for(var i in res) { 
+                option += `
+                    <option value="${res[i].warehouse_id}">${res[i].name} </option>
+                `
+            }
+            $(warehouse).html(option);
+        }); 
+    }
+}
+
+inventory.set()

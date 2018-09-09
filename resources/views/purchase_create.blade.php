@@ -158,8 +158,8 @@
         </div>
         <div class="col-md-4">  
             <p><strong><span class="PURCHASE_TOTAL"> 0.00 </span></strong></p>
-            <select name="" id="" class="form-control">
-                <option value="" disabled selected>คลังสินค้าหลัก</option>
+            <select name="" id="warehouse_select" class="form-control">
+                <!-- <option value="" disabled selected>คลังสินค้าหลัก</option> -->
             </select>
         </div>
     </div>
