@@ -12,7 +12,7 @@ namespace App\Library\_Class {
             $dateStr = Carbon::now()->format('YmdHi');
             $prefixNumber = $upperTypeName . '-' . $dateStr;
     
-            $countSameType = \App\DocumentDetail::where('number', 'like', $prefixNumber . '%')->count();
+            $countSameType = \App\DocumentDetail::where('user_id', \Auth::id())->where('number', 'like', $prefixNumber . '%')->count();
     
             return $prefixNumber . (str_pad(($countSameType + 1), 3, '0', STR_PAD_LEFT));
         }

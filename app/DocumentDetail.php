@@ -12,7 +12,7 @@ class DocumentDetail extends Model
      * @var string
      */
     protected $table = 'documentDetail';
-    protected $fillable = ['number', 'customer_id', 'ref_id', 'source_wh_id', 'target_wh_id', 'type', 'tax_type', 'comment', 'status', 'date'];
+    protected $fillable = ['user_id', 'number', 'customer_id', 'ref_id', 'source_wh_id', 'target_wh_id', 'type', 'tax_type', 'comment', 'status', 'date'];
 
     public function documentLineItems()
     {

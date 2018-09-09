@@ -9,7 +9,12 @@
 @endif
 <link rel="stylesheet" href="{{ asset('./css/dashboard.css') }} "/>
 <div class="container fixed-bottom main" >
-        <!-- This is for Sub Menu -->
+	<!-- This is for Sub Menu -->
+	<div class="row">
+		<div class="col-md-4">
+			<h1>สวัสดี {{Auth::user()->name}}</h1>
+		</div>
+	</div>
     <div class="row">
 		<div class="col-md-4">
 			<div class="dash-box dash-box-color-1">
@@ -69,6 +74,13 @@
 	<div class="row mt-5">
 		<div class="col-sm-6">
 			<h2><i class="fa fa-chart-bar"></i> ยอดขายสินค้า เดือน<span class="labelMonth"></span></h2><br>
+			<div class="alert alert-info" role="alert">
+				<h6><i class="fa fa-fire"></i> กราฟจะเปิดให้ใช้งานเร็วๆ นี้ครับ</h6>
+			</div>
+		</div>
+
+		<div class="col-sm-6">
+			<h2><i class="fa fa-chart-bar"></i> สินค้าทำกำไรสูงสุด 5 อันดับ</h2><br>
 			<div class="alert alert-info" role="alert">
 				<h6><i class="fa fa-fire"></i> กราฟจะเปิดให้ใช้งานเร็วๆ นี้ครับ</h6>
 			</div>
@@ -228,6 +240,8 @@
 			if(bestSellerData.data[0] == 0){
 				$('.bsChartDIV').html($warningStr);
 			}
+		} else if (bestSellerData.data.length == 0) {
+			$('.bsChartDIV').html($warningStr);
 		}
 
 		if(revenueData.reduce(function(total, num){

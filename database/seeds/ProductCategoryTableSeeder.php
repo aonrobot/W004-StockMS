@@ -23,6 +23,7 @@ class ProductCategoryTableSeeder extends Seeder
 
         DB::table('products')->insert(
             array(
+                'user_id' => 1,
                 'code' => 'P0001',
                 'name' => 'Product ที่ฉันรักที่สุด',
                 'unitName' => 'ชิ้น',

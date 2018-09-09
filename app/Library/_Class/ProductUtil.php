@@ -12,7 +12,7 @@ namespace App\Library\_Class {
         {
             $result = [];
             foreach($products as $p) {
-                $product = Product::find($p['product_id']);
+                $product = Product::find($p['product_id'])->where('user_id', \Auth::id());
                 $inventory = Inventory::where('product_id', $p['product_id'])->where('warehouse_id', $wh_id);
                 $over = $inventory->where('quantity', '<', $p['amount'])->count();
                 if($over) {

@@ -25,7 +25,7 @@ class DocumentController extends Controller
         if (!empty($request->input('type'))) {
             $type = $request->input('type');
 
-            $docs = DocumentDetail::where('type', $type)->get();
+            $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', $type)->get();
             if($docs == null) return response()->json([]);
 
             foreach ($docs as $index => $doc) {
@@ -45,7 +45,7 @@ class DocumentController extends Controller
         if (!empty($request->input('id'))) {
             $id = $request->input('id');
 
-            $doc = DocumentDetail::where('id', $id)->first();
+            $doc = DocumentDetail::where('user_id', \Auth::id())->where('id', $id)->first();
             if($doc == null) return response()->json([]);
 
             $number = $doc->number;
@@ -100,7 +100,7 @@ class DocumentController extends Controller
      */
     public function show($id)
     {
-        $doc = DocumentDetail::where('number', $id)->first();
+        $doc = DocumentDetail::where('user_id', \Auth::id())->where('number', $id)->first();
         if ($doc == null) return response()->json([]);
 
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
@@ -150,7 +150,7 @@ class DocumentController extends Controller
         if(isset($detail['date']))
             $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
 
-        $id = DocumentDetail::where('number', $id)->first(['id']);
+        $id = where('user_id', \Auth::id())->where('number', $id)->first(['id']);
         if (empty($id)) {
             return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
         }
@@ -174,7 +174,7 @@ class DocumentController extends Controller
      */
     public function destroy($id)
     {
-        $id = DocumentDetail::where('number', $id)->first(['id']);
+        $id = DocumentDetail::where('user_id', \Auth::id())->where('number', $id)->first(['id']);
         if (empty($id)) {
             return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
         }
@@ -207,7 +207,7 @@ class DocumentController extends Controller
         switch ($type) {
             case 'today':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', Carbon::now()->format('Y-m-d') )->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', Carbon::now()->format('Y-m-d') )->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -216,7 +216,7 @@ class DocumentController extends Controller
 
             case 'thisMonth':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y-m') . '%')->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y-m') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -225,7 +225,7 @@ class DocumentController extends Controller
 
             case 'thisYear':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y') . '%')->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -242,7 +242,7 @@ class DocumentController extends Controller
         for ($i = 1; $i <= 12; $i++)
         {  
             $likeStr            = $year .'-' . str_pad($i, 2, 0, STR_PAD_LEFT) . '-%';
-            $documentDetail     = DocumentDetail::where('type', 'inv')->where('date', 'like', $likeStr)->get();
+            $documentDetail     = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', 'like', $likeStr)->get();
             $total = 0;
             foreach($documentDetail as $doc){
                 $doc_id = $doc['id'];
@@ -256,8 +256,8 @@ class DocumentController extends Controller
 
     public function bestSeller()
     {
-        $products = \App\Product::get(['product_id']);
-        $documentDetail = DocumentDetail::where('type', 'inv')->get();
+        $products = \App\Product::where('user_id', \Auth::id())->get(['product_id']);
+        $documentDetail = DocumentDetail::where('user_id', \Auth::id())->where('user_id', \Auth::id())->where('type', 'inv')->get();
         
         $countSell = [];
         foreach($products as $p){

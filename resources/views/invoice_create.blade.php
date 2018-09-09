@@ -160,6 +160,7 @@
             <p><strong><span class="INVOICE_TOTAL"> 0.00 </span></strong></p>
             <select name="" id="" class="form-control">
                 <option value="" disabled selected>คลังสินค้าหลัก</option>
+                <!-- TODO: fetch data from api -->
             </select>
         </div>
     </div>

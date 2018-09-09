@@ -156,7 +156,7 @@
                             <div class="col-md-5">
                                 <div class="form-group ">
                                     <select class="form-control" id="prod_branch" name="branch" value="main_branch" disabled="true">
-                                        <option>คลังสินค้าหลัก</option>
+                                        <option>ไม่พบคลังสินค้าในขณะนี้</option>
                                     </select>
                                 </div>
                             </div>

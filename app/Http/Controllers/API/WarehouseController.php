@@ -16,7 +16,7 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $WH = Warehouse::all();
+        $WH = Warehouse::where('user_id', \Auth::id())->get();
         return response()->json($WH);
     }
 
@@ -32,6 +32,7 @@ class WarehouseController extends Controller
 
         if(!empty($wh['name'])) {
             $whId = Warehouse::create([
+                'user_id' => \Auth::id(),
                 'name' => $wh['name'],
                 'address' => $wh['address']
             ])->warehouse_id;

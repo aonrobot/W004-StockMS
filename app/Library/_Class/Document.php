@@ -50,6 +50,7 @@ namespace App\Library\_Class {
                         $detail['customer_id'] = null;
                         $detail['tax_type'] = null;
 
+                        $detail['user_id'] = \Auth::id();
                         $doc_id = \App\DocumentDetail::create($detail)->id;
 
                         foreach($lineitems as $item)
@@ -135,6 +136,7 @@ namespace App\Library\_Class {
                             }
                         }
 
+                        $detail['user_id'] = \Auth::id();
                         $doc_id = \App\DocumentDetail::create($detail)->id;
                         
                         foreach ($lineitems as $item)
@@ -190,6 +192,7 @@ namespace App\Library\_Class {
                             }
                         }
 
+                        $detail['user_id'] = \Auth::id();
                         $doc_id = \App\DocumentDetail::create($detail)->id;
                         
                         foreach ($lineitems as $item)
@@ -240,7 +243,7 @@ namespace App\Library\_Class {
             }
 
             //Update status to complete
-            \App\DocumentDetail::where('id', $doc_id)->update(['status' => 'complete']);
+            \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $doc_id)->update(['status' => 'complete']);
         }
 
         static public function update($id, $detail, $lineitems)
@@ -248,7 +251,7 @@ namespace App\Library\_Class {
             try
             {
 
-                $documentDetail     = \App\DocumentDetail::where('id', $id);
+                $documentDetail     = \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $id);
                 $documentLineItems  = \App\DocumentLineItems::where('document_id', $id);
 
                 $doc_number         = $documentDetail->first(['number'])->number;
@@ -520,7 +523,7 @@ namespace App\Library\_Class {
             try
             {
 
-                $documentDetail     = \App\DocumentDetail::where('id', $id);
+                $documentDetail     = \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $id);
                 $documentLineItems  = \App\DocumentLineItems::where('document_id', $id)->get();
 
                 $doc_number         = $documentDetail->first(['number'])->number;
@@ -716,7 +719,7 @@ namespace App\Library\_Class {
 
                 if($product_id == null) return false;
 
-                $document = \App\DocumentDetail::where('id', $document_id)->first();
+                $document = \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $document_id)->first();
                 $document_type = $document->type;
                 $source_wh_id = $document->source_wh_id;
                 $target_wh_id = $document->target_wh_id;
@@ -782,7 +785,7 @@ namespace App\Library\_Class {
                 $createAt           = $documentLineItems->first()->created_at;
 
                 //Docuemnt Detail
-                $documentDetail     = \App\DocumentDetail::where('id', $document_id)->first();
+                $documentDetail     = \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $document_id)->first();
                 $type               = $documentDetail->type;
                 $doc_source_wh_id   = $documentDetail->source_wh_id;
                 $doc_target_wh_id   = $documentDetail->target_wh_id;
@@ -976,7 +979,7 @@ namespace App\Library\_Class {
                 $product_id = $docLineitem->product_id;
                 //$amount = $docLineitem->amount;
 
-                $docDetail = \App\DocumentDetail::where('id', $document_id)->first();
+                $docDetail = \App\DocumentDetail::where('user_id', \Auth::id())->where('id', $document_id)->first();
                 $type = $docDetail->type;
                 $status = $docDetail->status;
                 $source_wh_id = $docDetail->source_wh_id;
