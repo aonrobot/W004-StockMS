@@ -81,8 +81,6 @@ class DocumentController extends Controller
             $lineitems[$index]['product_id'] = $product_id;
         }
 
-        \Debugbar::info($lineitems);
-
         /**
          *  Create document
          */
