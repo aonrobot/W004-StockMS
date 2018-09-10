@@ -139,7 +139,7 @@ function viewDetail(id) {
             "Authorization": Authorization
         }
     }).done(function (doc_list) {
-        console.log(doc_list);
+
         if ( Object.keys(doc_list).length ) {
 
             $("#doc_id").html(doc_list.number);
@@ -153,13 +153,18 @@ function viewDetail(id) {
             );
             
             var idx, 
-                total = 0;
+                total = 0,
+                cost_total = 0;
             
             for (var i = 0 ; i < doc_list.lineItems.length ; i++) {
                 
+                var cost_row_total =  Number(doc_list.lineItems[i].product.inventory.costPrice) *
+                Number(doc_list.lineItems[i].amount);
+                
                 idx = i + 1;
+                cost_total = cost_total + cost_row_total;
                 total =  total + Number(doc_list.lineItems[i].total);
-
+                
                 table_body += `
                     <tr> 
                         <td></td>
@@ -167,11 +172,15 @@ function viewDetail(id) {
                         <td> ${ doc_list.lineItems[i].product.code } </td>
                         <td> ${ doc_list.lineItems[i].product.name } </td>
                         <td class="text-right"> ${ doc_list.lineItems[i].amount } </td>
+                        <td class="text-right"> ${ doc_list.lineItems[i].product.inventory.costPrice } </td>
                         <td class="text-right"> ${ doc_list.lineItems[i].price } </td>
                         <td class="text-right">
                             <span class="badge badge-light"> 
                                 ${ doc_list.lineItems[i].product.unitName } 
                             </span>
+                        </td>
+                        <td class="text-right"> 
+                            ${ cost_row_total.toFixed(2) } 
                         </td>
                         <td class="text-right"> ${ doc_list.lineItems[i].total } </td>
                     </tr>
@@ -180,6 +189,7 @@ function viewDetail(id) {
 
             $("#doc_detail").html(table_body);
             $("#doc_detail_count").html(idx);
+            $("#doc_detail_cost_total").html(cost_total.toFixed(2));
             $("#doc_detail_total").html(total.toFixed(2));
 
             $("#detail_modal").modal('show');
