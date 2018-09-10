@@ -489,11 +489,11 @@ function createInvoice() {
         },
         data: json_data
     }).done(function(res) {
-        console.log(res);
+        // console.log(res);
         if (res.created) {
             window.location = '/invoice_view';
         }else {
-            errorDialog(2)
+            errorDialog(3, res.message)
         }
     });
 }
@@ -513,9 +513,9 @@ var get = {
     }
 }
 
-function errorDialog( err ) {
+function errorDialog( err , msg ) {
  
-    var text;
+    var text = '';
 
     switch ( err ) {
         // Case 1 กรอกข้อมูลไม่ครบ; 
@@ -525,6 +525,16 @@ function errorDialog( err ) {
         // Case 2 ขายสินค้าจำนวนมากกว่าที่มีอยู่;
         case 2 :
             text = `ขายสินค้ามากกว่าจำนวนคงเหลือ`;
+            break;
+        case 3 : 
+            
+        console.log(msg);
+            for (var i = 0 ; i<msg.length ; i++) {
+                text += `
+                    สินค้า <strong>${ msg[i].product.name }</strong> มีจำนวนคงเหลือไม่พอสำหรับการขาย 
+                    <span class="text-danger">(สินค้าคงเหลือ:  ${ msg[i].quantity } , ต้องการขาย ${ msg[i].input } )</span> <br/>
+                `;
+            }
             break;
         default :
             text = `มีบางอย่างขัดข้องโปรดลงใหม่อีกครั้ง`;
