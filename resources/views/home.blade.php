@@ -177,24 +177,12 @@
 			labels: months,
 			pointRadius: 10,
 			pointHoverRadius: 10,
-			datasets: [
-				{
-					label: null,
-					data: revenueData,
-					backgroundColor: [
-						'rgba(54, 162, 235, 0.2)',
-					],
-					borderColor: [
-						'rgba(54, 162, 235, 1)',
-					],
-					borderWidth: 1
-				}
-			]
+			datasets: revenueData
 		},
 		options: {
-			legend: {
-				display: false
-			},
+			// legend: {
+			// 	display: false
+			// },
 		}
 	});
 

@@ -575,7 +575,7 @@ function updateInvoice() {
         console.log(res);
         if (res.updated) {
             
-            window.location = '/invoice_view';
+            //window.location = '/invoice_view';
         }else {
             errorDialog(2)
         }

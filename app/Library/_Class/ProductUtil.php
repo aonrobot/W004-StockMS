@@ -11,11 +11,22 @@ namespace App\Library\_Class {
         static public function checkQuantity($products, $wh_id)
         {
             $result = [];
-            foreach($products as $p) {
+            $products = Product::find($p['product_id'])->where('user_id', \Auth::id());
+
+            // $
+
+            // foreach ($products as $p)
+            // {
+
+            // }
+
+            foreach ($products as $p)
+            {
                 $product = Product::find($p['product_id'])->where('user_id', \Auth::id());
                 $inventory = Inventory::where('product_id', $p['product_id'])->where('warehouse_id', $wh_id);
                 $over = $inventory->where('quantity', '<', $p['amount'])->count();
-                if($over) {
+                if($over) 
+                {
                     array_push($result, [
                         'product' => $product->first(),
                         'input' => $p['amount'],

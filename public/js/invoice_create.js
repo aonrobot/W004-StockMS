@@ -491,7 +491,7 @@ function createInvoice() {
     }).done(function(res) {
         console.log(res);
         if (res.created) {
-            //window.location = '/invoice_view';
+            window.location = '/invoice_view';
         }else {
             errorDialog(2)
         }
