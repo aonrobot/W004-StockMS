@@ -11,7 +11,7 @@ namespace App\Library\_Class {
         static public function checkQuantity($products, $wh_id)
         {
             $result = [];
-            $products = Product::find($p['product_id'])->where('user_id', \Auth::id());
+            // $products = Product::find($p['product_id'])->where('user_id', \Auth::id());
 
             // $
 
