@@ -82,7 +82,6 @@ class DocumentController extends Controller
         }
 
         \Debugbar::info($lineitems);
-        return 0;
 
         /**
          *  Create document
