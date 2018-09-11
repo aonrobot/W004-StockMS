@@ -18,7 +18,7 @@ class Product extends Model
      */
     protected $table = 'products';
     protected $primaryKey = 'product_id';
-    protected $fillable = ['user_id', 'category_id', 'code', 'name', 'unitName'];
+    protected $fillable = ['user_id', 'category_id', 'code', 'name', 'unitName', 'description', 'status'];
 
     // /**
     //  * Searchable rules.
