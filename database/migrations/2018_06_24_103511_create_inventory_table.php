@@ -15,10 +15,14 @@ class CreateInventoryTable extends Migration
     {
         Schema::create('warehouse', function (Blueprint $table) {
             $table->increments('warehouse_id');
+            $table->integer('user_id')->unsigned();
             $table->string('name', 144);
             $table->mediumText('address')->nullable(true);
             $table->string('status', 24)->default('active');
             $table->timestamps();
+
+            $table->foreign('user_id')
+            ->references('id')->on('users');
         });
 
         Schema::create('product_has_warehouse', function (Blueprint $table) {
@@ -64,6 +68,8 @@ class CreateInventoryTable extends Migration
 
         Schema::create('documentDetail', function(Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
+
             $table->string('number');
             $table->integer('customer_id')->unsigned()->nullable(true);
             $table->integer('ref_id')->unsigned()->nullable(true);       
@@ -77,6 +83,9 @@ class CreateInventoryTable extends Migration
 
             $table->date('date');
             $table->timestamps();
+
+            $table->foreign('user_id')
+            ->references('id')->on('users');
         });
 
         Schema::create('documentLineItems', function(Blueprint $table) {

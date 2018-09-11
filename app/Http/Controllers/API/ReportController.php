@@ -15,7 +15,7 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $products = Product::get();
+        $products = Product::where('user_id', \Auth::id())->get();
         $result = [];
         foreach($products as $p){
             $inv = Product::find($p->product_id)->inventory;

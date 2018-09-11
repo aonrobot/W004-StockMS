@@ -14,6 +14,16 @@ class WarehouseTableSeeder extends Seeder
         // Insert main warehouse   
         DB::table('warehouse')->insert(
             array(
+                'user_id' => 1,
+                'name' => 'สาขาหลัก (Main warehouse)',
+                'address' => 'ที่อยู่ สาขาหลัก',
+                "created_at" =>  \Carbon\Carbon::now(),
+                "updated_at" => \Carbon\Carbon::now()
+            )
+        );  
+        DB::table('warehouse')->insert(
+            array(
+                'user_id' => 2,
                 'name' => 'สาขาหลัก (Main warehouse)',
                 'address' => 'ที่อยู่ สาขาหลัก',
                 "created_at" =>  \Carbon\Carbon::now(),
@@ -38,6 +48,7 @@ class WarehouseTableSeeder extends Seeder
         ));
 
         $doc_id = DB::table('documentDetail')->insert(array(
+            'user_id' => 1,
             'number' => \App\Library\_Class\DocumentUtil::genDocNumber('tf'),
             'customer_id' => null,
             'ref_id' => null, 

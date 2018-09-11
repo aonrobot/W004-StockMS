@@ -25,7 +25,7 @@ class DocumentController extends Controller
         if (!empty($request->input('type'))) {
             $type = $request->input('type');
 
-            $docs = DocumentDetail::where('type', $type)->get();
+            $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', $type)->get();
             if($docs == null) return response()->json([]);
 
             foreach ($docs as $index => $doc) {
@@ -45,7 +45,7 @@ class DocumentController extends Controller
         if (!empty($request->input('id'))) {
             $id = $request->input('id');
 
-            $doc = DocumentDetail::where('id', $id)->first();
+            $doc = DocumentDetail::where('user_id', \Auth::id())->where('id', $id)->first();
             if($doc == null) return response()->json([]);
 
             $number = $doc->number;
@@ -77,7 +77,7 @@ class DocumentController extends Controller
         $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
         // Find and add product_id because ui send product_code but backend use product_id
         foreach ($lineitems as $index => $item) {
-            $product_id = \App\Product::where('code', $item['product_code'])->first()->product_id;
+            $product_id = \App\Product::where('user_id', \Auth::id())->where('code', $item['product_code'])->first()->product_id;
             $lineitems[$index]['product_id'] = $product_id;
         }
 
@@ -100,7 +100,7 @@ class DocumentController extends Controller
      */
     public function show($id)
     {
-        $doc = DocumentDetail::where('number', $id)->first();
+        $doc = DocumentDetail::where('user_id', \Auth::id())->where('number', $id)->first();
         if ($doc == null) return response()->json([]);
 
         $lineitems = DocumentLineItems::where('document_id', $doc->id)->get();
@@ -150,7 +150,7 @@ class DocumentController extends Controller
         if(isset($detail['date']))
             $detail['date'] = Carbon::createFromFormat('d/m/Y', $detail['date'])->format('Y-m-d');
 
-        $id = DocumentDetail::where('number', $id)->first(['id']);
+        $id = DocumentDetail::where('user_id', \Auth::id())->where('number', $id)->first(['id']);
         if (empty($id)) {
             return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
         }
@@ -174,7 +174,7 @@ class DocumentController extends Controller
      */
     public function destroy($id)
     {
-        $id = DocumentDetail::where('number', $id)->first(['id']);
+        $id = DocumentDetail::where('user_id', \Auth::id())->where('number', $id)->first(['id']);
         if (empty($id)) {
             return response()->json(['updated' => false, 'message' => 'Cannot found this document']);
         }
@@ -207,7 +207,7 @@ class DocumentController extends Controller
         switch ($type) {
             case 'today':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', Carbon::now()->format('Y-m-d') )->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', Carbon::now()->format('Y-m-d') )->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -216,7 +216,7 @@ class DocumentController extends Controller
 
             case 'thisMonth':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y-m') . '%')->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y-m') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -225,7 +225,7 @@ class DocumentController extends Controller
 
             case 'thisYear':
 
-                $docs = DocumentDetail::where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y') . '%')->get();
+                $docs = DocumentDetail::where('user_id', \Auth::id())->where('type', 'inv')->where('date', 'like', Carbon::now()->format('Y') . '%')->get();
                 foreach ($docs as $doc) {
                     $revenue += DocumentLineItems::where('document_id', $doc['id'])->sum('total');
                 }
@@ -239,25 +239,61 @@ class DocumentController extends Controller
     {
         $result = [];
         $year = Carbon::now()->year;
-        for ($i = 1; $i <= 12; $i++)
-        {  
-            $likeStr            = $year .'-' . str_pad($i, 2, 0, STR_PAD_LEFT) . '-%';
-            $documentDetail     = DocumentDetail::where('type', 'inv')->where('date', 'like', $likeStr)->get();
-            $total = 0;
-            foreach($documentDetail as $doc){
-                $doc_id = $doc['id'];
-                $total += DocumentLineItems::where('document_id', $doc_id)->sum('total');
+        $users = \App\User::get();
+
+        $colors_set = [
+            [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 1)'
+            ], [
+                'rgba(255, 107, 107, 0.2)',
+                'rgba(255, 107, 107, 1.0)'
+            ], [
+                'rgba(254, 202, 87, 0.2)',
+                'rgba(254, 202, 87, 1.0)'
+            ], [
+                'rgba(29, 209, 161, 0.2)',
+                'rgba(29, 209, 161, 1.0)'
+            ], [
+                'rgba(95, 39, 205, 0.2)',
+                'rgba(95, 39, 205, 1.0)'
+            ], [
+                'rgba(87, 101, 116, 0.2)',
+                'rgba(87, 101, 116, 1.0)'
+            ]
+        ];
+
+        foreach ($users as $index => $user)
+        {
+            array_push($result, [
+                'label' => $user->branchName,
+                'data' => [],
+                'backgroundColor' => $colors_set[$index][0],
+                'borderColor' => $colors_set[$index][1],
+                'borderWidth' => 1
+            ]);
+
+            for ($i = 1; $i <= 12; $i++)
+            {  
+                $likeStr            = $year .'-' . str_pad($i, 2, 0, STR_PAD_LEFT) . '-%';
+                $documentDetail     = DocumentDetail::where('user_id', $user->id)->where('type', 'inv')->where('date', 'like', $likeStr)->get();
+                $total = 0;
+                foreach($documentDetail as $doc){
+                    $doc_id = $doc['id'];
+                    $total += DocumentLineItems::where('document_id', $doc_id)->sum('total');
+                }
+                array_push($result[$index]['data'], $total);
             }
-            array_push($result, $total);
         }
+        
 
         return response()->json($result);
     }
 
     public function bestSeller()
     {
-        $products = \App\Product::get(['product_id']);
-        $documentDetail = DocumentDetail::where('type', 'inv')->get();
+        $products = \App\Product::where('user_id', \Auth::id())->get(['product_id']);
+        $documentDetail = DocumentDetail::where('user_id', \Auth::id())->where('user_id', \Auth::id())->where('type', 'inv')->get();
         
         $countSell = [];
         foreach($products as $p){

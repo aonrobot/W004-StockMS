@@ -23,9 +23,11 @@ class CreateProductsTable extends Migration
 
         Schema::create('products', function (Blueprint $table) {
             $table->increments('product_id');
+            $table->integer('user_id')->unsigned();
             $table->integer('category_id')->unsigned()->default(1);
 
-            $table->string('code', 64)->unique();
+            // for branch must remove unique
+            $table->string('code', 64);
             $table->string('name', 144)->nullable(false);
             $table->string('unitName', 144)->default(NULL);
             $table->longText('description')->nullable(true);
@@ -35,6 +37,9 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')
             ->references('id')->on('product_category')
             ->onDelete('cascade');
+
+            $table->foreign('user_id')
+            ->references('id')->on('users');
         });
 
         Schema::create('product_detail', function (Blueprint $table) {

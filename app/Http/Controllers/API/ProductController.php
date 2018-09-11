@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('user_id', \Auth::id())->get();
         foreach($products as $index => $value){
             $inv = Product::find($value->product_id)->inventory;
             if(count($inv) > 0) $products[$index]->inventory = Product::find($value->product_id)->inventory[0];
@@ -48,7 +48,7 @@ class ProductController extends Controller
         $warehouseId = $productDetail['warehouse_id'];
 
         //Check product code
-        if (!Product::where('code', $product['code'])->count()){
+        if (!Product::where('user_id', \Auth::id())->where('code', $product['code'])->count()){
 
             $quantity = $productDetail['quantity'];
             $cPrice = $productDetail['costPrice'];
@@ -58,11 +58,12 @@ class ProductController extends Controller
             if (!ProductCategory::find($product['category_id'])){
                 return response()->json(['created' => false, 'message' => 'This category isn\'t exist']);
             }
-            else if (!Warehouse::where('warehouse_id', $warehouseId)->count()) {
+            else if (!Warehouse::where('user_id', \Auth::id())->where('warehouse_id', $warehouseId)->count()) {
                 return response()->json(['created' => false, 'message' => 'This warehouse isn\'t exist']);
             } else {
                 try {
 
+                    $product['user_id'] = \Auth::id();
                     $productId = Product::create($product)->product_id;
                     $quantity = empty($quantity) ? 0 : intval($quantity);
                     ProductHasWH::create([
@@ -86,7 +87,7 @@ class ProductController extends Controller
                     return response()->json(['created' => true, 'product_id' => $productId, 'inventory_id' => $invenId]);
 
                 } catch(\Exception $e) {
-                    
+                    Log::error($e);
                     return response()->json(['created' => false]);
                 }
             }
@@ -103,7 +104,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::where('product_id', $id)->get();
+        $product = Product::where('user_id', \Auth::id())->where('product_id', $id)->get();
 
         if($product->count()) {
             $product[0]->inventory = Product::find($product[0]->product_id)->inventory;
@@ -134,7 +135,7 @@ class ProductController extends Controller
             $sPrice = $productDetail['salePrice'];
 
             //Update Product
-            Product::where('product_id', $id)->update([
+            Product::where('user_id', \Auth::id())->where('product_id', $id)->update([
                 'category_id' => $product['category_id'],
                 'name' => $product['name'],
                 'unitName' => $product['unitName'],
@@ -201,7 +202,7 @@ class ProductController extends Controller
     public function genProductCode()
     {
         //System code is a string like -> P0001, P0010
-        $codes = Product::where('code', 'like', 'P%')->get(['code']);
+        $codes = Product::where('user_id', \Auth::id())->where('code', 'like', 'P%')->get(['code']);
 
         $codeList = [];
         foreach($codes as $code){
@@ -224,7 +225,7 @@ class ProductController extends Controller
     public function getProductPrice($id)
     {
 
-        $price = Product::where('product_id', $id)->first()->inventory;
+        $price = Product::where('user_id', \Auth::id())->where('product_id', $id)->first()->inventory;
         return response()->json([
             "product_id" => $id,
             "price" => $price[0]['salePrice']
@@ -238,6 +239,7 @@ class ProductController extends Controller
      */
     public function getTransaction($id)
     {
+        // TODO :
         $lineItems = \App\DocumentLineItems::where('product_id', $id)->get();
 
         $allDocuments = [];
@@ -251,6 +253,9 @@ class ProductController extends Controller
     {
         $q = $request->input('q');
 
+        $countProductUser = Product::where('user_id', \Auth::id())->count();
+        $products = [];
+        
         if ($request->input('searchType') == '0') {
             $products = Product::where('code', 'like', $q)
             ->orWhere('code', 'like', '%' . $q)
@@ -273,10 +278,17 @@ class ProductController extends Controller
         }
 
         foreach($products as $index => $product){
+            if ($product->user_id != \Auth::id())
+            {
+                unset($products[$index]);
+                continue;
+            }
             $products[$index]['sumQuantity'] = ProductUtil::sumQuantity($product['product_id']);
             $products[$index]['costPrice'] = $product->inventory[0]['costPrice'];
             $products[$index]['salePrice'] = $product->inventory[0]['salePrice'];
         }
+
+        $products = array_values($products->toArray());
 
         return response()->json($products);
     }

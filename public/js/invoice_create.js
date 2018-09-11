@@ -424,6 +424,8 @@ function createInvoice() {
     var id = $("#invoice_id").val();
     var date = $("#invoice_date").val();
     // var reference = $("#invoice_ref").val();
+    var warehouse_id = Number($("#warehouse_select").val()) ? Number($("#warehouse_select").val()) : null;
+
     var table_body = $("#table_body");
     var checkNullValue = true;
     var arr = [];
@@ -441,6 +443,7 @@ function createInvoice() {
         var prodName = $(elem).find('td:eq(3) input').val();
         var prodUnitValue = $(elem).find('td:eq(4) input').val();
         var prodAmount = $(elem).find('td:eq(5) input').val();
+        
         var obj = {};
 
         if(prodCode === '' ||
@@ -467,7 +470,7 @@ function createInvoice() {
             "number": id,
             "customer_id": null,
             "ref_id": null,
-            "source_wh_id": 1,
+            "source_wh_id": warehouse_id,
             "target_wh_id": null,
             "type": "inv",
             "tax_type": "without_tax",
@@ -477,7 +480,6 @@ function createInvoice() {
         },
         "lineitems": arr
     }
-
     $.ajax({
         type: 'POST',
         url: "api/document",
@@ -487,11 +489,11 @@ function createInvoice() {
         },
         data: json_data
     }).done(function(res) {
-        console.log(res);
+        // console.log(res);
         if (res.created) {
             window.location = '/invoice_view';
         }else {
-            errorDialog(2)
+            errorDialog(3, res.message)
         }
     });
 }
@@ -511,9 +513,9 @@ var get = {
     }
 }
 
-function errorDialog( err ) {
+function errorDialog( err , msg ) {
  
-    var text;
+    var text = '';
 
     switch ( err ) {
         // Case 1 กรอกข้อมูลไม่ครบ; 
@@ -524,6 +526,16 @@ function errorDialog( err ) {
         case 2 :
             text = `ขายสินค้ามากกว่าจำนวนคงเหลือ`;
             break;
+        case 3 : 
+            
+        console.log(msg);
+            for (var i = 0 ; i<msg.length ; i++) {
+                text += `
+                    สินค้า <strong>${ msg[i].product.name }</strong> มีจำนวนคงเหลือไม่พอสำหรับการขาย <br>
+                    <small><span class="text-danger">(สินค้าคงเหลือ:  ${ msg[i].quantity } , ต้องการขาย ${ msg[i].input }, เกินมา ${ msg[i].over } )</span></small> <br/><hr>
+                `;
+            }
+            break;
         default :
             text = `มีบางอย่างขัดข้องโปรดลงใหม่อีกครั้ง`;
             break;
@@ -532,3 +544,32 @@ function errorDialog( err ) {
     $("#warning_text").html(text);
     $('#warning_modal').modal('show');
 }
+
+var inventory = {
+    get: function () {
+        return $.ajax({
+            method: 'GET',
+            url: "api/warehouse",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        })
+    },
+    set: function () {
+
+        var warehouse  = $("#warehouse_select");
+        var option = '';
+        inventory.get().done(function (res) {
+            
+            for(var i in res) { 
+                option += `
+                    <option value="${res[i].warehouse_id}">${res[i].name} </option>
+                `
+            }
+            $(warehouse).html(option);
+        }); 
+    }
+}
+
+inventory.set()

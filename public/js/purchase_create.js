@@ -423,6 +423,7 @@ function createPurchase() {
     var id = $("#purchase_id").val();
     var date = $("#purchase_date").val();
     // var reference = $("#purchase_ref").val();
+    var warehouse_id = Number($("#warehouse_select").val()) ? Number($("#warehouse_select").val()) : null;
     var table_body = $("#table_body");
     var checkNullValue = true;
     var arr = [];
@@ -466,7 +467,7 @@ function createPurchase() {
             "number": id,
             "customer_id": null,
             "ref_id": null,
-            "source_wh_id": 1,
+            "source_wh_id": warehouse_id,
             "target_wh_id": null,
             "type": "po",
             "tax_type": "without_tax",
@@ -476,7 +477,7 @@ function createPurchase() {
         },
         "lineitems": arr
     }
-
+    console.log(json_data);
     $.ajax({
         type: 'POST',
         url: "api/document",
@@ -531,3 +532,34 @@ function errorDialog( err ) {
     $("#warning_text").html(text);
     $('#warning_modal').modal('show');
 }
+
+
+
+var inventory = {
+    get: function () {
+        return $.ajax({
+            method: 'GET',
+            url: "api/warehouse",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": Authorization
+            }
+        })
+    },
+    set: function () {
+
+        var warehouse  = $("#warehouse_select");
+        var option = '';
+        inventory.get().done(function (res) {
+            
+            for(var i in res) { 
+                option += `
+                    <option value="${res[i].warehouse_id}">${res[i].name} </option>
+                `
+            }
+            $(warehouse).html(option);
+        }); 
+    }
+}
+
+inventory.set()

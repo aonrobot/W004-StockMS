@@ -7,9 +7,9 @@ namespace App\Library\_Class {
 
         static public function increase($product_id, $wh_id, $amount)
         {
-            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
+            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', intval($wh_id));
             $quantity = $inventory->first()->quantity;
-            $total = $quantity + $amount;
+            $total = $quantity + intval($amount);
             $inventory->update([
                 'quantity' => $total
             ]);
@@ -18,12 +18,12 @@ namespace App\Library\_Class {
     
         static public function decrease($product_id, $wh_id, $amount)
         {
-            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', $wh_id);
+            $inventory = \App\Inventory::where('product_id', $product_id)->where('warehouse_id', intval($wh_id));
             $quantity = $inventory->first()->quantity;
             if($quantity - $amount < 0) {
                 return false;
             } else {
-                $total = $quantity - $amount;
+                $total = $quantity - intval($amount);
                 $inventory->update([
                     'quantity' => $total
                 ]);

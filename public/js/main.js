@@ -54,7 +54,7 @@ var table = $('#prod_table').DataTable({
     },
     {
         render: function (data, type, full, meta) {
-            return `<span>${full.prodBuyPrice * full.prodAmount} บาท</span>`;
+            return `<span>${(full.prodBuyPrice * full.prodAmount).toFixed(2)} บาท</span>`;
         },
     },
     {
@@ -196,6 +196,7 @@ $("#form_prod").submit(function (e) {
         } else {
             $('#prod_code').addClass('is-invalid');
             $('#prod_code_warning').html(response.message);
+            $('body').busyLoad("hide", busyBoxOptions);
         }
     });
 });
@@ -232,6 +233,7 @@ $('#prod_table tbody').on('click', '.delete-btn', function (mm) {
             .draw();
 
     } else {
+        $('body').busyLoad("hide", busyBoxOptions);
         return;
     }
 });
@@ -413,6 +415,7 @@ $("#edit_form_prod").submit(function (e) {
     }
     var edit_id = $('#edit_id').val();
 
+    $('body').busyLoad("show", busyBoxOptions);
     $.ajax({
         type: 'PUT',
         url: "api/product" + "/" + edit_id,
@@ -440,6 +443,8 @@ $("#edit_form_prod").submit(function (e) {
 
             initialDataTable();
             $('#edit_modal').modal('hide');
+        } else {
+            $('body').busyLoad("hide", busyBoxOptions);
         }
     });
 });
