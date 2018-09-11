@@ -531,8 +531,8 @@ function errorDialog( err , msg ) {
         console.log(msg);
             for (var i = 0 ; i<msg.length ; i++) {
                 text += `
-                    สินค้า <strong>${ msg[i].product.name }</strong> มีจำนวนคงเหลือไม่พอสำหรับการขาย 
-                    <span class="text-danger">(สินค้าคงเหลือ:  ${ msg[i].quantity } , ต้องการขาย ${ msg[i].input } )</span> <br/>
+                    สินค้า <strong>${ msg[i].product.name }</strong> มีจำนวนคงเหลือไม่พอสำหรับการขาย <br>
+                    <small><span class="text-danger">(สินค้าคงเหลือ:  ${ msg[i].quantity } , ต้องการขาย ${ msg[i].input }, เกินมา ${ msg[i].over } )</span></small> <br/><hr>
                 `;
             }
             break;
