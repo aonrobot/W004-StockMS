@@ -10,9 +10,6 @@ php:
 
 addons:
   chrome: stable
-  hosts:
-  - localhost
-  - mysql
 
 before_install:
   - docker pull selenium/standalone-chrome
