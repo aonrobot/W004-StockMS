@@ -23,7 +23,7 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-  - google-chrome-stable --headless --disable-gpu --no-sandbox --remote-debugging-port=9222 http://localhost &
+  - google-chrome-stable --headless --disable-gpu --no-sandbox --remote-debugging-port=9515 http://localhost &
   - php artisan key:generate &
   - php artisan migrate --seed &
   - php artisan serve &
