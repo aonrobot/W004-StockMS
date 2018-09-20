@@ -25,6 +25,8 @@ class ReportController extends Controller
                 'product_code' => $p->code,
                 'name' => $p->name,
                 'quantity' => $inv[0]->quantity,
+                'costPrice' => $inv[0]->costPrice,
+                'salePrice' => $inv[0]->salePrice,
                 'costTotal' => $inv[0]->quantity * $inv[0]->costPrice,
                 'saleTotal' => $inv[0]->quantity * $inv[0]->salePrice
             ]);
