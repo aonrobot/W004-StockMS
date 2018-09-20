@@ -3,7 +3,8 @@ dist: trusty
 language: php
 
 services:
-  - docker
+  - mysql
+  - nginx
 
 php:
   - 7.1.9
@@ -24,10 +25,9 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-  - curl http://localhost:4444/wd/hub/status &
-  - curl http://localhost:80/home &
-
-script:
   - php artisan key:generate
   - php artisan migrate --seed
+  - php artisan serve
+
+script:
   - php artisan dusk
