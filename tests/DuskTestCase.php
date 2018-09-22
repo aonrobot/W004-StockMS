@@ -29,18 +29,21 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver()
     {
-        // $options = (new ChromeOptions)->addArguments([
-        //     '--disable-gpu',
-        //     '--headless'
-        // ]);
+        if (env('APP_ENV') == 'travisci')
+        {
+            $options = (new ChromeOptions)->addArguments([
+                '--disable-gpu',
+                '--headless'
+            ]);
 
-        // return RemoteWebDriver::create(
-        //     'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-        //         ChromeOptions::CAPABILITY, $options
-        //     )
-        // );
-        return RemoteWebDriver::create(
-            'http://localhost:4444/wd/hub', DesiredCapabilities::chrome()
-        );
+            return RemoteWebDriver::create(
+                'http://localhost:9222', DesiredCapabilities::chrome()
+            );
+
+        } else {
+            return RemoteWebDriver::create(
+                'http://localhost:4444/wd/hub', DesiredCapabilities::chrome()
+            );
+        }
     }
 }

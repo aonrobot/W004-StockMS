@@ -1,9 +1,11 @@
 sudo: required
 dist: trusty
+
 language: php
 
 services:
-  - docker
+  - mysql
+  - nginx
 
 php:
   - 7.1.9
@@ -12,21 +14,19 @@ addons:
   chrome: stable
 
 before_install:
-  - docker pull selenium/standalone-chrome
-  - docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome
-  - cd laradock && cp .env.example .env && docker-compose up --build -d nginx mysql
-  - docker ps -a
-  - sleep 30  # wait for PostgreSQl and Elasticsearch to start
+  - mysql -e 'CREATE DATABASE stockms;'
 
 install:
-  - mysql -e 'CREATE DATABASE stockms;'
-  - cp .env.dusk.travisci .env
+  - cp .env.travisci .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-  - echo 'eiei'
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - php artisan key:generate &
+  - php artisan migrate --seed &
+  - php artisan serve &
+  - sleep 5
 
 script:
-  - php artisan key:generate
-  - php artisan migrate --seed
   - php artisan dusk
+

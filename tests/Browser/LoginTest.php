@@ -15,12 +15,12 @@ class LoginTest extends DuskTestCase
      *
      * @return void
      */
-    public function testLogin()
-    {
-        $this->browse(function (Browser $browser){
-            $browser->loginAs(User::find(1))
-                    ->visit('/home')
-                    ->assertPathIs('/home');
-        });
-    }
+    // public function testLogin()
+    // {
+    //     $this->browse(function (Browser $browser){
+    //         $browser->loginAs(User::find(1))
+    //                 ->visit('/home')
+    //                 ->assertPathIs('/home');
+    //     });
+    // }
 }

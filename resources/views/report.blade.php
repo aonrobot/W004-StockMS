@@ -7,42 +7,63 @@
         {{ session('status') }}
     </div>
 @endif
+
 <style>
     span.total {
         font-size: 24px;
     }
+
+    @media print{
+        #printReport {
+            display: none;
+        }
+        .reporHeader {
+            font-size: 38px;
+        }
+    }
 </style>
+
 <div class="container main" >
 
-    <div class="col-md-12" style="margin-bottom: 30px;">
-        <div class="card">
-            <div class="col-md-6">
-                <h3>สินค้าคงเหลือทั้งหมด <span class="badge badge-success total odometer" id="totalQuantity">0</span> ชิ้น</h3>
-            </div>
-            <div class="col-md-6">
-                <h3>คิดเป็นราคารวมทั้งหมด <span class="badge badge-success total odometer" id="totalPrice">0</span> บาท</h3>
-            </div>
-        </div>
+    <div class="col-md-12 mb-3 text-right">
+        <button class="btn btn-success btn-lg" id="printReport"> <i class="fa fa-print"></i> Print</button>
     </div>
     
-    <div class="col-md-12">
-        
+    <div class="col-md-12"> 
         <div class="card"> 
             <div class="card-body">
-            <h3> Report </h3>
+            <h3 class="reporHeader"> สรุปยอดคงเหลือ ณ <small>วันที่</small> <small id="today"></small></h3>
             <table class="table table-striped" id="reportTable">
                 <thead>
                     <tr>
                         <th scope="col">รหัสสินค้า</th>
                         <th scope="col">ชื่อสินค้า</th>
-                        <th scope="col">จำนวนสินค้าคงเหลือทั้งหมด</th>
-                        <th scope="col">ราคารวม</th>
+                        <th scope="col">จำนวนสินค้าคงเหลือ</th>
+                        <th scope="col" class="text-primary">ราคาต้นทุน</th>
+                        <th scope="col" class="text-primary">ราคาต้นทุนรวม</th>
+                        <th scope="col" class="text-info">ราคาต้นขาย</th>
+                        <th scope="col" class="text-info">ราคาต้นขายรวม</th>
                     </tr>
                 </thead>
                 </table>      
             </div>
         </div>
     </div>
+
+    <div class="col-md-12 text-right">
+        <div class="card">
+            <div class="col-md-12">
+                <h4><u>สินค้าคงเหลือ</u>ทั้งหมด <span class="badge badge-warning total odometer" id="totalQuantity">0</span> ชิ้น</h4>
+            </div>
+            <div class="col-md-12">
+                <h4>คิดเป็น<b class="text-primary">ราคาต้นทุน</b>รวมทั้งหมด <span class="badge badge-primary total odometer" id="totalCost">0</span> บาท</h4>
+            </div>
+            <div class="col-md-12">
+                <h4>คิดเป็น<b class="text-info">ราคาขาย</b>รวมทั้งหมด <span class="badge badge-info total odometer" id="totalSale">0</span> บาท</h4>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -50,7 +71,10 @@
 
         $('body').busyLoad("show", busyBoxOptions);
 
-        let Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+        var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
+        
+        var d = new Date();
+	    var months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
         window.odometerOptions = {
             auto: false, // Don't automatically initialize everything with class 'odometer'
@@ -81,7 +105,10 @@
         
         ajaxSetValue('api/inventory/quantity/sum', '#totalQuantity')
         ajaxSetValue('api/inventory/totalprice', '', function(data){
-            setValue('#totalPrice', data.total.cost)
+            setValue('#totalSale', data.total.sale)
+        })
+        ajaxSetValue('api/inventory/totalprice', '', function(data){
+            setValue('#totalCost', data.total.cost)
         })
 
         ajaxSetValue('api/report/all', '', function(data){
@@ -89,10 +116,13 @@
             _.forEach(data, function(ele){
                 c.append(`
                     <tr>
-                        <th scope="row">${ele.product_code}</th>
-                        <td>${ele.name}</td>
-                        <td>${ele.quantity}</td>
-                        <td>${ele.costTotal}</td>
+                        <td scope="row">${ele.product_code}</td>
+                        <th>${ele.name}</th>
+                        <td><u>${ele.quantity}</u></td>
+                        <td>${ele.costPrice}</td>
+                        <th>${ele.costTotal}</th>
+                        <td>${ele.salePrice}</td>
+                        <th>${ele.saleTotal}</th>
                     </tr>
                 `)
             });
@@ -101,6 +131,16 @@
             $('body').busyLoad("hide", busyBoxOptions);
 
         })
+
+        $('#printReport').click(function(){
+            window.print();
+        });
+
+        $("#today").html(
+            d.getDate() + ' ' +
+            months[d.getMonth()] + ' ' +
+            d.getFullYear() 
+        );
         
     })
     

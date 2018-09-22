@@ -120,6 +120,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('product') }}"><i class="fa fa-warehouse"></i> สินค้า</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('report') }}"><i class="fa fa-flag"></i> รายงาน</a>
+                        </li>
                     </ul>
                     @endguest
                     

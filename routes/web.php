@@ -17,7 +17,6 @@ Route::post('login', 'LoginController@authenticate')->name('login');
 
 Auth::routes();
 
-
 Route::middleware(['auth'])->group(function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/product', function () { return view('product'); })->name('product');    
