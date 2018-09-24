@@ -7,11 +7,11 @@
         {{ session('status') }}
     </div>
 @endif
-<link rel="stylesheet" href="{{ asset('./css/dashboard.css') }} "/>
+<link rel="stylesheet" href="https://cdn.rawgit.com/aonrobot/W004-StockMS/master/public/css/dashboard.css"/>
 <div class="container fixed-bottom main" >
 	<!-- This is for Sub Menu -->
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-12">
 			<h1>สวัสดี {{Auth::user()->name}}</h1>
 		</div>
 	</div>

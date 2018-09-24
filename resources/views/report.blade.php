@@ -119,10 +119,10 @@
                         <td scope="row">${ele.product_code}</td>
                         <th>${ele.name}</th>
                         <td><u>${ele.quantity}</u></td>
-                        <td>${ele.costPrice}</td>
-                        <th>${ele.costTotal}</th>
-                        <td>${ele.salePrice}</td>
-                        <th>${ele.saleTotal}</th>
+                        <td>${parseInt(ele.costPrice).toFixed(2)}</td>
+                        <th>${parseInt(ele.costTotal).toFixed(2)}</th>
+                        <td>${parseInt(ele.salePrice).toFixed(2)}</td>
+                        <th>${parseInt(ele.saleTotal).toFixed(2)}</th>
                     </tr>
                 `)
             });

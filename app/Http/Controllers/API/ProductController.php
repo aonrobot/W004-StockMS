@@ -127,7 +127,9 @@ class ProductController extends Controller
         $productDetail = $request->input('product.detail');
 
         // TODO ทาง ui ต้องส่ง warehouse id มาด้วยเพื่อค้นหา inventory แต่ตอนนี้ไม่เป็นไรเพราะเรามี warehouse เดียว
-        $warehouseId = 1; // TODO ลบ fix warehouse ออกด้วย
+        //$warehouseId = 1; // TODO ลบ fix warehouse ออกด้วย
+        // TODO แก้ฟัญหาโดยการหา warehouse ที่มีอันไหนก็ได้มา 1 อันก่อน
+        $warehouseId = Warehouse::where('user_id', \Auth::id())->first()->warehouse_id;
 
         try {
             $quantity = $productDetail['quantity'];

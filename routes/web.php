@@ -29,4 +29,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/purchase_view', function () { return view('purchase_view'); })->name('purchase_view');
     Route::get('/purchase_edit/{id}', function () { return view('purchase_edit'); })->name('purchase_edit');
     Route::get('/print', function () { return view('print'); })->name('print');
+
+    Route::get('/newbranch', 'NewBranchController@create')->name('newbranch');   
+    Route::post('/newbranch', 'NewBranchController@store')->name('newbranch');   
+
 });

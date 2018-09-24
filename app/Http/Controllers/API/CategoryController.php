@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $cats = ProductCategory::all();
+        $cats = ProductCategory::all()->where('user_id', \Auth::id());
         return response()->json($cats);
     }
 

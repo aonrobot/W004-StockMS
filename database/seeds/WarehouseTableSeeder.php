@@ -21,15 +21,6 @@ class WarehouseTableSeeder extends Seeder
                 "updated_at" => \Carbon\Carbon::now()
             )
         );  
-        DB::table('warehouse')->insert(
-            array(
-                'user_id' => 2,
-                'name' => 'สาขาหลัก (Main warehouse)',
-                'address' => 'ที่อยู่ สาขาหลัก',
-                "created_at" =>  \Carbon\Carbon::now(),
-                "updated_at" => \Carbon\Carbon::now()
-            )
-        );
 
         // Insert ​product to warehouse
         DB::table('product_has_warehouse')->insert(array('product_id' => 1, 'warehouse_id' => 1));

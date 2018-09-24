@@ -14,6 +14,7 @@ class ProductCategoryTableSeeder extends Seeder
         // Insert uncategory category
         DB::table('product_category')->insert(
             array(
+                'user_id' => 1,
                 'name' => 'Uncategory',
                 'description' => 'Product ที่ยังไม่ได้จัดหมวดหมู่',
                 "created_at" =>  \Carbon\Carbon::now(),
