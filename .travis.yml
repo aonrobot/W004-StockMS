@@ -29,3 +29,4 @@ before_script:
 
 script:
   - php artisan dusk
+
