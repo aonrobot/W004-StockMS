@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,17 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//Change PUT, DELETE Method to POST
+// Product
+Route::post('PUT/product/{id}', 'ProductController@update');
+Route::post('DEL/product/{id}', 'ProductController@destroy');
+// Inventory
+Route::post('PUT/quantity/{id}', 'InventoryController@update');
+// Document
+Route::post('PUT/document/{id}', 'DocumentController@update');
+Route::post('DEL/document/{id}', 'DocumentController@destroy');
+Route::post('DEL/lineitem/{id}', 'DocumentController@destroyLineItem');
 
 //API: Product
 Route::middleware('auth:api')->namespace('API')->group(function () {
