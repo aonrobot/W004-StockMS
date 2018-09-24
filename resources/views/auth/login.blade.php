@@ -16,7 +16,6 @@
                     @endif
                     <form method="POST" action="{{ route('login') }}" aria-label="{{ __('Login') }}">
                         @csrf
-
                         <div class="form-group row">
                             <label for="email" class="col-sm-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
@@ -45,7 +44,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="checkbox">
                                     <label>
@@ -53,7 +52,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
