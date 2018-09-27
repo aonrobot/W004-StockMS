@@ -242,9 +242,9 @@
         },
         update(prodID , param) {
             return $.ajax({
-                method: 'PUT',
+                method: 'POST',
                 // Format Date = dd/mm/yyyy
-                url:  "api/inventory/quantity/" + prodID,
+                url:  "api/PUT/inventory/quantity/" + prodID,
                 data: param,
                 headers: {
                     "Accept":"application/json",
@@ -363,8 +363,8 @@
         },
         editUpdate() {
             // $.ajax({
-            //     method: 'PUT',
-            //     url:  "api/inventoryLog/" + id,
+            //     method: 'POST',
+            //     url:  "api/PUT/inventoryLog/" + id,
             //     data: {  
             //         "amount": ,
             //         "remark": 
@@ -382,8 +382,8 @@
         },
         delete(id) {
             $.ajax({
-                method: 'DELETE',
-                url:  "api/inventoryLog/" + id,
+                method: 'POST',
+                url:  "api/DEL/inventoryLog/" + id,
                 headers: {
                     "Accept":"application/json",
                     "Authorization":Authorization

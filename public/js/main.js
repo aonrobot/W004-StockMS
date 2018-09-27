@@ -210,8 +210,8 @@ $('#prod_table tbody').on('click', '.delete-btn', function (mm) {
         var id = table.row($(this).parents('tr')).data()
 
         $.ajax({
-            method: 'DELETE',
-            url: "api/product/" + id.btn,
+            method: 'POST',
+            url: "api/DEL/product/" + id.btn,
             headers: {
                 "Accept": "application/json",
                 "Authorization": Authorization
@@ -417,8 +417,8 @@ $("#edit_form_prod").submit(function (e) {
 
     $('body').busyLoad("show", busyBoxOptions);
     $.ajax({
-        type: 'PUT',
-        url: "api/product" + "/" + edit_id,
+        type: 'POST',
+        url: "api/PUT/product" + "/" + edit_id,
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization

@@ -98,8 +98,8 @@ $('#invoice_view_table tbody').on('click', '.delete-btn', function (mm) {
         
         var id = invoice_view_table.row($(this).parents('tr')).data()
         $.ajax({
-            method: 'DELETE',
-            url: "api/document/" + id.invID,
+            method: 'POST',
+            url: "api/DEL/document/" + id.invID,
             headers: {
                 "Accept": "application/json",
                 "Authorization": Authorization

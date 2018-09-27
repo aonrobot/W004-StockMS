@@ -1,7 +1,7 @@
 function ajaxChangeQty(url, amout, type){
     var result;
     $.ajax({
-        type: 'PUT',
+        type: 'POST',
         url: url,
         async:false,
         headers: {
@@ -31,11 +31,11 @@ function changeQty(that, action, id){
     var amount = parseInt(intQty.val());
     switch(action){
         case 'increase' :
-            var result = ajaxChangeQty('api/inventory/quantity/' + id, amount, 'increase');
+            var result = ajaxChangeQty('api/PUT/inventory/quantity/' + id, amount, 'increase');
             var newData =  result.total
             break;
         case 'decrease' :
-            var result = ajaxChangeQty('api/inventory/quantity/' + id, amount, 'decrease');
+            var result = ajaxChangeQty('api/PUT/inventory/quantity/' + id, amount, 'decrease');
             var newData =  result.total
             break;
     }
