@@ -564,8 +564,8 @@ function updateInvoice() {
     }
     console.log(json_data);
     $.ajax({
-        type: 'PUT',
-        url: "/api/document/" + DOC_NUMBER,
+        type: 'POST',
+        url: "/api/PUT/document/" + DOC_NUMBER,
         headers: {
             "Accept": "application/json",
             "Authorization": Authorization
