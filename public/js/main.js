@@ -14,6 +14,7 @@ var table = $('#prod_table').DataTable({
     },
     {
         "data": "prodName",
+        "width": "30%",
         "render": function (data, type, full, meta) {
             return `
                 <span class="edit-btn" data-prodID="${full.prodID}">
@@ -25,12 +26,12 @@ var table = $('#prod_table').DataTable({
     {
         "data": "prodBuyPrice",
         "className": "text-right",
-        "width": "12%"
+        "width": "5%"
     },
     {
         "data": "prodSalePrice",
         "className": "text-right",
-        "width": "12%"
+        "width": "5%"
     },
     {
         "data": "prodAmount",
