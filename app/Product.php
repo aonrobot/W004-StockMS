@@ -4,12 +4,14 @@ namespace App;
 
 // use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Product extends Model
 {
     // use SearchableTrait;
     // use Searchable;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -19,6 +21,7 @@ class Product extends Model
     protected $table = 'products';
     protected $primaryKey = 'product_id';
     protected $fillable = ['user_id', 'category_id', 'code', 'name', 'unitName', 'description', 'status'];
+    protected $dates = ['deleted_at'];
 
     // /**
     //  * Searchable rules.

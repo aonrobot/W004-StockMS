@@ -125,7 +125,7 @@ function search (elem , searchType ,idx) {
                         if (searchType){
                             return { 
                                 data: obj, 
-                                label: obj.name 
+                                label: obj.name + ' (' + obj.costPrice + 'บาท)'
                             };
                         }
                         else {

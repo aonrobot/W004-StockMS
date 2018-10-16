@@ -15,6 +15,7 @@ use App\Library\Log\Inventory as LogInventory;
 use App\Library\_Class\ProductUtil;
 use \App\Library\_Class\Document;
 
+use Yajra\Datatables\Datatables;
 
 class ProductController extends Controller
 {
@@ -31,7 +32,7 @@ class ProductController extends Controller
             $inv = Product::find($value->product_id)->inventory;
             if(count($inv) > 0) $products[$index]->inventory = Product::find($value->product_id)->inventory[0];
         }
-        return response()->json($products);
+        return Datatables::of($products)->make(true);
     }
 
     /**
@@ -182,9 +183,7 @@ class ProductController extends Controller
         $product = Product::find($id);
         if($product->count()){
             try{
-                $invens = Inventory::where('product_id', $id);
-                $invens->delete();
-                ProductHasWH::where('product_id', $id)->delete();
+                // change to soft delete
                 Product::where('product_id', $id)->delete();
                 return response()->json(['destroyed' => true]);
             } catch(\Exception $e) {
@@ -204,7 +203,7 @@ class ProductController extends Controller
     public function genProductCode()
     {
         //System code is a string like -> P0001, P0010
-        $codes = Product::where('user_id', \Auth::id())->where('code', 'like', 'P%')->get(['code']);
+        $codes = Product::withTrashed()->where('user_id', \Auth::id())->where('code', 'like', 'P%')->get(['code']);
 
         $codeList = [];
         foreach($codes as $code){

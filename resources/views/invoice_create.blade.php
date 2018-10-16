@@ -70,8 +70,8 @@
                 <tr>
                     <th></th>
                     <th class="text-right">#</th>
-                    <th>รหัสสินค้า</th>
-                    <th>ชื่อสินค้า</th>
+                    <th style="width: 12%;">รหัสสินค้า</th>
+                    <th style="width: 30%;">ชื่อสินค้า</th>
                     <th>จำนวน</th>
                     <th>มูลค่าต่อหน่วย</th>
                     <th>หน่วย</th>

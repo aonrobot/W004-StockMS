@@ -32,6 +32,7 @@ class CategoryController extends Controller
 
         if(!empty($category['name'])) {
             $categoryId = ProductCategory::create([
+                'user_id' => \Auth::id(),
                 'name' => $category['name'],
                 'description' => $category['description']
             ])->id;

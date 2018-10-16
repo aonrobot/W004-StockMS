@@ -39,6 +39,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <div class="text-center" id="processingIndicator">
+                                    <i class="fa fa-spinner fa-spin fa-5x fa-fw mb-5" style="margin-top:20%;"></i>
+                                    <h2>กำลังโหลด ...</h2>
+                                </div>
                             </tbody>
                         </table>
                     </div>
@@ -633,6 +637,6 @@
 @endsection
 
 @section('page_script')
-<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/main.js?' . rand(2,20)) }}"></script>
 <script src="{{ asset('js/changeQty.js') }}"></script>
 @endsection

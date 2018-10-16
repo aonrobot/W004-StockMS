@@ -1,11 +1,12 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
 var invoice_view_table = $('#invoice_view_table').DataTable({
+    "order": [[ 1, "desc" ]],
     "columnDefs": [{
         "orderable": false,
         "targets": 4
     }],
-    columns: [
+    "columns": [
         {
             "render": function ( data, type, full, meta ) {
                 return  meta.row + 1;

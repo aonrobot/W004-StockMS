@@ -204,17 +204,17 @@ function search (elem , searchType ,idx) {
                 success: function (data) {
 
                     var arr = data.map(function (obj) {
-
+                        console.log(obj)
                         if (searchType){
                             return { 
                                 data: obj, 
-                                label: obj.name 
+                                label: obj.name + ' (' + obj.costPrice + 'บาท)'
                             };
                         }
                         else {
                             return { 
                                 data: obj, 
-                                label: obj.code 
+                                label: obj.code
                             };
                         } 
                     });

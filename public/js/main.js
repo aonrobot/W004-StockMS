@@ -1,80 +1,95 @@
 var Authorization = 'Bearer ' + $('meta[name=api-token]').attr('content');
 
 var table = $('#prod_table').DataTable({
+    "processing": true,
+    "serverSide": true,
+    "ajax": {
+        url: "api/product",
+        type: "GET",
+        headers: { 'Authorization': Authorization },
+    },
     "columnDefs": [{
         "orderable": false,
         "targets": 6
     }],
-    columns: [{
-        "data": "prodCode",
-        "width": "10%",
-        "render": function (data) {
-            return `<span id ="${data}">${data}</span>`;
-        }
-    },
-    {
-        "data": "prodName",
-        "width": "30%",
-        "render": function (data, type, full, meta) {
-            return `
-                <span class="edit-btn" data-prodID="${full.prodID}">
-                    ${data}
-                </span>
-            `;
-        }
-    },
-    {
-        "data": "prodBuyPrice",
-        "className": "text-right",
-        "width": "5%"
-    },
-    {
-        "data": "prodSalePrice",
-        "className": "text-right",
-        "width": "5%"
-    },
-    {
-        "data": "prodAmount",
-        "className": "text-right",
-        "width": "12%"
-    },
-    // {
-    //     "ordering": false,
-    //     render: function (data, type, full, meta) {
-    //         // return `
-    //         //         <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
-    //         //         <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
-    //         //         <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
-    //         // `;
-    //     },
-    // },
-    {
-        "data": "prodUnit",
-        "className": "text-right",
-        "width": "12%"
-    },
-    {
-        render: function (data, type, full, meta) {
-            return `<span>${(full.prodBuyPrice * full.prodAmount).toFixed(2)} บาท</span>`;
+    columns: [
+        {
+            "data": "code",
+            "width": "10%",
+            "render": function (data) {
+                return `<span id ="${data}">${data}</span>`;
+            }
         },
-    },
-    {
-        render: function (data, type, full, meta) {
-            return `<div>   
-                        <a href="#" onclick="editProd(${full.btn})" class="edit-btn" >
-                            Edit
-                        </a> |
-                        <a href="#" class="delete-btn" >
-                            Delete
-                        </a>
-                    </div>`;
+        {
+            "data": "name",
+            "width": "30%",
+            "render": function (data, type, full, meta) {
+                return `
+                    <span class="edit-btn" data-prodID="${full.product_id}">
+                        ${data}
+                    </span>
+                `;
+            }
         },
-        className: "table-btn",
-        width: "20%"
-    }
+        {
+            "data": "inventory.costPrice",
+            "className": "text-right",
+            "width": "5%"
+        },
+        {
+            "data": "inventory.salePrice",
+            "className": "text-right",
+            "width": "5%"
+        },
+        {
+            "data": "inventory.quantity",
+            "className": "text-right",
+            "width": "12%"
+        },
+        // {
+        //     "ordering": false,
+        //     render: function (data, type, full, meta) {
+        //         // return `
+        //         //         <input class="qtyAmountInput" type="number" style="width:40px" value="0" data-id="${full.invenID}"/>
+        //         //         <button class="btn btn-outline-primary btn-xs increaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-plus"></i></button>
+        //         //         <button class="btn btn-outline-danger btn-xs decreaseOneQtyBtn" data-id="${full.invenID}" data-row="${meta.row}" data-col="${meta.col - 1}"><i class="fa fa-minus"></i></button>
+        //         // `;
+        //     },
+        // },
+        {
+            "data": "unitName",
+            "className": "text-right",
+            "width": "12%"
+        },
+        {
+            render: function (data, type, full, meta) {
+                return `<span>${(full.inventory.costPrice * full.inventory.salePrice).toFixed(2)} บาท</span>`;
+            },
+        },
+        {
+            render: function (data, type, full, meta) {
+                return `<div>   
+                            <a href="#" onclick="editProd(${full.product_id})" class="edit-btn" >
+                                Edit
+                            </a> |
+                            <a href="#" class="delete-btn" >
+                                Delete
+                            </a>
+                        </div>`;
+            },
+            className: "table-btn",
+            width: "20%"
+        }
     ],
     "scrollX": true
 });
+
+$('#prod_table')
+    .on( 'processing.dt', function ( e, settings, processing ) {
+        $('#processingIndicator').css( 'display', processing ? 'block' : 'none' );
+    } )
+    .dataTable();
+
 initialDataTable();
 
 function defaultValue (elem, decimal){
@@ -91,38 +106,38 @@ function defaultValue (elem, decimal){
     }
 }
 function initialDataTable() {
-    table.clear()
+    //table.clear()
+    table.ajax.reload();
+    // $('body').busyLoad("show", busyBoxOptions);
 
-    $('body').busyLoad("show", busyBoxOptions);
+    // $.ajax({
+    //     type: 'GET',
+    //     url: "api/product",
+    //     headers: {
+    //         "Accept": "application/json",
+    //         "Authorization": Authorization
+    //     }
+    // }).done(function (response) {
 
-    $.ajax({
-        type: 'GET',
-        url: "api/product",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": Authorization
-        }
-    }).done(function (response) {
+    //     var data = response;
 
-        var data = response;
+    //     for (var i = 0; i < data.length; i++) {
+    //         $('#prod_table').DataTable().row.add({
+    //             "prodID": data[i].product_id,
+    //             "prodCode": data[i].code,
+    //             "prodName": data[i].name,
+    //             "prodBuyPrice": data[i].inventory.costPrice,
+    //             "prodSalePrice": data[i].inventory.salePrice,
+    //             "prodAmount": data[i].inventory.quantity,
+    //             "prodUnit": data[i].unitName,
+    //             "invenID": data[i].inventory.id,
+    //             "btn": data[i].product_id
+    //         }).draw();
+    //     }
 
-        for (var i = 0; i < data.length; i++) {
-            $('#prod_table').DataTable().row.add({
-                "prodID": data[i].product_id,
-                "prodCode": data[i].code,
-                "prodName": data[i].name,
-                "prodBuyPrice": data[i].inventory.costPrice,
-                "prodSalePrice": data[i].inventory.salePrice,
-                "prodAmount": data[i].inventory.quantity,
-                "prodUnit": data[i].unitName,
-                "invenID": data[i].inventory.id,
-                "btn": data[i].product_id
-            }).draw();
-        }
-
-        $('body').busyLoad("hide", busyBoxOptions);
-        createChangeQty_event();
-    });
+    //     $('body').busyLoad("hide", busyBoxOptions);
+    //     createChangeQty_event();
+    // });
 }
 
 $("#form_prod").submit(function (e) {
@@ -180,14 +195,17 @@ $("#form_prod").submit(function (e) {
         if (response.created) {
 
             table.row.add({
-                "prodCode": param.prodCode,
-                "prodName": param.prodName,
-                "prodBuyPrice": param.costPrice,
-                "prodSalePrice": param.salePrice,
-                "prodAmount": param.quantity,
-                "prodUnit": param.unit,
-                "invenID": response.inventory_id,
-                "btn": response.product_id
+                "code": param.prodCode,
+                "name": param.prodName,
+                "user_id": response.user_id,
+                "inventory": {
+                    "costPrice": param.costPrice,
+                    "salePrice": param.salePrice,
+                    "quantity": param.quantity,
+                },
+                "unitName": param.unit,
+                "inventory.id": response.inventory_id,
+                "product_id": response.product_id
             }).draw();
 
             $('#addProd').modal('hide');
@@ -212,7 +230,7 @@ $('#prod_table tbody').on('click', '.delete-btn', function (mm) {
 
         $.ajax({
             method: 'POST',
-            url: "api/DEL/product/" + id.btn,
+            url: "api/DEL/product/" + id.product_id,
             headers: {
                 "Accept": "application/json",
                 "Authorization": Authorization
@@ -365,6 +383,9 @@ $('#addProd').on('show.bs.modal', function (event) {
 function editProd(data) {
 
     $('#edit_id').val(data);
+
+    $('body').busyLoad("show", busyBoxOptions);
+
     $.ajax({
         method: 'GET',
         url: "api/product/" + data,
@@ -390,6 +411,8 @@ function editProd(data) {
         $('#edit_prod_detail').val(data.description);
 
         $("#edit_modal").modal()
+
+        $('body').busyLoad("hide", busyBoxOptions);
     });
 }
 
@@ -444,6 +467,8 @@ $("#edit_form_prod").submit(function (e) {
 
             initialDataTable();
             $('#edit_modal').modal('hide');
+            $('body').busyLoad("hide", busyBoxOptions);
+
         } else {
             $('body').busyLoad("hide", busyBoxOptions);
         }

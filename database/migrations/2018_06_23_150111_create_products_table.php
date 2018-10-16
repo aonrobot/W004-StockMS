@@ -34,6 +34,7 @@ class CreateProductsTable extends Migration
             $table->longText('description')->nullable(true);
             $table->string('status', 24)->default('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('category_id')
             ->references('id')->on('product_category')

@@ -116,9 +116,13 @@ class DocumentController extends Controller
 
         $docProduct = [];
         foreach ($lineitems as $index => $item) {
-            $item['product'] = \App\Product::where('product_id', $item['product_id'])->first();
-            $item['product']['inventory'] = \App\Inventory::where('product_id', $item['product_id'])->where('warehouse_id', $warehouse_id)->first();
-            array_push($docProduct, $item);
+            $product = \App\Product::withTrashed()->where('product_id', $item['product_id'])->first();
+            if($product != null)
+            {
+                $item['product'] = $product;
+                $item['product']['inventory'] = \App\Inventory::where('product_id', $item['product_id'])->where('warehouse_id', $warehouse_id)->first();
+                array_push($docProduct, $item);
+            }
         }
 
         $doc['lineItems'] = $docProduct;
@@ -303,7 +307,9 @@ class DocumentController extends Controller
         {
             $items = DocumentLineItems::where('document_id', $doc['id'])->get(['product_id', 'amount'])->toArray();
             foreach($items as $item){
-                $countSell[$item['product_id']]+=$item['amount'];
+                if(isset($countSell[$item['product_id']])){
+                    $countSell[$item['product_id']] += $item['amount'];
+                }
             }
         }
 

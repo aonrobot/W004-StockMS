@@ -65,9 +65,10 @@
                         <th>รหัสสินค้า</th>
                         <th>ชื่อสินค้า</th>
                         <th class="text-right">จำนวน</th>
-                        <th class="text-right">มูลค่าต่อหน่วย</th>
-                        <th class="text-right">หน่วย</th>
-                        <th class="text-right">รวม</th>
+                        <th class="text-right">ราคาต้นทุน</th>
+                        <th class="text-right">ราคาขาย</th>
+                        <th class="text-right">ราคาต้นทุนรวม</th>
+                        <th class="text-right">ราคาขายรวม</th>
                     </tr>
                 </thead>
                 <tbody id="print_detail">
@@ -77,6 +78,7 @@
             <div class="row">
                 <div class="col-md-12 text-right">
                     <p>
+                        <strong>ต้นทุนรวม : <span id="print_cost_total"> </span> </strong><br>
                         <strong>มูลค่ารวม : <span id="print_detail_total"> </span> </strong>
                     </p>
                 </div>

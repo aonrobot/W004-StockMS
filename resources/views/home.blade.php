@@ -180,6 +180,7 @@
 			datasets: revenueData
 		},
 		options: {
+			animation: false
 			// legend: {
 			// 	display: false
 			// },
@@ -209,7 +210,8 @@
 			labels: bestSellerData.label
 		},
 		options: {
-			cutoutPercentage: 0
+			cutoutPercentage: 0,
+			animation: false
 		}
 	});
 
