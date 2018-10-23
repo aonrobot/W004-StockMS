@@ -48,7 +48,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel nav-style">
-            <div class="container">
+            <div class="container" style="max-width: 1100px;">
                 <a class="navbar-brand nav-style__logo" href="{{ url('/') }}">
                     @guest 
                         <i class="fa fa-dog"></i><p> Login</p>
@@ -123,6 +123,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('product') }}"><i class="fa fa-warehouse"></i> สินค้า</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('purchase_create') }}"><i class="fa fa-retweet" aria-hidden="true"></i> รับคืนสินค้า</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('report') }}"><i class="fa fa-flag"></i> รายงาน</a>
