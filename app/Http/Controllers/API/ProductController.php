@@ -168,6 +168,7 @@ class ProductController extends Controller
             return response()->json(['updated' => true]);
 
         } catch(\Exception $e) {
+            \Log::error($e);
             return response()->json(['updated' => false]);
         }
     }

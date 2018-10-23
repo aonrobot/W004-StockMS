@@ -63,11 +63,12 @@ class LoginController extends Controller
         }
     }
 
-    public function logout(Request $request) {
-        session()->forget('stockms_session');
+    public function logout(Request $request)
+    {
+        
         session()->flush();
+        \Auth::logout();
         \Artisan::call('cache:clear');
-        Auth::logout();
         return redirect('/login');
-      }
+    }
 }

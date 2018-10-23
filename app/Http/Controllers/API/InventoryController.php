@@ -8,6 +8,7 @@ use Log;
 use App\Inventory;
 use App\Library\Log\Inventory as LogInventory;
 use App\Library\_Class\Inventory as ClassInventory;
+use App\Product;
 
 class InventoryController extends Controller
 {
@@ -85,18 +86,46 @@ class InventoryController extends Controller
         //
     }
 
-    public function getSumQuantity(){
-        return response()->json(\App\Inventory::all()->sum('quantity'));
+    public function getSumQuantity()
+    {
+        // $warehouses = \App\Warehouse::where('user_id', \Auth::id())->get(['warehouse_id']);
+        // $sum = 0;
+        // foreach ($warehouses as $warehouse)
+        // {
+        //     $sum += \App\Inventory::where('warehouse_id', $warehouse->warehouse_id)->get()->sum('quantity');
+        // }
+
+        $products = Product::where('user_id', \Auth::id())->get();
+
+        $sum = 0;
+        foreach ($products as $product)
+        {
+            $sum += Inventory::where('product_id', $product->product_id)->first(['quantity'])->quantity;
+        }
+        return response()->json($sum);
     }
 
-    public function getTotalPrice(){
-        $inventorys = \App\Inventory::get(['quantity', 'costPrice', 'salePrice']);
+    public function getTotalPrice()
+    {
+        // $inventorys = \App\Inventory::get(['quantity', 'costPrice', 'salePrice']);
+        // $costTotal = 0;
+        // $saleTotal = 0;
+        // foreach($inventorys as $inv){
+        //     $costTotal += $inv->quantity * $inv->costPrice;
+        //     $saleTotal += $inv->quantity * $inv->salePrice;
+        // }
+
+        $products = Product::where('user_id', \Auth::id())->get();
+
         $costTotal = 0;
         $saleTotal = 0;
-        foreach($inventorys as $inv){
+        foreach ($products as $product)
+        {
+            $inv = Inventory::where('product_id', $product->product_id)->first(['quantity', 'costPrice', 'salePrice']);
             $costTotal += $inv->quantity * $inv->costPrice;
             $saleTotal += $inv->quantity * $inv->salePrice;
         }
+
         return response()->json([
             'total' => [
                 'cost' => $costTotal,
