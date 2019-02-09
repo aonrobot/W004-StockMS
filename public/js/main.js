@@ -63,7 +63,7 @@ var table = $('#prod_table').DataTable({
         },
         {
             render: function (data, type, full, meta) {
-                return `<span>${(full.inventory.costPrice * full.inventory.salePrice).toFixed(2)} บาท</span>`;
+                return `<p>${(full.inventory.costPrice * full.inventory.quantity).toFixed(2)} บาท</p>`;
             },
         },
         {

@@ -128,6 +128,7 @@ class InventoryController extends Controller
 
         return response()->json([
             'total' => [
+                'user_id' => \Auth::id(),
                 'cost' => $costTotal,
                 'sale' => $saleTotal
             ]

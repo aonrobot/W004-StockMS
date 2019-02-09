@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'file'),
+    'driver' => env('SESSION_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'connection' => null,
+    'connection' => 'mysql',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,10 +122,7 @@ return [
     |
     */
 
-    'cookie' => env(
-        'SESSION_COOKIE',
-        str_slug(env('APP_NAME', 'laravel'), '_').'_session'
-    ),
+    'cookie' => 'stockmsolsession',
 
     /*
     |--------------------------------------------------------------------------
@@ -151,7 +148,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN', 'stockms.online'),
 
     /*
     |--------------------------------------------------------------------------

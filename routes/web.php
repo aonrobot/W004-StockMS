@@ -11,14 +11,18 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/', function(){
+        return view('welcome');
+    });
+    Route::post('login', 'LoginController@authenticate')->name('login');
+    Route::post('logout', 'LoginController@logout')->name('logout');    
 
-Route::post('login', 'LoginController@authenticate')->name('login');
-Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+    Auth::routes();
+});
 
-Auth::routes();
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth', 'web'])->group(function(){
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/product', function () { return view('product'); })->name('product');    
     // Route::get('/adjust', function () { return view('adjust'); })->name('adjust');    
@@ -32,6 +36,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/print', function () { return view('print'); })->name('print');
 
     Route::get('/newbranch', 'NewBranchController@create')->name('newbranch');   
-    Route::post('/newbranch', 'NewBranchController@store')->name('newbranch');   
-
+    Route::post('/newbranch', 'NewBranchController@store')->name('newbranch');
+    
 });

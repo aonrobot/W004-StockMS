@@ -49,17 +49,17 @@ class ProductController extends Controller
         $warehouseId = $productDetail['warehouse_id'];
 
         //Check product code
-        if (!Product::where('user_id', \Auth::id())->where('code', $product['code'])->count()){
+        if (!Product::where('user_id', \Auth::id())->where('code', $product['code'])->count()) {
 
             $quantity = $productDetail['quantity'];
             $cPrice = $productDetail['costPrice'];
             $sPrice = $productDetail['salePrice'];
             
             //Check category is exist
-            if (!ProductCategory::find($product['category_id'])){
+            if (! ProductCategory::find($product['category_id'])) {
                 return response()->json(['created' => false, 'message' => 'This category isn\'t exist']);
             }
-            else if (!Warehouse::where('user_id', \Auth::id())->where('warehouse_id', $warehouseId)->count()) {
+            else if (! Warehouse::where('user_id', \Auth::id())->where('warehouse_id', $warehouseId)->count()) {
                 return response()->json(['created' => false, 'message' => 'This warehouse isn\'t exist']);
             } else {
                 try {

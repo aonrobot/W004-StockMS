@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -49,26 +49,22 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
+        if (\Auth::attempt($credentials)) {
             // Authentication passed...
-            $id = Auth::id();
+            $id = \Auth::id();
             $user = \App\User::find($id);
             $token = $user->createToken('TokenAccessAPI')->accessToken;
-            $request->session()->put('api-token', $token);
-            return redirect()->intended('home');
+            \Session::put('api-token', $token);
+            return \Redirect::to("/home");
         } else {
-            return redirect('login')->with(
-                'status', 'Username หรือ Password ผิดครับ'
-            )->withInput();
+            return \Redirect::to("/login")->with('status', 'Username หรือ Password ผิดครับ')->withInput();
         }
     }
 
     public function logout(Request $request)
     {
-        
-        session()->flush();
         \Auth::logout();
-        \Artisan::call('cache:clear');
-        return redirect('/login');
+        \Session::flush();
+        return \Redirect::to("/");
     }
 }

@@ -29,7 +29,7 @@
                                 <tr>
                                     <th>รหัสสินค้า</th>
                                     <th>ชื่อ</th>
-                                    <th>ราคาซื้อ</th>
+                                    <th>ราคาต้นทุน</th>
                                     <th>ราคาขาย</th>
                                     <th>จำนวนคงเหลือ</th>
                                     <!-- <th></th> this is quick increase and decrease-->
@@ -40,7 +40,7 @@
                             </thead>
                             <tbody>
                                 <div class="text-center" id="processingIndicator">
-                                    <i class="fa fa-spinner fa-spin fa-5x fa-fw mb-5" style="margin-top:20%;"></i>
+                                    <i class="fa fa-spinner fa-spin fa-5x fa-fw mb-5"></i>
                                     <h2>กำลังโหลด ...</h2>
                                 </div>
                             </tbody>
