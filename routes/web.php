@@ -12,9 +12,7 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/', function(){
-        return view('welcome');
-    });
+    Route::get('/', 'HomeController@index');
     Route::post('login', 'LoginController@authenticate')->name('login');
     Route::post('logout', 'LoginController@logout')->name('logout');    
 
